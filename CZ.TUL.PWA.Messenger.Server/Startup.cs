@@ -16,6 +16,8 @@ namespace CZ.TUL.PWA.Messenger.Server
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddSignalR();
+
             services.AddCors(o => o.AddPolicy("CorsPolicy", builder =>
             {
                 builder
@@ -37,7 +39,7 @@ namespace CZ.TUL.PWA.Messenger.Server
 
             app.UseSignalR(routes =>
             {
-                routes.MapHub<ChatHub>("chat");
+                routes.MapHub<ChatHub>("/chat");
             });
         }
     }
