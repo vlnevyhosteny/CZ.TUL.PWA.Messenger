@@ -21,6 +21,7 @@ namespace CZ.TUL.PWA.Messenger.Server
             services.AddCors(o => o.AddPolicy("CorsPolicy", builder =>
             {
                 builder
+                    .AllowCredentials()
                     .AllowAnyMethod()
                     .AllowAnyHeader()
                     .WithOrigins("http://localhost:4200");
@@ -34,7 +35,7 @@ namespace CZ.TUL.PWA.Messenger.Server
             {
                 app.UseDeveloperExceptionPage();
             }
-
+           
             app.UseCors("CorsPolicy");
 
             app.UseSignalR(routes =>
