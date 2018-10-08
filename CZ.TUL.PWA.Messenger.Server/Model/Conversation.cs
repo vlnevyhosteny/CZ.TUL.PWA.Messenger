@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace CZ.TUL.PWA.Messenger.Server.Model
@@ -17,5 +18,13 @@ namespace CZ.TUL.PWA.Messenger.Server.Model
             get;
             set;
         }
+
+        public List<Message> Messages
+        {
+            get;
+            set;
+        }
+
+        public List<UserConversation> UserConversations { get; set; }
     }
 }

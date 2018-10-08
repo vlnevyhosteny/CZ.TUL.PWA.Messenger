@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
-
 namespace CZ.TUL.PWA.Messenger.Server.Model
 {
-    public class User
+    public class UserConversation
     {
         public int UserId
         {
@@ -13,25 +9,25 @@ namespace CZ.TUL.PWA.Messenger.Server.Model
             set;
         }
 
-        public string UserName
+        public int ConversationId 
         {
             get;
             set;
         }
 
-        public string Password
+        public bool IsOwner
         {
             get;
             set;
         }
 
-        public List<Message> Messages
+        public User User
         {
             get;
             set;
         }
 
-        public List<UserConversation> UserConversations
+        public Conversation Conversation
         {
             get;
             set;

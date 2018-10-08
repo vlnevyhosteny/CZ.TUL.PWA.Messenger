@@ -1,4 +1,6 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
+
 namespace CZ.TUL.PWA.Messenger.Server.Model
 {
     public class Message
@@ -15,12 +17,19 @@ namespace CZ.TUL.PWA.Messenger.Server.Model
             set;
         }
 
+        public Conversation Conversation
+        {
+            get;
+            set;
+        }
+
         public string Content
         {
             get;
             set;
         }
 
+        [Timestamp]
         public DateTime DateSent
         {
             get;
