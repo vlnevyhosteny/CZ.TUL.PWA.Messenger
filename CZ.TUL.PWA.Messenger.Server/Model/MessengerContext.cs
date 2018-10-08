@@ -6,6 +6,10 @@ namespace CZ.TUL.PWA.Messenger.Server.Model
 {
     public class MessengerContext : DbContext
     {
+        public MessengerContext(DbContextOptions<MessengerContext> options)
+            : base(options)
+        { }
+
         public DbSet<User> Users
         {
             get;
@@ -33,6 +37,11 @@ namespace CZ.TUL.PWA.Messenger.Server.Model
                         .HasOne(uc => uc.User)
                         .WithMany(u => u.UserConversations)
                         .HasForeignKey(uc => uc.UserId);
+
+            modelBuilder.Entity<UserConversation>()
+                        .HasOne(uc => uc.Conversation)
+                        .WithMany(u => u.UserConversations)
+                        .HasForeignKey(uc => uc.ConversationId);
         }
     }
 }
