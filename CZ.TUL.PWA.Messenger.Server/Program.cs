@@ -25,8 +25,8 @@ namespace CZ.TUL.PWA.Messenger.Server
         static void ConfigConfiguration(WebHostBuilderContext ctx, IConfigurationBuilder config)
         {
             config.SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appconfig.json", optional: false, reloadOnChange: true)
-                .AddJsonFile($"appconfig.{ctx.HostingEnvironment.EnvironmentName}.json", optional: true, reloadOnChange: true);
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                .AddJsonFile($"appsettings.{ctx.HostingEnvironment.EnvironmentName}.json", optional: true, reloadOnChange: true);
 
         }
     }
