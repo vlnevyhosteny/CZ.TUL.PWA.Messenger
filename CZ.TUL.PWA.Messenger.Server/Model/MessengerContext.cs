@@ -42,6 +42,14 @@ namespace CZ.TUL.PWA.Messenger.Server.Model
                         .HasOne(uc => uc.Conversation)
                         .WithMany(u => u.UserConversations)
                         .HasForeignKey(uc => uc.ConversationId);
+
+            modelBuilder.Entity<User>()
+                        .Property(p => p.UserId)
+                        .ValueGeneratedOnAdd();
+
+            modelBuilder.Entity<User>().HasData(
+                new User() { UserId = 1, UserName = "admin" }
+            );
         }
     }
 }
