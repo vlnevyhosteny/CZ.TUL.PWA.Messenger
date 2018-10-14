@@ -13,6 +13,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using CZ.TUL.PWA.Messenger.Server.Config;
 
 namespace CZ.TUL.PWA.Messenger.Server
 {
@@ -32,7 +33,7 @@ namespace CZ.TUL.PWA.Messenger.Server
             services
                 .AddDbContext<MessengerContext>(option => option.UseSqlServer(Configuration
                                                                               .GetConnectionString("MessengerDatabase")));
-
+                                                                              
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                     .AddJwtBearer(options =>
                     {
@@ -43,9 +44,11 @@ namespace CZ.TUL.PWA.Messenger.Server
                             ValidateLifetime = true,
                             ValidateIssuerSigningKey = true,
 
-                            ValidIssuer = "http://localhost:5001",
-                            ValidAudience = "http://localhost:5001",
-                            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("superSecretKey@345"))
+                            ValidIssuer = Configuration["Auth:Issuer"],
+                            ValidAudience = Configuration["Auth:Audience"],
+                            IssuerSigningKey = new SymmetricSecurityKey(
+                            Encoding.UTF8.GetBytes(Configuration["AuthSecret:SecurityKey"])
+                            )
                         };
                     });
 

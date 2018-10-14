@@ -6,14 +6,19 @@ using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using CZ.TUL.PWA.Messenger.Server.Config;
+using Microsoft.Extensions.Configuration;
 
 namespace CZ.TUL.PWA.Messenger.Server.Controllers
 {
     [Route("api/auth")]
 	public class AuthController : Controller
     {
-        public AuthController()
+        public IConfiguration Configuration { get; }
+
+        public AuthController(IConfiguration configuration)
         {
+            Configuration = configuration;
         }
 
         [HttpPost, Route("login")]
@@ -26,14 +31,14 @@ namespace CZ.TUL.PWA.Messenger.Server.Controllers
 
             if(user.UserName == "admin")
             {
-                var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("superSecretKey@345"));
+                var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["AuthSecret:SecurityKey"]));
                 var signinCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
 
                 var tokeOptions = new JwtSecurityToken(
-                    issuer: "http://localhost:5001",
-                    audience: "http://localhost:5001",
+                    issuer: Configuration["Auth:Issuer"],
+                    audience: Configuration["Auth:Audience"],
                     claims: new List<Claim>(),
-                    expires: DateTime.Now.AddMinutes(5),
+                    expires: DateTime.Now.AddMinutes(Int32.Parse(Configuration["Auth:TokenExpiration"])),
                     signingCredentials: signinCredentials
                 );
 
@@ -46,5 +51,7 @@ namespace CZ.TUL.PWA.Messenger.Server.Controllers
                 return Unauthorized();
             }
         }
+
+        
     }
 }

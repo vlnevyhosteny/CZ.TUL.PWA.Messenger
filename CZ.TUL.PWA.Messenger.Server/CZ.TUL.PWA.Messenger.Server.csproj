@@ -9,6 +9,7 @@
     <Folder Include="Model\" />
     <Folder Include="Migrations\" />
     <Folder Include="Controllers\" />
+    <Folder Include="Config\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -22,5 +23,8 @@
 
   <ItemGroup>
     <Compile Remove="Migrations\MessengerContextFactory.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Remove="Properties\secretappsettings.config" />
   </ItemGroup>
 </Project>
