@@ -43,8 +43,8 @@ namespace CZ.TUL.PWA.Messenger.Server
                             ValidateLifetime = true,
                             ValidateIssuerSigningKey = true,
 
-                            ValidIssuer = "http://localhost:5000",
-                            ValidAudience = "http://localhost:5000",
+                            ValidIssuer = "http://localhost:5001",
+                            ValidAudience = "http://localhost:5001",
                             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("superSecretKey@345"))
                         };
                     });

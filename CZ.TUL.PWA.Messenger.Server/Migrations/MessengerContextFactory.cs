@@ -24,5 +24,7 @@ namespace CZ.TUL.PWA.Messenger.Server.Migrations
 
             return new MessengerContext(optionsBuilder.Options);
         }
+
+        protected override void OnModelCreating
     }
 }
