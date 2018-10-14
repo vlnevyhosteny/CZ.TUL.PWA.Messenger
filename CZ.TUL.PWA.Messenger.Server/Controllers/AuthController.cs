@@ -41,7 +41,8 @@ namespace CZ.TUL.PWA.Messenger.Server.Controllers
             User user = await MessengerContext.Users
                                               .FirstOrDefaultAsync(x => x.UserName == givenUser.UserName);
 
-            if (user != null && PasswordHasher.VerifyHashedPassword(user.PasswordHash, givenUser.Password))
+            if (user != null 
+                && PasswordHasher.VerifyHashedPassword(user.PasswordHash, givenUser.Password))
             {
                 return Ok(new { Token = ComposeJwtTokenString() });
             }

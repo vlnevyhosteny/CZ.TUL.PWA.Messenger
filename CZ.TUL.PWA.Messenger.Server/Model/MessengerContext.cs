@@ -47,6 +47,10 @@ namespace CZ.TUL.PWA.Messenger.Server.Model
                         .Property(p => p.UserId)
                         .ValueGeneratedOnAdd();
 
+            modelBuilder.Entity<User>()
+                        .HasIndex(u => u.UserName)
+                        .IsUnique();
+
             modelBuilder.Entity<User>().HasData(
                 new User() { UserId = 1, UserName = "admin" }
             );
