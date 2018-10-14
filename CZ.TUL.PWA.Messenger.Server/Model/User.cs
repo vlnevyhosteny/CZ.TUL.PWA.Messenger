@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CZ.TUL.PWA.Messenger.Server.Model
 {
@@ -21,7 +22,8 @@ namespace CZ.TUL.PWA.Messenger.Server.Model
             set;
         }
 
-        public string Password
+        [Column("Password")]
+        public string PasswordHash
         {
             get;
             set;

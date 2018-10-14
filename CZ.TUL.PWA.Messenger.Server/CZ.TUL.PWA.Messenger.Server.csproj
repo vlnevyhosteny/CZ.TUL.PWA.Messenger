@@ -10,6 +10,8 @@
     <Folder Include="Migrations\" />
     <Folder Include="Controllers\" />
     <Folder Include="Config\" />
+    <Folder Include="Auth\" />
+    <Folder Include="Extensions\" />
   </ItemGroup>
 
   <ItemGroup>

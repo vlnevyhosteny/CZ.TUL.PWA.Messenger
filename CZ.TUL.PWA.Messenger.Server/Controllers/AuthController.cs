@@ -8,43 +8,42 @@ using System.Security.Claims;
 using System.Text;
 using CZ.TUL.PWA.Messenger.Server.Config;
 using Microsoft.Extensions.Configuration;
+using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
+using CZ.TUL.PWA.Messenger.Server.Auth;
 
 namespace CZ.TUL.PWA.Messenger.Server.Controllers
 {
     [Route("api/auth")]
-	public class AuthController : Controller
+    public class AuthController : Controller
     {
         public IConfiguration Configuration { get; }
 
-        public AuthController(IConfiguration configuration)
+        public MessengerContext MessengerContext
         {
-            Configuration = configuration;
+            get;
+        }
+
+        public AuthController(IConfiguration configuration, MessengerContext messengerContext)
+        {
+            this.Configuration = configuration;
+            this.MessengerContext = messengerContext;
         }
 
         [HttpPost, Route("login")]
-        public IActionResult Login([FromBody] User user) 
+        public async Task<IActionResult> LoginAsync([FromBody] GivenUser givenUser)
         {
-            if(user == null) 
+            if (givenUser == null)
             {
                 return BadRequest("User not given");
             }
 
-            if(user.UserName == "admin")
+            User user = await MessengerContext.Users
+                                              .FirstOrDefaultAsync(x => x.UserName == givenUser.UserName);
+
+            if (user != null && PasswordHasher.VerifyHashedPassword(user.PasswordHash, givenUser.Password))
             {
-                var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["AuthSecret:SecurityKey"]));
-                var signinCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
-
-                var tokeOptions = new JwtSecurityToken(
-                    issuer: Configuration["Auth:Issuer"],
-                    audience: Configuration["Auth:Audience"],
-                    claims: new List<Claim>(),
-                    expires: DateTime.Now.AddMinutes(Int32.Parse(Configuration["Auth:TokenExpiration"])),
-                    signingCredentials: signinCredentials
-                );
-
-                var tokenString = new JwtSecurityTokenHandler().WriteToken(tokeOptions);
-
-                return Ok(new { Token = tokenString });
+                return Ok(new { Token = ComposeJwtTokenString() });
             }
             else
             {
@@ -52,6 +51,35 @@ namespace CZ.TUL.PWA.Messenger.Server.Controllers
             }
         }
 
+        string ComposeJwtTokenString()
+        {
+            var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["AuthSecret:SecurityKey"]));
+            var signinCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
 
+            var tokeOptions = new JwtSecurityToken(
+                issuer: Configuration["Auth:Issuer"],
+                audience: Configuration["Auth:Audience"],
+                claims: new List<Claim>(),
+                expires: DateTime.Now.AddMinutes(Int32.Parse(Configuration["Auth:TokenExpiration"])),
+                signingCredentials: signinCredentials
+            );
+
+            return new JwtSecurityTokenHandler().WriteToken(tokeOptions);
+        }
+
+        public class GivenUser 
+        {
+            public string UserName
+            {
+                get;
+                set;
+            }
+
+            public string Password
+            {
+                get;
+                set;
+            }
+        }
     }
 }
