@@ -52,6 +52,6 @@ namespace CZ.TUL.PWA.Messenger.Server.Controllers
             }
         }
 
-        
+
     }
 }
