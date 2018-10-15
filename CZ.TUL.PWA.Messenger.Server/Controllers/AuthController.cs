@@ -9,6 +9,7 @@ using System.Text;
 using Microsoft.Extensions.Configuration;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
+using CZ.TUL.PWA.Messenger.Server.ViewModels;
 
 namespace CZ.TUL.PWA.Messenger.Server.Controllers
 {
@@ -17,26 +18,23 @@ namespace CZ.TUL.PWA.Messenger.Server.Controllers
     {
         public IConfiguration Configuration { get; }
 
-        public MessengerContext MessengerContext
-        {
-            get;
-        }
+        public MessengerContext MessengerContext { get; }
 
         public AuthController(IConfiguration configuration, MessengerContext messengerContext)
         {
             this.Configuration = configuration;
             this.MessengerContext = messengerContext;
         }
-
+        
         [HttpPost, Route("login")]
-        public async Task<IActionResult> LoginAsync([FromBody] GivenUser givenUser)
+        public async Task<IActionResult> LoginAsync([FromBody] UserViewModel givenUser)
         {
             if (givenUser == null)
             {
                 return BadRequest("User not given");
             }
-                                                      
-            return Unauthorized();
+
+            return Ok(new { Token = ComposeJwtTokenString() });
         }
 
         string ComposeJwtTokenString()
@@ -53,21 +51,6 @@ namespace CZ.TUL.PWA.Messenger.Server.Controllers
             );
 
             return new JwtSecurityTokenHandler().WriteToken(tokeOptions);
-        }
-
-        public class GivenUser 
-        {
-            public string UserName
-            {
-                get;
-                set;
-            }
-
-            public string Password
-            {
-                get;
-                set;
-            }
         }
     }
 }

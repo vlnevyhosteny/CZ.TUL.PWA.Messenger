@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using CZ.TUL.PWA.Messenger.Server.Config;
+using Microsoft.AspNetCore.Identity;
 
 namespace CZ.TUL.PWA.Messenger.Server
 {
@@ -31,7 +32,7 @@ namespace CZ.TUL.PWA.Messenger.Server
         public void ConfigureServices(IServiceCollection services)
         {
             services
-                .AddDbContext<MessengerContext>(option => option.UseSqlServer(Configuration
+                .AddDbContext<MessengerContext>(option => option.UseSqlite(Configuration
                                                                               .GetConnectionString("MessengerDatabase")));
                                                                               
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -51,6 +52,18 @@ namespace CZ.TUL.PWA.Messenger.Server
                             )
                         };
                     });
+
+            var builder = services.AddIdentityCore<User>(o =>
+            {
+                // configure identity options
+                o.Password.RequireDigit = false;
+                o.Password.RequireLowercase = false;
+                o.Password.RequireUppercase = false;
+                o.Password.RequireNonAlphanumeric = false;
+                o.Password.RequiredLength = 6;
+            });
+            builder = new IdentityBuilder(builder.UserType, typeof(IdentityRole), builder.Services);
+            builder.AddEntityFrameworkStores<MessengerContext>().AddDefaultTokenProviders();
 
             services.AddMvc();
         }

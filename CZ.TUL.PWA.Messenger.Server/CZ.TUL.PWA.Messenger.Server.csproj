@@ -11,6 +11,7 @@
     <Folder Include="Controllers\" />
     <Folder Include="Config\" />
     <Folder Include="Extensions\" />
+    <Folder Include="ViewModels\" />
   </ItemGroup>
 
   <ItemGroup>
