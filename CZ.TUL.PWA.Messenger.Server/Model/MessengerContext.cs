@@ -1,16 +1,17 @@
 ﻿using System;
 using JetBrains.Annotations;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace CZ.TUL.PWA.Messenger.Server.Model
 {
-    public class MessengerContext : DbContext
+    public class MessengerContext : IdentityDbContext<User>
     {
         public MessengerContext(DbContextOptions<MessengerContext> options)
             : base(options)
         { }
 
-        public DbSet<User> Users
+        public DbSet<User> MessengerUsers
         {
             get;
             set;
@@ -28,32 +29,34 @@ namespace CZ.TUL.PWA.Messenger.Server.Model
             set;
         }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder) 
+        protected override void OnModelCreating(ModelBuilder builder) 
         {
-            modelBuilder.Entity<UserConversation>()
-                        .HasKey(uc => new { uc.ConversationId, uc.UserId });
+            base.OnModelCreating(builder);
 
-            modelBuilder.Entity<UserConversation>()
-                        .HasOne(uc => uc.User)
-                        .WithMany(u => u.UserConversations)
-                        .HasForeignKey(uc => uc.UserId);
+            builder.Entity<UserConversation>()
+                   .HasKey(uc => new { uc.ConversationId, uc.UserId });
 
-            modelBuilder.Entity<UserConversation>()
-                        .HasOne(uc => uc.Conversation)
-                        .WithMany(u => u.UserConversations)
-                        .HasForeignKey(uc => uc.ConversationId);
+            builder.Entity<UserConversation>()
+                   .HasOne(uc => uc.User)
+                   .WithMany(u => u.UserConversations)
+                   .HasForeignKey(uc => uc.UserId);
 
-            modelBuilder.Entity<User>()
-                        .Property(p => p.UserId)
-                        .ValueGeneratedOnAdd();
+            builder.Entity<UserConversation>()
+                   .HasOne(uc => uc.Conversation)
+                   .WithMany(u => u.UserConversations)
+                   .HasForeignKey(uc => uc.ConversationId);
 
-            modelBuilder.Entity<User>()
-                        .HasIndex(u => u.UserName)
-                        .IsUnique();
+            builder.Entity<User>()
+                   .Property(p => p.Id)
+                    .ValueGeneratedOnAdd();
 
-            modelBuilder.Entity<User>().HasData(
-                new User() { UserId = 1, UserName = "admin" }
-            );
+            builder.Entity<User>()
+                   .HasIndex(u => u.Name)
+                   .IsUnique();
+
+            //builder.Entity<MessengerUser>().HasData(
+            //    new MessengerUser() { MessengerUserId = 1, Name = "admin" }
+            //);
         }
     }
 }

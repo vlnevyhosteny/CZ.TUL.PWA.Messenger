@@ -3,7 +3,7 @@ namespace CZ.TUL.PWA.Messenger.Server.Extensions
 {
     public static class ArrayExtensions
     {
-        public static bool Equals(this byte[] arrayOne, byte[] arrayTwo) 
+        public static bool AreEquals(this byte[] arrayOne, byte[] arrayTwo) 
         {
             int i;
             if (arrayOne.Length == arrayTwo.Length)

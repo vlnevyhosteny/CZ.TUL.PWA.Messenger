@@ -10,7 +10,6 @@
     <Folder Include="Migrations\" />
     <Folder Include="Controllers\" />
     <Folder Include="Config\" />
-    <Folder Include="Auth\" />
     <Folder Include="Extensions\" />
   </ItemGroup>
 
@@ -25,6 +24,8 @@
 
   <ItemGroup>
     <Compile Remove="Migrations\MessengerContextFactory.cs" />
+    <Compile Remove="Auth\PasswordHasher.cs" />
+    <Compile Remove="Model\AppUser.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Remove="Properties\secretappsettings.config" />

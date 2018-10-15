@@ -6,11 +6,9 @@ using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using CZ.TUL.PWA.Messenger.Server.Config;
 using Microsoft.Extensions.Configuration;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
-using CZ.TUL.PWA.Messenger.Server.Auth;
 
 namespace CZ.TUL.PWA.Messenger.Server.Controllers
 {
@@ -37,19 +35,8 @@ namespace CZ.TUL.PWA.Messenger.Server.Controllers
             {
                 return BadRequest("User not given");
             }
-
-            User user = await MessengerContext.Users
-                                              .FirstOrDefaultAsync(x => x.UserName == givenUser.UserName);
-
-            if (user != null 
-                && PasswordHasher.VerifyHashedPassword(user.PasswordHash, givenUser.Password))
-            {
-                return Ok(new { Token = ComposeJwtTokenString() });
-            }
-            else
-            {
-                return Unauthorized();
-            }
+                                                      
+            return Unauthorized();
         }
 
         string ComposeJwtTokenString()

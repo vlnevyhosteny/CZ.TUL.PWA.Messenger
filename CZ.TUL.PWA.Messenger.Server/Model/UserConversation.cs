@@ -3,7 +3,7 @@ namespace CZ.TUL.PWA.Messenger.Server.Model
 {
     public class UserConversation
     {
-        public int UserId
+        public string UserId
         {
             get;
             set;
