@@ -50,11 +50,6 @@ namespace CZ.TUL.PWA.Messenger.Server.Controllers
                 return new BadRequestResult();
             }
 
-            await _messengerContext.Users
-                                   .AddAsync(user);
-
-            await _messengerContext.SaveChangesAsync();
-
             return new OkObjectResult("Account created");
         }
     }
