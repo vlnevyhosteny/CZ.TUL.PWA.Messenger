@@ -64,7 +64,7 @@ namespace CZ.TUL.PWA.Messenger.Server.Migrations
             migrationBuilder.AlterColumn<string>(
                 name: "UserName",
                 table: "AspNetUsers",
-                maxLength: 256,
+                maxLength: 127,
                 nullable: true,
                 oldClrType: typeof(string));
 
@@ -123,7 +123,7 @@ namespace CZ.TUL.PWA.Messenger.Server.Migrations
             migrationBuilder.AddColumn<string>(
                 name: "NormalizedUserName",
                 table: "AspNetUsers",
-                maxLength: 256,
+                maxLength: 127,
                 nullable: true);
 
             migrationBuilder.AddColumn<string>(
@@ -158,8 +158,8 @@ namespace CZ.TUL.PWA.Messenger.Server.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(nullable: false),
-                    Name = table.Column<string>(maxLength: 256, nullable: true),
-                    NormalizedName = table.Column<string>(maxLength: 256, nullable: true),
+                    Name = table.Column<string>(maxLength: 127, nullable: true),
+                    NormalizedName = table.Column<string>(maxLength: 127, nullable: true),
                     ConcurrencyStamp = table.Column<string>(nullable: true)
                 },
                 constraints: table =>

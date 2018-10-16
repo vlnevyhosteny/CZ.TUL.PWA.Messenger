@@ -32,7 +32,7 @@ namespace CZ.TUL.PWA.Messenger.Server
         public void ConfigureServices(IServiceCollection services)
         {
             services
-                .AddDbContext<MessengerContext>(option => option.UseSqlite(Configuration
+                .AddDbContext<MessengerContext>(option => option.UseMySql(Configuration
                                                                               .GetConnectionString("MessengerDatabase")));
                                                                               
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

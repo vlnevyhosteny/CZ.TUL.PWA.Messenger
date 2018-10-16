@@ -2,6 +2,7 @@
 using JetBrains.Annotations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 
 namespace CZ.TUL.PWA.Messenger.Server.Model
 {
@@ -31,6 +32,8 @@ namespace CZ.TUL.PWA.Messenger.Server.Model
 
         protected override void OnModelCreating(ModelBuilder builder) 
         {
+            SpecifyMySqlIndexLengthSpecification(builder);
+
             base.OnModelCreating(builder);
 
             builder.Entity<UserConversation>()
@@ -45,18 +48,14 @@ namespace CZ.TUL.PWA.Messenger.Server.Model
                    .HasOne(uc => uc.Conversation)
                    .WithMany(u => u.UserConversations)
                    .HasForeignKey(uc => uc.ConversationId);
+        }
 
-            builder.Entity<User>()
-                   .Property(p => p.Id)
-                    .ValueGeneratedOnAdd();
-
-            builder.Entity<User>()
-                   .HasIndex(u => u.Name)
-                   .IsUnique();
-
-            //builder.Entity<MessengerUser>().HasData(
-            //    new MessengerUser() { MessengerUserId = 1, Name = "admin" }
-            //);
+        private void SpecifyMySqlIndexLengthSpecification(ModelBuilder builder)
+        {
+            builder.Entity<User>().Property(m => m.UserName).HasMaxLength(127);
+            builder.Entity<User>().Property(m => m.NormalizedUserName).HasMaxLength(127);
+            builder.Entity<User>().Property(m => m.Id).HasMaxLength(127);
+            builder.Entity<User>().Property(m => m.Name).HasMaxLength(127);
         }
     }
 }
