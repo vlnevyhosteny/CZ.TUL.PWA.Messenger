@@ -11,6 +11,12 @@ namespace CZ.TUL.PWA.Messenger.Server.Model
             set;
         }
 
+        public string OwnerId
+        {
+            get;
+            set;
+        }
+
         public User Owner
         {
             get;

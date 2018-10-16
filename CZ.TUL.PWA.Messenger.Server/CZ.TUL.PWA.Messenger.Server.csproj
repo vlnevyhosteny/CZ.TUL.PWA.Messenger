@@ -8,6 +8,10 @@
     <Folder Include="wwwroot\" />
     <Folder Include="Model\" />
     <Folder Include="Migrations\" />
+    <Folder Include="Controllers\" />
+    <Folder Include="Config\" />
+    <Folder Include="Extensions\" />
+    <Folder Include="ViewModels\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -15,11 +19,16 @@
     <PackageReference Include="Microsoft.AspNetCore.SignalR" Version="1.0.4" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="2.1.4" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.1.4" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="2.1.4" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.1.4" />
+    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="2.1.2" />
   </ItemGroup>
 
   <ItemGroup>
     <Compile Remove="Migrations\MessengerContextFactory.cs" />
+    <Compile Remove="Auth\PasswordHasher.cs" />
+    <Compile Remove="Model\AppUser.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Remove="Properties\secretappsettings.config" />
   </ItemGroup>
 </Project>

@@ -10,6 +10,11 @@ using Microsoft.Extensions.DependencyInjection;
 using CZ.TUL.PWA.Messenger.Server.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using CZ.TUL.PWA.Messenger.Server.Config;
+using Microsoft.AspNetCore.Identity;
 
 namespace CZ.TUL.PWA.Messenger.Server
 {
@@ -27,8 +32,40 @@ namespace CZ.TUL.PWA.Messenger.Server
         public void ConfigureServices(IServiceCollection services)
         {
             services
-                .AddDbContext<MessengerContext>(option => option.UseSqlServer(Configuration
+                .AddDbContext<MessengerContext>(option => option.UseMySql(Configuration
                                                                               .GetConnectionString("MessengerDatabase")));
+                                                                              
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                    .AddJwtBearer(options =>
+                    {
+                        options.TokenValidationParameters = new TokenValidationParameters
+                        {
+                            ValidateIssuer = true,
+                            ValidateAudience = true,
+                            ValidateLifetime = true,
+                            ValidateIssuerSigningKey = true,
+
+                            ValidIssuer = Configuration["Auth:Issuer"],
+                            ValidAudience = Configuration["Auth:Audience"],
+                            IssuerSigningKey = new SymmetricSecurityKey(
+                            Encoding.UTF8.GetBytes(Configuration["AuthSecret:SecurityKey"])
+                            )
+                        };
+                    });
+
+            var builder = services.AddIdentityCore<User>(o =>
+            {
+                // configure identity options
+                o.Password.RequireDigit = false;
+                o.Password.RequireLowercase = false;
+                o.Password.RequireUppercase = false;
+                o.Password.RequireNonAlphanumeric = false;
+                o.Password.RequiredLength = 6;
+            });
+            builder = new IdentityBuilder(builder.UserType, typeof(IdentityRole), builder.Services);
+            builder.AddEntityFrameworkStores<MessengerContext>().AddDefaultTokenProviders();
+
+            services.AddMvc();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -39,10 +76,8 @@ namespace CZ.TUL.PWA.Messenger.Server
                 app.UseDeveloperExceptionPage();
             }
 
-            app.Run(async (context) =>
-            {
-                await context.Response.WriteAsync("Hello World!");
-            });
+            app.UseAuthentication();
+            app.UseMvc();
         }
     }
 }
