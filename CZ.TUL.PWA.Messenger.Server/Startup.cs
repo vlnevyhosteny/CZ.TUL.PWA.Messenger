@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Configuration;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using CZ.TUL.PWA.Messenger.Server.Model;
 using Microsoft.EntityFrameworkCore;
@@ -13,7 +7,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using CZ.TUL.PWA.Messenger.Server.Config;
 using Microsoft.AspNetCore.Identity;
 
 namespace CZ.TUL.PWA.Messenger.Server

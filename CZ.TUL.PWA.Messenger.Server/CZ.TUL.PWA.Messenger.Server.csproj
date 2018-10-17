@@ -27,8 +27,22 @@
     <Compile Remove="Migrations\MessengerContextFactory.cs" />
     <Compile Remove="Auth\PasswordHasher.cs" />
     <Compile Remove="Model\AppUser.cs" />
+    <Compile Remove="Config\AuthSecretConfig.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Remove="Properties\secretappsettings.config" />
+    <Content Remove="Config\appsettings.development.json" />
+    <Content Remove="Config\secretappsettings.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Update="Config\appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="Config\appsettings.development.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="Config\secretappsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 </Project>
