@@ -1,7 +1,7 @@
 ﻿using System;
 namespace CZ.TUL.PWA.Messenger.Server.ViewModels
 {
-    public class UserViewModel
+    public class UserCredentialsViewModel
     {
         public string UserName
         {

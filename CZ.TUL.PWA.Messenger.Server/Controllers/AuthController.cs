@@ -27,7 +27,7 @@ namespace CZ.TUL.PWA.Messenger.Server.Controllers
         }
         
         [HttpPost, Route("login")]
-        public async Task<IActionResult> LoginAsync([FromBody] UserViewModel givenUser)
+        public async Task<IActionResult> LoginAsync([FromBody] UserCredentialsViewModel givenUser)
         {
             if (ModelState.IsValid == false)
             {
