@@ -7,17 +7,20 @@ using System.Collections.Generic;
 using Microsoft.AspNetCore.Identity;
 using Newtonsoft.Json;
 using System.Text;
+using Xunit.Sdk;
+using CZ.TUL.PWA.Messenger.Server.Model;
+using System.Net;
 
 namespace CZ.TUL.PWA.Messenger.Server.Tests.Controllers
 {
     public class AuthControllerIntegrationTest
-        : IClassFixture<WebApplicationFactory<Startup>>
+        : IClassFixture<MessengerWebApplicationFactory<Startup>>
     {
-        private readonly WebApplicationFactory<Startup> _factory;
+        private readonly MessengerWebApplicationFactory<Startup> _factory;
 
-        public AuthControllerIntegrationTest(WebApplicationFactory<Startup> webApplicationFactory)
+        public AuthControllerIntegrationTest(MessengerWebApplicationFactory<Startup> factory)
         {
-            _factory = webApplicationFactory;
+            _factory = factory;
         }
 
         [Fact]
@@ -27,8 +30,8 @@ namespace CZ.TUL.PWA.Messenger.Server.Tests.Controllers
 
             var data = new
             {
-                UserName = "Maskicz",
-                Password = "SuperStrongpasswd"
+                UserName = "testuser",
+                Password = "password"
             };
 
             var content = new StringContent(JsonConvert.SerializeObject(data).ToString(),
@@ -37,6 +40,8 @@ namespace CZ.TUL.PWA.Messenger.Server.Tests.Controllers
             var response = await client.PostAsync("/api/auth/login", content);
 
             response.EnsureSuccessStatusCode();
+
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         }
     }
 }

@@ -1,17 +1,29 @@
 ﻿using System;
 using CZ.TUL.PWA.Messenger.Server.Model;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 namespace CZ.TUL.PWA.Messenger.Server.Tests.Utilities
 {
     public static class TestDataSeeding
     {
-        public static void SeedTestUser(UserManager<User> userManager) 
+        public static void SeedTestUser(MessengerContext db) 
         {
-            userManager.CreateAsync(new User()
+            var user = new User
             {
+                Name = "testuser",
                 UserName = "testuser",
-                Name = "test user"
-            }, "testpass");
+                NormalizedUserName = "TESTUSER"
+            };
+
+            var passwordHasher = new PasswordHasher<User>();
+            var hash = passwordHasher.HashPassword(user, "password");
+
+            user.PasswordHash = hash;
+
+            var userStore = new UserStore<User>(db);
+            userStore.CreateAsync(user);
+
+            db.SaveChanges();
         }
     }
 }

@@ -10,6 +10,9 @@ using System.IO;
 using System.Reflection;
 using Microsoft.AspNetCore.Identity;
 using CZ.TUL.PWA.Messenger.Server.Tests.Utilities;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace CZ.TUL.PWA.Messenger.Server.Tests
 {
@@ -18,25 +21,20 @@ namespace CZ.TUL.PWA.Messenger.Server.Tests
     {
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
-            //var assemblyPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            builder.UseEnvironment("Test");
 
-            //builder.ConfigureAppConfiguration((HostingStartupAttribute, config) =>
-            //{
-            //    config.SetBasePath(Directory.GetCurrentDirectory())
-            //          .AddJsonFile($"{assemblyPath}/Config/appsettings.json", optional: false, reloadOnChange: true)
-            //    .AddJsonFile($"{assemblyPath}/Config/appsettings.development.json", optional: true, reloadOnChange: true)
-            //    .AddJsonFile($"{assemblyPath}/Config/secretappsettings.json");
-            //});
+            builder.ConfigureAppConfiguration((HostingStartupAttribute, config) =>
+            {
+                config.SetBasePath(Directory.GetCurrentDirectory())
+                    .AddJsonFile("Config/appsettings.test.json", optional: true, reloadOnChange: true);
+            });
 
             builder.ConfigureServices(services =>
             {
-                // Create a new service provider.
                 var serviceProvider = new ServiceCollection()
                     .AddEntityFrameworkInMemoryDatabase()
                     .BuildServiceProvider();
-
-                // Add a database context (ApplicationDbContext) using an in-memory 
-                // database for testing.
+                    
                 services.AddDbContext<MessengerContext>(options =>
                 {
                     options.UseInMemoryDatabase("InMemoryDbForTesting");
@@ -45,7 +43,6 @@ namespace CZ.TUL.PWA.Messenger.Server.Tests
 
                 var _builder = services.AddIdentityCore<User>(o =>
                 {
-                    // configure identity options
                     o.Password.RequireDigit = false;
                     o.Password.RequireLowercase = false;
                     o.Password.RequireUppercase = false;
@@ -55,30 +52,27 @@ namespace CZ.TUL.PWA.Messenger.Server.Tests
                 _builder = new IdentityBuilder(_builder.UserType, typeof(IdentityRole), _builder.Services);
                 _builder.AddEntityFrameworkStores<MessengerContext>().AddDefaultTokenProviders();
 
-                // Build the service provider.
                 var sp = services.BuildServiceProvider();
 
-                // Create a scope to obtain a reference to the database
-                // context (ApplicationDbContext).
                 using (var scope = sp.CreateScope())
                 {
                     var scopedServices = scope.ServiceProvider;
+
                     var db = scopedServices.GetRequiredService<MessengerContext>();
+
                     var logger = scopedServices
                         .GetRequiredService<ILogger<MessengerWebApplicationFactory<TStartup>>>();
-                    var userManager = scopedServices.GetRequiredService<UserManager<User>>();
-
-                    // Ensure the database is created.
+                        
                     db.Database.EnsureCreated();
 
                     try
                     {
-                        TestDataSeeding.SeedTestUser(userManager);
+                        TestDataSeeding.SeedTestUser(db);
                     }
                     catch (Exception ex)
                     {
                         logger.LogError(ex, $"An error occurred seeding the " +
-                            "database with test messages. Error: {ex.Message}");
+                            "database . Error: {ex.Message}");
                     }
                 }
             });

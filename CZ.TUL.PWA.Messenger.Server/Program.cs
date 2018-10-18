@@ -24,10 +24,13 @@ namespace CZ.TUL.PWA.Messenger.Server
 
         static void ConfigConfiguration(WebHostBuilderContext ctx, IConfigurationBuilder config)
         {
-            config.SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("Config/appsettings.json", optional: false, reloadOnChange: true)
-                .AddJsonFile($"Config/appsettings.{ctx.HostingEnvironment.EnvironmentName}.json", optional: true, reloadOnChange: true)
-                .AddJsonFile("Config/secretappsettings.json");
+            if (ctx.HostingEnvironment.EnvironmentName != "Test")
+            {
+                config.SetBasePath(Directory.GetCurrentDirectory())
+                    .AddJsonFile("Config/appsettings.json", optional: false, reloadOnChange: true)
+                    .AddJsonFile($"Config/appsettings.{ctx.HostingEnvironment.EnvironmentName}.json", optional: true, reloadOnChange: true)
+                    .AddJsonFile("Config/secretappsettings.json");
+            }
 
         }
     }

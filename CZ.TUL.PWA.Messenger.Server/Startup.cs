@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.AspNetCore.Identity;
+using System.IO;
 
 namespace CZ.TUL.PWA.Messenger.Server
 {
@@ -22,8 +23,10 @@ namespace CZ.TUL.PWA.Messenger.Server
 
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
-        public void ConfigureServices(IServiceCollection services)
+        public virtual void ConfigureServices(IServiceCollection services)
         {
+            services.AddMvc();
+
             services
                 .AddDbContext<MessengerContext>(option => option.UseMySql(Configuration
                                                                               .GetConnectionString("MessengerDatabase")));
@@ -57,8 +60,6 @@ namespace CZ.TUL.PWA.Messenger.Server
             });
             builder = new IdentityBuilder(builder.UserType, typeof(IdentityRole), builder.Services);
             builder.AddEntityFrameworkStores<MessengerContext>().AddDefaultTokenProviders();
-
-            services.AddMvc();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
