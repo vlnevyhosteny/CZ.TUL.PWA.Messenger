@@ -85,35 +85,35 @@ namespace CZ.TUL.PWA.Messenger.Server.Controllers
             });
         }
 
-        [HttpPost]
-        public async Task<IActionResult> RevokeAsync(string token, string refreshToken)
+        private async Task SetRefreshToken(User user, RefreshToken refreshToken)
         {
-            var principal = GetPrincipalFromExpiredToken(token);
-            var userName = principal.Identity.Name;
-
-            var userToVerify = await _userManager.FindByNameAsync(userName);
-            if (userToVerify == null)
+            var existing = context.RefreshTokens.SingleOrDefaultAsync(x => x.UserId == user.Id);
+            if(existing != null)
             {
-                return BadRequest();
+                context.Delete(existing);
+                context.SaveChanges();
             }
 
-            var savedRefreshToken = await _userManager.GetAuthenticationTokenAsync(userToVerify, "jwt", "refreshToken");
-            if (savedRefreshToken == null || savedRefreshToken != refreshToken)
+            context.RefreshTokens.Add(refreshToken);
+            context.SaveChanges();
+        }
+
+        private async Task<RefreshToken> GetRefreshToken(User user)
+        {
+            return context.RefreshTokens.SingleOrDefaultAsync(x => x.UserId == user.Id);
+        }
+
+        private async Task RevokeRefreshToken(User user)
+        {
+            var existing = context.RefreshTokens.SingleOrDefaultAsync(x => x.UserId == user.Id);
+            if (existing == null)
             {
-                return BadRequest();
+                return;
             }
 
-            var newJwtToken = ComposeJwtTokenString(userName);
-            var newRefreshToken = GenerateRefreshToken();
+            existing.Revoked = true;
 
-            await _userManager.RemoveAuthenticationTokenAsync(userToVerify, "jwt", "refreshToken");
-            await _userManager.SetAuthenticationTokenAsync(userToVerify, "jwt", "refreshToken", newRefreshToken);
-
-            return new ObjectResult(new
-            {
-                token = newJwtToken,
-                refreshToken = newRefreshToken
-            });
+            context.SaveChanges();
         }
 
         private async Task<User> GetClaimsIdentity(string userName, string password)
