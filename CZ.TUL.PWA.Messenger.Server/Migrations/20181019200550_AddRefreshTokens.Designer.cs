@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CZ.TUL.PWA.Messenger.Server.Migrations
 {
     [DbContext(typeof(MessengerContext))]
-    [Migration("20181019143554_AddRefreshToken")]
-    partial class AddRefreshToken
+    [Migration("20181019200550_AddRefreshTokens")]
+    partial class AddRefreshTokens
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -68,7 +68,7 @@ namespace CZ.TUL.PWA.Messenger.Server.Migrations
 
                     b.HasKey("UserId");
 
-                    b.ToTable("RefreshToken");
+                    b.ToTable("RefreshTokens");
                 });
 
             modelBuilder.Entity("CZ.TUL.PWA.Messenger.Server.Model.User", b =>

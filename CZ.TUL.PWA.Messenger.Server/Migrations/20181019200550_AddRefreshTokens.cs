@@ -3,10 +3,17 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace CZ.TUL.PWA.Messenger.Server.Migrations
 {
-    public partial class AddRefreshToken : Migration
+    public partial class AddRefreshTokens : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.AlterColumn<string>(
+                name: "Name",
+                table: "AspNetUsers",
+                maxLength: 127,
+                nullable: false,
+                oldClrType: typeof(string));
+
             migrationBuilder.CreateTable(
                 name: "RefreshTokens",
                 columns: table => new
@@ -18,9 +25,9 @@ namespace CZ.TUL.PWA.Messenger.Server.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_RefreshToken", x => x.UserId);
+                    table.PrimaryKey("PK_RefreshTokens", x => x.UserId);
                     table.ForeignKey(
-                        name: "FK_RefreshToken_AspNetUsers_UserId",
+                        name: "FK_RefreshTokens_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
@@ -32,6 +39,13 @@ namespace CZ.TUL.PWA.Messenger.Server.Migrations
         {
             migrationBuilder.DropTable(
                 name: "RefreshTokens");
+
+            migrationBuilder.AlterColumn<string>(
+                name: "Name",
+                table: "AspNetUsers",
+                nullable: false,
+                oldClrType: typeof(string),
+                oldMaxLength: 127);
         }
     }
 }

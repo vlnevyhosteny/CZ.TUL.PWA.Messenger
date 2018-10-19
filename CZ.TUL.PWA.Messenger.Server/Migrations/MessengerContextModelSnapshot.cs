@@ -66,7 +66,7 @@ namespace CZ.TUL.PWA.Messenger.Server.Migrations
 
                     b.HasKey("UserId");
 
-                    b.ToTable("RefreshToken");
+                    b.ToTable("RefreshTokens");
                 });
 
             modelBuilder.Entity("CZ.TUL.PWA.Messenger.Server.Model.User", b =>
