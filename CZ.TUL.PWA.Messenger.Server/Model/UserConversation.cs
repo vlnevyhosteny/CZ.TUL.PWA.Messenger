@@ -9,7 +9,7 @@ namespace CZ.TUL.PWA.Messenger.Server.Model
             set;
         }
 
-        public int ConversationId 
+        public int ConversationId
         {
             get;
             set;

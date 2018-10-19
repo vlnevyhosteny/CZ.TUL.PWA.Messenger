@@ -25,26 +25,22 @@ namespace CZ.TUL.PWA.Messenger.Server.Migrations
             migrationBuilder.DropForeignKey(
                 name: "FK_UserConversation_AspNetUsers_UserId",
                 table: "UserConversation");
-           
+
             migrationBuilder.DropForeignKey(
                 name: "FK_AspNetUserClaims_AspNetUsers_UserId",
-                table: "AspNetUserClaims"
-            );
+                table: "AspNetUserClaims");
 
             migrationBuilder.DropForeignKey(
                 name: "FK_AspNetUserLogins_AspNetUsers_UserId",
-                table: "AspNetUserLogins"
-            );
+                table: "AspNetUserLogins");
 
             migrationBuilder.DropForeignKey(
                 name: "FK_AspNetUserTokens_AspNetUsers_UserId",
-                table: "AspNetUserTokens"
-            );
+                table: "AspNetUserTokens");
 
             migrationBuilder.DropForeignKey(
                 name: "FK_AspNetUserRoles_AspNetUsers_UserId",
-                table: "AspNetUserRoles"
-            );
+                table: "AspNetUserRoles");
 
             migrationBuilder.AlterColumn<string>(
                 name: "UserId",
@@ -177,23 +173,19 @@ namespace CZ.TUL.PWA.Messenger.Server.Migrations
 
             migrationBuilder.DropForeignKey(
                 name: "FK_AspNetUserClaims_AspNetUsers_UserId",
-                table: "AspNetUserClaims"
-            );
+                table: "AspNetUserClaims");
 
             migrationBuilder.DropForeignKey(
                 name: "FK_AspNetUserLogins_AspNetUsers_UserId",
-                table: "AspNetUserLogins"
-            );
+                table: "AspNetUserLogins");
 
             migrationBuilder.DropForeignKey(
                 name: "FK_AspNetUserTokens_AspNetUsers_UserId",
-                table: "AspNetUserTokens"
-            );
+                table: "AspNetUserTokens");
 
             migrationBuilder.DropForeignKey(
                 name: "FK_AspNetUserRoles_AspNetUsers_UserId",
-                table: "AspNetUserRoles"
-            );
+                table: "AspNetUserRoles");
 
             migrationBuilder.AlterColumn<string>(
                 name: "UserId",

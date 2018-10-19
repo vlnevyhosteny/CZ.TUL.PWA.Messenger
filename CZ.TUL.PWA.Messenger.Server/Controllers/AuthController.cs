@@ -17,31 +17,32 @@ namespace CZ.TUL.PWA.Messenger.Server.Controllers
     [Route("api/auth")]
     public class AuthController : Controller
     {
-        private readonly IConfiguration _configuration;
-        private readonly UserManager<User> _userManager;
-        
+        private readonly IConfiguration configuration;
+        private readonly UserManager<User> userManager;
+
         public AuthController(IConfiguration configuration, UserManager<User> userManager)
         {
-            this._configuration = configuration;
-            this._userManager = userManager;
+            this.configuration = configuration;
+            this.userManager = userManager;
         }
-        
-        [HttpPost, Route("login")]
+
+        [HttpPost]
+        [Route("login")]
         public async Task<IActionResult> LoginAsync([FromBody] UserCredentialsViewModel givenUser)
         {
-            if (ModelState.IsValid == false)
+            if (this.ModelState.IsValid == false)
             {
-                return BadRequest(ModelState);
+                return this.BadRequest(this.ModelState);
             }
 
-            var identity = await GetClaimsIdentity(givenUser.UserName, givenUser.Password);
+            var identity = await this.GetClaimsIdentity(givenUser.UserName, givenUser.Password);
             if (identity == null)
             {
                 // TODO
-                return BadRequest();
+                return this.BadRequest();
             }
 
-            return new OkObjectResult(ComposeJwtTokenString());
+            return new OkObjectResult(this.ComposeJwtTokenString());
         }
 
         private async Task<User> GetClaimsIdentity(string userName, string password)
@@ -52,14 +53,14 @@ namespace CZ.TUL.PWA.Messenger.Server.Controllers
             }
 
             // get the user to verifty
-            var userToVerify = await _userManager.FindByNameAsync(userName);
+            var userToVerify = await this.userManager.FindByNameAsync(userName);
             if (userToVerify == null)
             {
                 return await Task.FromResult<User>(null);
             }
 
             // check the credentials
-            if (await _userManager.CheckPasswordAsync(userToVerify, password))
+            if (await this.userManager.CheckPasswordAsync(userToVerify, password))
             {
                 return await Task.FromResult(userToVerify);
             }
@@ -68,18 +69,17 @@ namespace CZ.TUL.PWA.Messenger.Server.Controllers
             return await Task.FromResult<User>(null);
         }
 
-        string ComposeJwtTokenString()
+        private string ComposeJwtTokenString()
         {
-            var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["AuthSecret:SecurityKey"]));
+            var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(this.configuration["AuthSecret:SecurityKey"]));
             var signinCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
 
             var tokeOptions = new JwtSecurityToken(
-                issuer: _configuration["Auth:Issuer"],
-                audience: _configuration["Auth:Audience"],
+                issuer: this.configuration["Auth:Issuer"],
+                audience: this.configuration["Auth:Audience"],
                 claims: new List<Claim>(),
-                expires: DateTime.Now.AddMinutes(Int32.Parse(_configuration["Auth:TokenExpiration"])),
-                signingCredentials: signinCredentials
-            );
+                expires: DateTime.Now.AddMinutes(int.Parse(this.configuration["Auth:TokenExpiration"])),
+                signingCredentials: signinCredentials);
 
             return new JwtSecurityTokenHandler().WriteToken(tokeOptions);
         }

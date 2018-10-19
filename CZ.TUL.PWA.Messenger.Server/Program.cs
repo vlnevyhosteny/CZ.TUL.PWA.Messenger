@@ -22,7 +22,7 @@ namespace CZ.TUL.PWA.Messenger.Server
                    .ConfigureAppConfiguration(ConfigConfiguration)
                    .UseStartup<Startup>();
 
-        static void ConfigConfiguration(WebHostBuilderContext ctx, IConfigurationBuilder config)
+        private static void ConfigConfiguration(WebHostBuilderContext ctx, IConfigurationBuilder config)
         {
             if (ctx.HostingEnvironment.EnvironmentName != "Test")
             {
@@ -31,7 +31,6 @@ namespace CZ.TUL.PWA.Messenger.Server
                     .AddJsonFile($"Config/appsettings.{ctx.HostingEnvironment.EnvironmentName}.json", optional: true, reloadOnChange: true)
                     .AddJsonFile("Config/secretappsettings.json");
             }
-
         }
     }
 }
