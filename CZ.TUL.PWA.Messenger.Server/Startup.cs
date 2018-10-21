@@ -9,6 +9,8 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.AspNetCore.Identity;
 using System.IO;
+using CZ.TUL.PWA.Messenger.Server.Services;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace CZ.TUL.PWA.Messenger.Server
 {
@@ -30,6 +32,8 @@ namespace CZ.TUL.PWA.Messenger.Server
             services
                 .AddDbContext<MessengerContext>(option => option.UseMySql(Configuration
                                                                               .GetConnectionString("MessengerDatabase")));
+
+            services.AddScoped<ITokenService, TokenService>();
                                                                               
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                     .AddJwtBearer(options =>

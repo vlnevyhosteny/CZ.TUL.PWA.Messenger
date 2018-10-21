@@ -11,19 +11,19 @@ using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 using CZ.TUL.PWA.Messenger.Server.ViewModels;
 using Microsoft.AspNetCore.Identity;
+using System.Security.Cryptography;
+using CZ.TUL.PWA.Messenger.Server.Services;
 
 namespace CZ.TUL.PWA.Messenger.Server.Controllers
 {
     [Route("api/auth")]
     public class AuthController : Controller
     {
-        private readonly IConfiguration _configuration;
-        private readonly UserManager<User> _userManager;
-        
-        public AuthController(IConfiguration configuration, UserManager<User> userManager)
+        private readonly ITokenService tokenService;
+
+        public AuthController(ITokenService tokenService)
         {
-            this._configuration = configuration;
-            this._userManager = userManager;
+            this.tokenService = tokenService;
         }
         
         [HttpPost, Route("login")]
@@ -34,54 +34,62 @@ namespace CZ.TUL.PWA.Messenger.Server.Controllers
                 return BadRequest(ModelState);
             }
 
-            var identity = await GetClaimsIdentity(givenUser.UserName, givenUser.Password);
-            if (identity == null)
+            var user = await this.tokenService.ValidateUser(givenUser.UserName, givenUser.Password);
+            if (user == null)
             {
                 // TODO
                 return BadRequest();
             }
 
-            return new OkObjectResult(ComposeJwtTokenString());
+            string refreshToken = this.tokenService.GenerateRefreshToken();
+            string token = this.tokenService.GenerateJwtToken(user.UserName);
+
+            await this.tokenService.SetRefreshToken(user,
+                                                    new RefreshToken()
+                                                    {
+                                                        Token = refreshToken,
+                                                        UserId = user.Id
+                                                    });
+
+            return new OkObjectResult(new
+            {   
+                token,
+                refreshToken
+            });
         }
 
-        private async Task<User> GetClaimsIdentity(string userName, string password)
+        [HttpPost, Route("refresh")]
+        public async Task<IActionResult> RefreshAsync([FromBody] RefreshTokenViewModel model)
         {
-            if (string.IsNullOrEmpty(userName) || string.IsNullOrEmpty(password))
+            if (ModelState.IsValid == false)
             {
-                return await Task.FromResult<User>(null);
+                return BadRequest(ModelState);
             }
 
-            // get the user to verifty
-            var userToVerify = await _userManager.FindByNameAsync(userName);
-            if (userToVerify == null)
+            var userName = this.tokenService.GetUserNameFromJwtToken(model.Token);
+
+            User user = await this.tokenService.ValidateRefreshToken(userName, model.RefreshToken);
+            if(user == null) 
             {
-                return await Task.FromResult<User>(null);
+                return BadRequest();
             }
 
-            // check the credentials
-            if (await _userManager.CheckPasswordAsync(userToVerify, password))
-            {
-                return await Task.FromResult(userToVerify);
-            }
+            string newRefreshToken = this.tokenService.GenerateRefreshToken();
+            string newJwtToken = this.tokenService.GenerateJwtToken(userName);
 
-            // Credentials are invalid, or account doesn't exist
-            return await Task.FromResult<User>(null);
+            await this.tokenService.SetRefreshToken(user,
+                                        new RefreshToken()
+                                        {
+                                            Token = newRefreshToken,
+                                            UserId = user.Id
+                                        });
+
+            return new ObjectResult(new
+            {
+                token = newJwtToken,
+                refreshToken = newRefreshToken
+            });
         }
 
-        string ComposeJwtTokenString()
-        {
-            var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["AuthSecret:SecurityKey"]));
-            var signinCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
-
-            var tokeOptions = new JwtSecurityToken(
-                issuer: _configuration["Auth:Issuer"],
-                audience: _configuration["Auth:Audience"],
-                claims: new List<Claim>(),
-                expires: DateTime.Now.AddMinutes(Int32.Parse(_configuration["Auth:TokenExpiration"])),
-                signingCredentials: signinCredentials
-            );
-
-            return new JwtSecurityTokenHandler().WriteToken(tokeOptions);
-        }
     }
 }
