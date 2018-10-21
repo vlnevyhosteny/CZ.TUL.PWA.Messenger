@@ -46,7 +46,7 @@ namespace CZ.TUL.PWA.Messenger.Server.Controllers
             return new OkObjectResult(new
             {
                 token,
-                refreshToken
+                refreshToken = refreshTokenString
             });
         }
 
