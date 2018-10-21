@@ -16,8 +16,6 @@ namespace CZ.TUL.PWA.Messenger.Server
 {
     public class Startup
     {
-        public IConfiguration Configuration { get; }
-    {
         private readonly IConfiguration configuration;
 
         public Startup(IConfiguration configuration)
