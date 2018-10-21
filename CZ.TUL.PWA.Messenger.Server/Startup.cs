@@ -1,22 +1,22 @@
-﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.DependencyInjection;
+using System.Text;
 using CZ.TUL.PWA.Messenger.Server.Model;
+using CZ.TUL.PWA.Messenger.Server.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
-using System.Text;
-using Microsoft.AspNetCore.Identity;
-using System.IO;
-using CZ.TUL.PWA.Messenger.Server.Services;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace CZ.TUL.PWA.Messenger.Server
 {
     public class Startup
     {
         private readonly IConfiguration configuration;
+
+        public IConfiguration Configuration => configuration;
 
         public Startup(IConfiguration configuration)
         {
@@ -34,7 +34,7 @@ namespace CZ.TUL.PWA.Messenger.Server
                                                                               .GetConnectionString("MessengerDatabase")));
 
             services.AddScoped<ITokenService, TokenService>();
-                                                                              
+
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                     .AddJwtBearer(options =>
                     {
