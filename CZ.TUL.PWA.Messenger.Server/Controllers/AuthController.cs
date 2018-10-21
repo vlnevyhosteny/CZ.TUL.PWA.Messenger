@@ -1,18 +1,8 @@
-﻿using System;
-using Microsoft.AspNetCore.Mvc;
+﻿using System.Threading.Tasks;
 using CZ.TUL.PWA.Messenger.Server.Model;
-using Microsoft.IdentityModel.Tokens;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
-using Microsoft.Extensions.Configuration;
-using Microsoft.EntityFrameworkCore;
-using System.Threading.Tasks;
-using CZ.TUL.PWA.Messenger.Server.ViewModels;
-using Microsoft.AspNetCore.Identity;
-using System.Security.Cryptography;
 using CZ.TUL.PWA.Messenger.Server.Services;
+using CZ.TUL.PWA.Messenger.Server.ViewModels;
+using Microsoft.AspNetCore.Mvc;
 
 namespace CZ.TUL.PWA.Messenger.Server.Controllers
 {
@@ -42,18 +32,19 @@ namespace CZ.TUL.PWA.Messenger.Server.Controllers
                 return this.BadRequest();
             }
 
-            string refreshToken = this.tokenService.GenerateRefreshToken();
+            string refreshTokenString = this.tokenService.GenerateRefreshToken();
             string token = this.tokenService.GenerateJwtToken(user.UserName);
 
+            RefreshToken refreshToken = new RefreshToken()
+            {
+                Token = refreshTokenString,
+                UserId = user.Id
+            };
             await this.tokenService.SetRefreshToken(user,
-                                                    new RefreshToken()
-                                                    {
-                                                        Token = refreshToken,
-                                                        UserId = user.Id
-                                                    });
+                                                    refreshToken);
 
             return new OkObjectResult(new
-            {   
+            {
                 token,
                 refreshToken
             });
