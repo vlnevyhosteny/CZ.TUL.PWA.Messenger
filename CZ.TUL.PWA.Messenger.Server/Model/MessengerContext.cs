@@ -10,7 +10,8 @@ namespace CZ.TUL.PWA.Messenger.Server.Model
     {
         public MessengerContext(DbContextOptions<MessengerContext> options)
             : base(options)
-        { }
+        {
+        }
 
         public DbSet<User> MessengerUsers
         {
@@ -38,7 +39,7 @@ namespace CZ.TUL.PWA.Messenger.Server.Model
 
         protected override void OnModelCreating(ModelBuilder builder) 
         {
-            SpecifyMySqlIndexLengthSpecification(builder);
+            this.SpecifyMySqlIndexLengthSpecification(builder);
 
             base.OnModelCreating(builder);
 

@@ -25,20 +25,21 @@ namespace CZ.TUL.PWA.Messenger.Server.Controllers
         {
             this.tokenService = tokenService;
         }
-        
-        [HttpPost, Route("login")]
+
+        [HttpPost]
+        [Route("login")]
         public async Task<IActionResult> LoginAsync([FromBody] UserCredentialsViewModel givenUser)
         {
-            if (ModelState.IsValid == false)
+            if (this.ModelState.IsValid == false)
             {
-                return BadRequest(ModelState);
+                return this.BadRequest(this.ModelState);
             }
 
             var user = await this.tokenService.ValidateUser(givenUser.UserName, givenUser.Password);
             if (user == null)
             {
                 // TODO
-                return BadRequest();
+                return this.BadRequest();
             }
 
             string refreshToken = this.tokenService.GenerateRefreshToken();
@@ -90,6 +91,5 @@ namespace CZ.TUL.PWA.Messenger.Server.Controllers
                 refreshToken = newRefreshToken
             });
         }
-
     }
 }

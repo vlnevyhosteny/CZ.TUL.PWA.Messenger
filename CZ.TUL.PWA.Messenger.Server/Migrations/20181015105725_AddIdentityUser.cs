@@ -72,7 +72,7 @@ namespace CZ.TUL.PWA.Messenger.Server.Migrations
                 name: "Id",
                 table: "AspNetUsers",
                 nullable: false,
-                defaultValue: "");
+                defaultValue: string.Empty);
 
             migrationBuilder.AddColumn<int>(
                 name: "AccessFailedCount",
@@ -112,7 +112,7 @@ namespace CZ.TUL.PWA.Messenger.Server.Migrations
                 name: "Name",
                 table: "AspNetUsers",
                 nullable: false,
-                defaultValue: "");
+                defaultValue: string.Empty);
 
             migrationBuilder.AddColumn<string>(
                 name: "NormalizedEmail",

@@ -17,10 +17,12 @@ namespace CZ.TUL.PWA.Messenger.Server
     public class Startup
     {
         public IConfiguration Configuration { get; }
+    {
+        private readonly IConfiguration configuration;
 
         public Startup(IConfiguration configuration)
         {
-            Configuration = configuration;
+            this.configuration = configuration;
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -30,7 +32,7 @@ namespace CZ.TUL.PWA.Messenger.Server
             services.AddMvc();
 
             services
-                .AddDbContext<MessengerContext>(option => option.UseMySql(Configuration
+                .AddDbContext<MessengerContext>(option => option.UseMySql(this.configuration
                                                                               .GetConnectionString("MessengerDatabase")));
 
             services.AddScoped<ITokenService, TokenService>();
@@ -45,17 +47,15 @@ namespace CZ.TUL.PWA.Messenger.Server
                             ValidateLifetime = true,
                             ValidateIssuerSigningKey = true,
 
-                            ValidIssuer = Configuration["Auth:Issuer"],
-                            ValidAudience = Configuration["Auth:Audience"],
+                            ValidIssuer = this.configuration["Auth:Issuer"],
+                            ValidAudience = this.configuration["Auth:Audience"],
                             IssuerSigningKey = new SymmetricSecurityKey(
-                            Encoding.UTF8.GetBytes(Configuration["AuthSecret:SecurityKey"])
-                            )
+                            Encoding.UTF8.GetBytes(this.configuration["AuthSecret:SecurityKey"]))
                         };
                     });
 
             var builder = services.AddIdentityCore<User>(o =>
             {
-                // configure identity options
                 o.Password.RequireDigit = false;
                 o.Password.RequireLowercase = false;
                 o.Password.RequireUppercase = false;
