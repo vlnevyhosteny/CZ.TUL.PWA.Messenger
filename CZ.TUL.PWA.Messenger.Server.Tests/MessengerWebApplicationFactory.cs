@@ -1,18 +1,14 @@
 ﻿using System;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.Extensions.DependencyInjection;
-using CZ.TUL.PWA.Messenger.Server.Model;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Configuration;
 using System.IO;
-using System.Reflection;
-using Microsoft.AspNetCore.Identity;
+using CZ.TUL.PWA.Messenger.Server.Model;
 using CZ.TUL.PWA.Messenger.Server.Tests.Utilities;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace CZ.TUL.PWA.Messenger.Server.Tests
 {
@@ -23,7 +19,7 @@ namespace CZ.TUL.PWA.Messenger.Server.Tests
         {
             builder.UseEnvironment("Test");
 
-            builder.ConfigureAppConfiguration((HostingStartupAttribute, config) =>
+            builder.ConfigureAppConfiguration((hostingStartupAttribute, config) =>
             {
                 config.SetBasePath(Directory.GetCurrentDirectory())
                     .AddJsonFile("Config/appsettings.test.json", optional: true, reloadOnChange: true);
@@ -34,14 +30,14 @@ namespace CZ.TUL.PWA.Messenger.Server.Tests
                 var serviceProvider = new ServiceCollection()
                     .AddEntityFrameworkInMemoryDatabase()
                     .BuildServiceProvider();
-                    
+
                 services.AddDbContext<MessengerContext>(options =>
                 {
                     options.UseInMemoryDatabase("InMemoryDbForTesting");
                     options.UseInternalServiceProvider(serviceProvider);
                 });
 
-                var _builder = services.AddIdentityCore<User>(o =>
+                var identityBuilder = services.AddIdentityCore<User>(o =>
                 {
                     o.Password.RequireDigit = false;
                     o.Password.RequireLowercase = false;
@@ -49,8 +45,8 @@ namespace CZ.TUL.PWA.Messenger.Server.Tests
                     o.Password.RequireNonAlphanumeric = false;
                     o.Password.RequiredLength = 6;
                 });
-                _builder = new IdentityBuilder(_builder.UserType, typeof(IdentityRole), _builder.Services);
-                _builder.AddEntityFrameworkStores<MessengerContext>().AddDefaultTokenProviders();
+                identityBuilder = new IdentityBuilder(identityBuilder.UserType, typeof(IdentityRole), identityBuilder.Services);
+                identityBuilder.AddEntityFrameworkStores<MessengerContext>().AddDefaultTokenProviders();
 
                 var sp = services.BuildServiceProvider();
 
@@ -62,7 +58,7 @@ namespace CZ.TUL.PWA.Messenger.Server.Tests
 
                     var logger = scopedServices
                         .GetRequiredService<ILogger<MessengerWebApplicationFactory<TStartup>>>();
-                        
+
                     db.Database.EnsureCreated();
 
                     try
@@ -71,8 +67,7 @@ namespace CZ.TUL.PWA.Messenger.Server.Tests
                     }
                     catch (Exception ex)
                     {
-                        logger.LogError(ex, $"An error occurred seeding the " +
-                            "database . Error: {ex.Message}");
+                        logger.LogError(ex, $"An error occurred seeding the database . Error: {ex.Message}");
                     }
                 }
             });

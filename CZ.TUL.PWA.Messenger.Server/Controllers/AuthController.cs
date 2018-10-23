@@ -40,8 +40,7 @@ namespace CZ.TUL.PWA.Messenger.Server.Controllers
                 Token = refreshTokenString,
                 UserId = user.Id
             };
-            await this.tokenService.SetRefreshToken(user,
-                                                    refreshToken);
+            await this.tokenService.SetRefreshToken(user, refreshToken);
 
             return new OkObjectResult(new
             {
@@ -50,31 +49,29 @@ namespace CZ.TUL.PWA.Messenger.Server.Controllers
             });
         }
 
-        [HttpPost, Route("refresh")]
+        [HttpPost]
+        [Route("refresh")]
         public async Task<IActionResult> RefreshAsync([FromBody] RefreshTokenViewModel model)
         {
-            if (ModelState.IsValid == false)
+            if (this.ModelState.IsValid == false)
             {
-                return BadRequest(ModelState);
+                return this.BadRequest(this.ModelState);
             }
 
             var userName = this.tokenService.GetUserNameFromJwtToken(model.Token);
 
             User user = await this.tokenService.ValidateRefreshToken(userName, model.RefreshToken);
-            if(user == null) 
+            if (user == null)
             {
-                return BadRequest();
+                return this.BadRequest();
             }
 
             string newRefreshToken = this.tokenService.GenerateRefreshToken();
             string newJwtToken = this.tokenService.GenerateJwtToken(userName);
 
-            await this.tokenService.SetRefreshToken(user,
-                                        new RefreshToken()
-                                        {
-                                            Token = newRefreshToken,
-                                            UserId = user.Id
-                                        });
+            await this.tokenService.SetRefreshToken(
+                user,
+                refreshToken: new RefreshToken() { Token = newRefreshToken, UserId = user.Id });
 
             return new ObjectResult(new
             {

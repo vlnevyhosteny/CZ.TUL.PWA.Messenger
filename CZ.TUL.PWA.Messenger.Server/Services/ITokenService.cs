@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using CZ.TUL.PWA.Messenger.Server.Model;
 
 namespace CZ.TUL.PWA.Messenger.Server.Services

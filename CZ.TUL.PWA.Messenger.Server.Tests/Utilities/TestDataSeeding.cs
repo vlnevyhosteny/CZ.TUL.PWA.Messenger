@@ -1,12 +1,12 @@
-﻿using System;
-using CZ.TUL.PWA.Messenger.Server.Model;
+﻿using CZ.TUL.PWA.Messenger.Server.Model;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+
 namespace CZ.TUL.PWA.Messenger.Server.Tests.Utilities
 {
     public static class TestDataSeeding
     {
-        public static void SeedTestUser(MessengerContext db) 
+        public static void SeedTestUser(MessengerContext db)
         {
             var user = new User
             {

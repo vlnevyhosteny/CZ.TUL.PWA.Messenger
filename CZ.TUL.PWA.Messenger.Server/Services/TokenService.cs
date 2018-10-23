@@ -1,25 +1,31 @@
-﻿using System;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
-using CZ.TUL.PWA.Messenger.Server.Model;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
-using System.Linq;
+﻿// <copyright file="TokenService.cs" company="TUL">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
 
 namespace CZ.TUL.PWA.Messenger.Server.Services
 {
+    using System;
+    using System.IdentityModel.Tokens.Jwt;
+    using System.Linq;
+    using System.Security.Claims;
+    using System.Security.Cryptography;
+    using System.Text;
+    using System.Threading.Tasks;
+    using CZ.TUL.PWA.Messenger.Server.Model;
+    using Microsoft.AspNetCore.Identity;
+    using Microsoft.EntityFrameworkCore;
+    using Microsoft.Extensions.Configuration;
+    using Microsoft.IdentityModel.Tokens;
+
     public class TokenService : ITokenService
     {
         private readonly IConfiguration configuration;
         private readonly UserManager<User> userManager;
         private readonly MessengerContext context;
 
-        public TokenService(IConfiguration configuration, UserManager<User> userManager,
+        public TokenService(
+                            IConfiguration configuration,
+                            UserManager<User> userManager,
                             MessengerContext context)
         {
             this.configuration = configuration;
@@ -32,7 +38,8 @@ namespace CZ.TUL.PWA.Messenger.Server.Services
             var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(this.configuration["AuthSecret:SecurityKey"]));
             var signinCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
 
-            Claim[] claims = {
+            Claim[] claims =
+            {
                 new Claim(ClaimTypes.Name, userName)
             };
 
@@ -40,9 +47,8 @@ namespace CZ.TUL.PWA.Messenger.Server.Services
                 issuer: this.configuration["Auth:Issuer"],
                 audience: this.configuration["Auth:Audience"],
                 claims: claims,
-                expires: DateTime.Now.AddMinutes(Int32.Parse(this.configuration["Auth:TokenExpiration"])),
-                signingCredentials: signinCredentials
-            );
+                expires: DateTime.Now.AddMinutes(int.Parse(this.configuration["Auth:TokenExpiration"])),
+                signingCredentials: signinCredentials);
 
             return new JwtSecurityTokenHandler().WriteToken(tokenOptions);
         }
@@ -60,18 +66,18 @@ namespace CZ.TUL.PWA.Messenger.Server.Services
 
         public async Task<RefreshToken> GetRefreshToken(User user)
         {
-            return await context.RefreshTokens.SingleOrDefaultAsync(x => x.UserId == user.Id);
+            return await this.context.RefreshTokens.SingleOrDefaultAsync(x => x.UserId == user.Id);
         }
 
         public string GetUserNameFromJwtToken(string token)
         {
             var tokenValidationParameters = new TokenValidationParameters
             {
-                ValidateAudience = false, 
+                ValidateAudience = false,
                 ValidateIssuer = false,
                 ValidateIssuerSigningKey = true,
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(this.configuration["AuthSecret:SecurityKey"])),
-                ValidateLifetime = false 
+                ValidateLifetime = false
             };
 
             var tokenHandler = new JwtSecurityTokenHandler();
@@ -91,7 +97,7 @@ namespace CZ.TUL.PWA.Messenger.Server.Services
 
         public async Task RevokeRefreshToken(User user)
         {
-            var existing = await context.RefreshTokens.SingleOrDefaultAsync(x => x.UserId == user.Id);
+            var existing = await this.context.RefreshTokens.SingleOrDefaultAsync(x => x.UserId == user.Id);
             if (existing == null)
             {
                 return;
@@ -99,22 +105,22 @@ namespace CZ.TUL.PWA.Messenger.Server.Services
 
             existing.Revoked = true;
 
-            await context.SaveChangesAsync();
+            await this.context.SaveChangesAsync();
         }
 
         public async Task SetRefreshToken(User user, RefreshToken refreshToken)
         {
             refreshToken.Expires = DateTime.Now.AddMinutes(int.Parse(this.configuration["Auth:RefreshTokenExpiration"]));
 
-            var existing = await context.RefreshTokens.SingleOrDefaultAsync(x => x.UserId == user.Id);
+            var existing = await this.context.RefreshTokens.SingleOrDefaultAsync(x => x.UserId == user.Id);
             if (existing != null)
             {
-                context.Remove(existing);
-                await context.SaveChangesAsync();
+                this.context.Remove(existing);
+                await this.context.SaveChangesAsync();
             }
 
-            await context.RefreshTokens.AddAsync(refreshToken);
-            await context.SaveChangesAsync();
+            await this.context.RefreshTokens.AddAsync(refreshToken);
+            await this.context.SaveChangesAsync();
         }
 
         public async Task<User> ValidateRefreshToken(string userName, string refreshToken)
@@ -142,13 +148,13 @@ namespace CZ.TUL.PWA.Messenger.Server.Services
                 return await Task.FromResult<User>(null);
             }
 
-            var userToVerify = await userManager.FindByNameAsync(userName);
+            var userToVerify = await this.userManager.FindByNameAsync(userName);
             if (userToVerify == null)
             {
                 return await Task.FromResult<User>(null);
             }
 
-            if (await userManager.CheckPasswordAsync(userToVerify, password))
+            if (await this.userManager.CheckPasswordAsync(userToVerify, password))
             {
                 return await Task.FromResult(userToVerify);
             }
