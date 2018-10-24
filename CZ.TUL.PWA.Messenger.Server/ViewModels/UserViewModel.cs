@@ -2,26 +2,19 @@
 {
     public class UserViewModel
     {
-        public UserViewModel(string id, string userName, string name)
-        {
-            this.Id = id;
-            this.UserName = userName;
-            this.Name = name;
-        }
-
         public string Id
         {
-            get;
+            get; set;
         }
 
         public string UserName
         {
-            get;
+            get; set;
         }
 
         public string Name
         {
-            get;
+            get; set;
         }
     }
 }
