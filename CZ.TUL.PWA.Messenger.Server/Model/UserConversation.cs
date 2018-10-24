@@ -1,5 +1,4 @@
-﻿using System;
-namespace CZ.TUL.PWA.Messenger.Server.Model
+﻿namespace CZ.TUL.PWA.Messenger.Server.Model
 {
     public class UserConversation
     {

@@ -1,8 +1,5 @@
-﻿using System;
-using JetBrains.Annotations;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity;
 
 namespace CZ.TUL.PWA.Messenger.Server.Model
 {
@@ -37,7 +34,7 @@ namespace CZ.TUL.PWA.Messenger.Server.Model
             set;
         }
 
-        protected override void OnModelCreating(ModelBuilder builder) 
+        protected override void OnModelCreating(ModelBuilder builder)
         {
             this.SpecifyMySqlIndexLengthSpecification(builder);
 

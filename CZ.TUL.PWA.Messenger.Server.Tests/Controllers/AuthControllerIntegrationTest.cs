@@ -1,38 +1,33 @@
 ﻿using System;
-using Xunit;
-using Microsoft.AspNetCore.Mvc.Testing;
-using System.Threading.Tasks;
-using System.Net.Http;
-using System.Collections.Generic;
-using Microsoft.AspNetCore.Identity;
-using Newtonsoft.Json;
-using System.Text;
-using Xunit.Sdk;
-using CZ.TUL.PWA.Messenger.Server.Model;
-using System.Net;
-using Microsoft.Extensions.DependencyInjection;
-using Newtonsoft.Json.Linq;
-using Microsoft.EntityFrameworkCore.Internal;
 using System.Linq;
-using Microsoft.EntityFrameworkCore;
+using System.Net;
+using System.Net.Http;
+using System.Text;
+using System.Threading.Tasks;
+using CZ.TUL.PWA.Messenger.Server.Model;
 using CZ.TUL.PWA.Messenger.Server.ViewModels;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using Xunit;
 
 namespace CZ.TUL.PWA.Messenger.Server.Tests.Controllers
 {
     public class AuthControllerIntegrationTest
         : IClassFixture<MessengerWebApplicationFactory<Startup>>
     {
-        private readonly MessengerWebApplicationFactory<Startup> _factory;
+        private readonly MessengerWebApplicationFactory<Startup> factory;
 
         public AuthControllerIntegrationTest(MessengerWebApplicationFactory<Startup> factory)
         {
-            _factory = factory;
+            this.factory = factory;
         }
 
         [Fact]
-        public async Task Login_ShouldSuccess() 
+        public async Task Login_ShouldSuccess()
         {
-            var client = _factory.CreateClient();
+            HttpClient client = this.factory.CreateClient();
 
             var data = new
             {
@@ -40,10 +35,9 @@ namespace CZ.TUL.PWA.Messenger.Server.Tests.Controllers
                 Password = "password"
             };
 
-            var content = new StringContent(JsonConvert.SerializeObject(data).ToString(),
-                                            Encoding.UTF8, "application/json");
+            StringContent content = new StringContent(JsonConvert.SerializeObject(data).ToString(), Encoding.UTF8, "application/json");
 
-            var response = await client.PostAsync("/api/auth/login", content);
+            HttpResponseMessage response = await client.PostAsync("/api/auth/login", content);
 
             response.EnsureSuccessStatusCode();
 
@@ -53,7 +47,7 @@ namespace CZ.TUL.PWA.Messenger.Server.Tests.Controllers
         [Fact]
         public async Task Login_BadCredentials_ShouldFail()
         {
-            var client = _factory.CreateClient();
+            HttpClient client = this.factory.CreateClient();
 
             var data = new
             {
@@ -61,28 +55,26 @@ namespace CZ.TUL.PWA.Messenger.Server.Tests.Controllers
                 Password = "badpassword"
             };
 
-            var content = new StringContent(JsonConvert.SerializeObject(data).ToString(),
-                                            Encoding.UTF8, "application/json");
+            StringContent content = new StringContent(JsonConvert.SerializeObject(data).ToString(), Encoding.UTF8, "application/json");
 
-            var response = await client.PostAsync("/api/auth/login", content);
-            
+            HttpResponseMessage response = await client.PostAsync("/api/auth/login", content);
+
             Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
         }
 
         [Fact]
         public async Task Login_NotValidModel_ShouldFail()
         {
-            var client = _factory.CreateClient();
+            HttpClient client = this.factory.CreateClient();
 
             var data = new
             {
                 UserName = "testuser"
             };
 
-            var content = new StringContent(JsonConvert.SerializeObject(data).ToString(),
-                                            Encoding.UTF8, "application/json");
+            StringContent content = new StringContent(JsonConvert.SerializeObject(data).ToString(), Encoding.UTF8, "application/json");
 
-            var response = await client.PostAsync("/api/auth/login", content);
+            HttpResponseMessage response = await client.PostAsync("/api/auth/login", content);
 
             Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
         }
@@ -90,9 +82,9 @@ namespace CZ.TUL.PWA.Messenger.Server.Tests.Controllers
         [Fact]
         public async Task Refresh_ShouldSuccess()
         {
-            var client = _factory.CreateClient();
+            HttpClient client = this.factory.CreateClient();
 
-            MessengerContext context = this._factory.Server.Host.Services.GetService(typeof(MessengerContext)) as MessengerContext;
+            MessengerContext context = this.factory.Server.Host.Services.GetService(typeof(MessengerContext)) as MessengerContext;
 
             #region Login
 
@@ -102,30 +94,29 @@ namespace CZ.TUL.PWA.Messenger.Server.Tests.Controllers
                 Password = "password"
             };
 
-            var content = new StringContent(JsonConvert.SerializeObject(data).ToString(),
-                                            Encoding.UTF8, "application/json");
+            StringContent content = new StringContent(JsonConvert.SerializeObject(data).ToString(), Encoding.UTF8, "application/json");
 
-            var loginResponse = await client.PostAsync("/api/auth/login", content);
+            HttpResponseMessage loginResponse = await client.PostAsync("/api/auth/login", content);
             loginResponse.EnsureSuccessStatusCode();
 
             #endregion
 
-            var stringLoginResponse = await loginResponse.Content.ReadAsStringAsync();
-            var loginJsonResult = JObject.Parse(stringLoginResponse);
-            
+            string stringLoginResponse = await loginResponse.Content.ReadAsStringAsync();
+            JObject loginJsonResult = JObject.Parse(stringLoginResponse);
+
             var refreshTokenViewModel = new RefreshTokenViewModel()
             {
                 RefreshToken = loginJsonResult.Value<string>("refreshToken"),
                 Token = loginJsonResult.Value<string>("token")
             };
 
-            var refreshContent = new StringContent(JsonConvert.SerializeObject(refreshTokenViewModel), Encoding.UTF8, "application/json");
-            var refreshResponse = await client.PostAsync("/api/auth/refresh", refreshContent);
+            StringContent refreshContent = new StringContent(JsonConvert.SerializeObject(refreshTokenViewModel), Encoding.UTF8, "application/json");
+            HttpResponseMessage refreshResponse = await client.PostAsync("/api/auth/refresh", refreshContent);
             refreshResponse.EnsureSuccessStatusCode();
 
-            var stringRefreshResponse = await refreshResponse.Content.ReadAsStringAsync();
-            var refreshJsonResult = JObject.Parse(stringRefreshResponse);
-            var refreshToken = refreshJsonResult.Value<string>("refreshToken");
+            string stringRefreshResponse = await refreshResponse.Content.ReadAsStringAsync();
+            JObject refreshJsonResult = JObject.Parse(stringRefreshResponse);
+            string refreshToken = refreshJsonResult.Value<string>("refreshToken");
 
             User user = await context.Users.SingleAsync(x => x.UserName == "testuser");
 
@@ -136,9 +127,9 @@ namespace CZ.TUL.PWA.Messenger.Server.Tests.Controllers
         [Fact]
         public async Task Refresh_ExpiredRefreshToken_ShouldSuccess()
         {
-            var client = _factory.CreateClient();
+            HttpClient client = this.factory.CreateClient();
 
-            MessengerContext context = this._factory.Server.Host.Services.GetService(typeof(MessengerContext)) as MessengerContext;
+            MessengerContext context = this.factory.Server.Host.Services.GetService(typeof(MessengerContext)) as MessengerContext;
 
             #region Login
 
@@ -148,10 +139,9 @@ namespace CZ.TUL.PWA.Messenger.Server.Tests.Controllers
                 Password = "password"
             };
 
-            var content = new StringContent(JsonConvert.SerializeObject(data).ToString(),
-                                            Encoding.UTF8, "application/json");
+            StringContent content = new StringContent(JsonConvert.SerializeObject(data).ToString(), Encoding.UTF8, "application/json");
 
-            var loginResponse = await client.PostAsync("/api/auth/login", content);
+            HttpResponseMessage loginResponse = await client.PostAsync("/api/auth/login", content);
             loginResponse.EnsureSuccessStatusCode();
 
             #endregion
@@ -161,8 +151,8 @@ namespace CZ.TUL.PWA.Messenger.Server.Tests.Controllers
             refreshToken.Expires = DateTime.Now.AddDays(-1);
             await context.SaveChangesAsync();
 
-            var stringLoginResponse = await loginResponse.Content.ReadAsStringAsync();
-            var loginJsonResult = JObject.Parse(stringLoginResponse);
+            string stringLoginResponse = await loginResponse.Content.ReadAsStringAsync();
+            JObject loginJsonResult = JObject.Parse(stringLoginResponse);
 
             var refreshTokenViewModel = new RefreshTokenViewModel()
             {
@@ -170,8 +160,8 @@ namespace CZ.TUL.PWA.Messenger.Server.Tests.Controllers
                 Token = loginJsonResult.Value<string>("token")
             };
 
-            var refreshContent = new StringContent(JsonConvert.SerializeObject(refreshTokenViewModel), Encoding.UTF8, "application/json");
-            var refreshResponse = await client.PostAsync("/api/auth/refresh", refreshContent);
+            StringContent refreshContent = new StringContent(JsonConvert.SerializeObject(refreshTokenViewModel), Encoding.UTF8, "application/json");
+            HttpResponseMessage refreshResponse = await client.PostAsync("/api/auth/refresh", refreshContent);
 
             Assert.Equal(HttpStatusCode.BadRequest, refreshResponse.StatusCode);
         }
@@ -179,9 +169,9 @@ namespace CZ.TUL.PWA.Messenger.Server.Tests.Controllers
         [Fact]
         public async Task Refresh_RevokedRefreshToken_ShouldSuccess()
         {
-            var client = _factory.CreateClient();
+            var client = this.factory.CreateClient();
 
-            MessengerContext context = this._factory.Server.Host.Services.GetService(typeof(MessengerContext)) as MessengerContext;
+            MessengerContext context = this.factory.Server.Host.Services.GetService(typeof(MessengerContext)) as MessengerContext;
 
             #region Login
 
@@ -191,10 +181,9 @@ namespace CZ.TUL.PWA.Messenger.Server.Tests.Controllers
                 Password = "password"
             };
 
-            var content = new StringContent(JsonConvert.SerializeObject(data).ToString(),
-                                            Encoding.UTF8, "application/json");
+            StringContent content = new StringContent(JsonConvert.SerializeObject(data).ToString(), Encoding.UTF8, "application/json");
 
-            var loginResponse = await client.PostAsync("/api/auth/login", content);
+            HttpResponseMessage loginResponse = await client.PostAsync("/api/auth/login", content);
             loginResponse.EnsureSuccessStatusCode();
 
             #endregion
@@ -204,8 +193,8 @@ namespace CZ.TUL.PWA.Messenger.Server.Tests.Controllers
             refreshToken.Revoked = true;
             await context.SaveChangesAsync();
 
-            var stringLoginResponse = await loginResponse.Content.ReadAsStringAsync();
-            var loginJsonResult = JObject.Parse(stringLoginResponse);
+            string stringLoginResponse = await loginResponse.Content.ReadAsStringAsync();
+            JObject loginJsonResult = JObject.Parse(stringLoginResponse);
 
             var refreshTokenViewModel = new RefreshTokenViewModel()
             {
@@ -213,8 +202,8 @@ namespace CZ.TUL.PWA.Messenger.Server.Tests.Controllers
                 Token = loginJsonResult.Value<string>("token")
             };
 
-            var refreshContent = new StringContent(JsonConvert.SerializeObject(refreshTokenViewModel), Encoding.UTF8, "application/json");
-            var refreshResponse = await client.PostAsync("/api/auth/refresh", refreshContent);
+            StringContent refreshContent = new StringContent(JsonConvert.SerializeObject(refreshTokenViewModel), Encoding.UTF8, "application/json");
+            HttpResponseMessage refreshResponse = await client.PostAsync("/api/auth/refresh", refreshContent);
 
             Assert.Equal(HttpStatusCode.BadRequest, refreshResponse.StatusCode);
         }
@@ -222,9 +211,9 @@ namespace CZ.TUL.PWA.Messenger.Server.Tests.Controllers
         [Fact]
         public async Task Refresh_BadRefreshTokenValue_ShouldSuccess()
         {
-            var client = _factory.CreateClient();
+            HttpClient client = this.factory.CreateClient();
 
-            MessengerContext context = this._factory.Server.Host.Services.GetService(typeof(MessengerContext)) as MessengerContext;
+            MessengerContext context = this.factory.Server.Host.Services.GetService(typeof(MessengerContext)) as MessengerContext;
 
             #region Login
 
@@ -234,20 +223,19 @@ namespace CZ.TUL.PWA.Messenger.Server.Tests.Controllers
                 Password = "password"
             };
 
-            var content = new StringContent(JsonConvert.SerializeObject(data).ToString(),
-                                            Encoding.UTF8, "application/json");
+            StringContent content = new StringContent(JsonConvert.SerializeObject(data).ToString(), Encoding.UTF8, "application/json");
 
-            var loginResponse = await client.PostAsync("/api/auth/login", content);
+            HttpResponseMessage loginResponse = await client.PostAsync("/api/auth/login", content);
             loginResponse.EnsureSuccessStatusCode();
 
             #endregion
 
-            var stringLoginResponse = await loginResponse.Content.ReadAsStringAsync();
-            var loginJsonResult = JObject.Parse(stringLoginResponse);
+            string stringLoginResponse = await loginResponse.Content.ReadAsStringAsync();
+            JObject loginJsonResult = JObject.Parse(stringLoginResponse);
             loginJsonResult["refreshToken"] = "badtoken";
 
-            var refreshContent = new StringContent(loginJsonResult.ToString(), Encoding.UTF8, "application/json");
-            var refreshResponse = await client.PostAsync("/api/auth/refresh", refreshContent);
+            StringContent refreshContent = new StringContent(loginJsonResult.ToString(), Encoding.UTF8, "application/json");
+            HttpResponseMessage refreshResponse = await client.PostAsync("/api/auth/refresh", refreshContent);
 
             Assert.Equal(HttpStatusCode.BadRequest, refreshResponse.StatusCode);
         }

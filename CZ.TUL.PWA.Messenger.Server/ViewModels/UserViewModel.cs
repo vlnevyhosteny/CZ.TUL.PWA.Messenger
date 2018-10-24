@@ -1,5 +1,4 @@
-﻿using System;
-namespace CZ.TUL.PWA.Messenger.Server.ViewModels
+﻿namespace CZ.TUL.PWA.Messenger.Server.ViewModels
 {
     public class UserViewModel
     {
@@ -20,7 +19,7 @@ namespace CZ.TUL.PWA.Messenger.Server.ViewModels
             get;
         }
 
-        public string Name 
+        public string Name
         {
             get;
         }
