@@ -70,7 +70,7 @@ namespace CZ.TUL.PWA.Messenger.Server.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(string id, [FromBody]UserViewModel userViewModel)
         {
-            if (!this.ModelState.IsValid) 
+            if (!this.ModelState.IsValid)
             {
                 return this.BadRequest();
             }

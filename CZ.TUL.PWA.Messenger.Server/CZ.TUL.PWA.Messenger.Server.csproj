@@ -8,7 +8,6 @@
     <Folder Include="wwwroot\" />
     <Folder Include="Model\" />
     <Folder Include="Migrations\" />
-    <Folder Include="Controllers\" />
     <Folder Include="Config\" />
     <Folder Include="Extensions\" />
     <Folder Include="ViewModels\" />
@@ -21,6 +20,7 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="2.1.4" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.1.4" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.1.4" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.1" />
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="2.1.2" />
     <PackageReference Include="Serilog.Extensions.Logging.File" Version="1.1.0" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.0.2" />
