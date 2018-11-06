@@ -13,64 +13,64 @@ namespace CZ.TUL.PWA.Messenger.Server.Controllers
     [ApiController]
     public class UserConversationsController : ControllerBase
     {
-        private readonly MessengerContext _context;
+        private readonly MessengerContext context;
 
         public UserConversationsController(MessengerContext context)
         {
-            _context = context;
+            this.context = context;
         }
 
         // GET: api/UserConversations
         [HttpGet]
         public IEnumerable<UserConversation> GetUserConversation()
         {
-            return _context.UserConversation;
+            return this.context.UserConversation;
         }
 
         // GET: api/UserConversations/5
         [HttpGet("{id}")]
         public async Task<IActionResult> GetUserConversation([FromRoute] int id)
         {
-            if (!ModelState.IsValid)
+            if (!this.ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return this.BadRequest(this.ModelState);
             }
 
-            var userConversation = await _context.UserConversation.FindAsync(id);
+            var userConversation = await this.context.UserConversation.FindAsync(id);
 
             if (userConversation == null)
             {
-                return NotFound();
+                return this.NotFound();
             }
 
-            return Ok(userConversation);
+            return this.Ok(userConversation);
         }
 
         // PUT: api/UserConversations/5
         [HttpPut("{id}")]
         public async Task<IActionResult> PutUserConversation([FromRoute] int id, [FromBody] UserConversation userConversation)
         {
-            if (!ModelState.IsValid)
+            if (!this.ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return this.BadRequest(this.ModelState);
             }
 
             if (id != userConversation.ConversationId)
             {
-                return BadRequest();
+                return this.BadRequest();
             }
 
-            _context.Entry(userConversation).State = EntityState.Modified;
+            this.context.Entry(userConversation).State = EntityState.Modified;
 
             try
             {
-                await _context.SaveChangesAsync();
+                await this.context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!UserConversationExists(id))
+                if (!this.UserConversationExists(id))
                 {
-                    return NotFound();
+                    return this.NotFound();
                 }
                 else
                 {
@@ -78,26 +78,26 @@ namespace CZ.TUL.PWA.Messenger.Server.Controllers
                 }
             }
 
-            return NoContent();
+            return this.NoContent();
         }
 
         // POST: api/UserConversations
         [HttpPost]
         public async Task<IActionResult> PostUserConversation([FromBody] UserConversation userConversation)
         {
-            if (!ModelState.IsValid)
+            if (!this.ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return this.BadRequest(this.ModelState);
             }
 
-            _context.UserConversation.Add(userConversation);
+            this.context.UserConversation.Add(userConversation);
             try
             {
-                await _context.SaveChangesAsync();
+                await this.context.SaveChangesAsync();
             }
             catch (DbUpdateException)
             {
-                if (UserConversationExists(userConversation.ConversationId))
+                if (this.UserConversationExists(userConversation.ConversationId))
                 {
                     return new StatusCodeResult(StatusCodes.Status409Conflict);
                 }
@@ -107,33 +107,33 @@ namespace CZ.TUL.PWA.Messenger.Server.Controllers
                 }
             }
 
-            return CreatedAtAction("GetUserConversation", new { id = userConversation.ConversationId }, userConversation);
+            return this.CreatedAtAction("GetUserConversation", new { id = userConversation.ConversationId }, userConversation);
         }
 
         // DELETE: api/UserConversations/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUserConversation([FromRoute] int id)
         {
-            if (!ModelState.IsValid)
+            if (!this.ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return this.BadRequest(this.ModelState);
             }
 
-            var userConversation = await _context.UserConversation.FindAsync(id);
+            var userConversation = await this.context.UserConversation.FindAsync(id);
             if (userConversation == null)
             {
-                return NotFound();
+                return this.NotFound();
             }
 
-            _context.UserConversation.Remove(userConversation);
-            await _context.SaveChangesAsync();
+            this.context.UserConversation.Remove(userConversation);
+            await this.context.SaveChangesAsync();
 
-            return Ok(userConversation);
+            return this.Ok(userConversation);
         }
 
         private bool UserConversationExists(int id)
         {
-            return _context.UserConversation.Any(e => e.ConversationId == id);
+            return this.context.UserConversation.Any(e => e.ConversationId == id);
         }
     }
 }
