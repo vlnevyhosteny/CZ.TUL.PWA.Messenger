@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Serilog;
 
 namespace CZ.TUL.PWA.Messenger.Server.Controllers
 {
@@ -19,12 +20,14 @@ namespace CZ.TUL.PWA.Messenger.Server.Controllers
         private readonly IConfiguration configuration;
         private readonly MessengerContext messengerContext;
         private readonly UserManager<User> userManager;
+        private readonly ILogger logger;
 
-        public UsersController(IConfiguration configuration, MessengerContext messengerContext, UserManager<User> userManager)
+        public UsersController(IConfiguration configuration, MessengerContext messengerContext, UserManager<User> userManager, ILogger logger)
         {
             this.configuration = configuration;
             this.messengerContext = messengerContext;
             this.userManager = userManager;
+            this.logger = logger;
         }
 
         [AllowAnonymous]
@@ -46,7 +49,8 @@ namespace CZ.TUL.PWA.Messenger.Server.Controllers
 
             if (!result.Succeeded)
             {
-                // TODO
+                this.logger.Debug("Unable to create user");
+
                 return new BadRequestResult();
             }
 
@@ -80,7 +84,7 @@ namespace CZ.TUL.PWA.Messenger.Server.Controllers
             user.Name = userViewModel.Name;
 
             await this.userManager.UpdateAsync(user);
-            
+
             return this.NoContent();
         }
 

@@ -3,6 +3,7 @@ using CZ.TUL.PWA.Messenger.Server.Model;
 using CZ.TUL.PWA.Messenger.Server.Services;
 using CZ.TUL.PWA.Messenger.Server.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Serilog;
 
 namespace CZ.TUL.PWA.Messenger.Server.Controllers
 {
@@ -10,10 +11,12 @@ namespace CZ.TUL.PWA.Messenger.Server.Controllers
     public class AuthController : Controller
     {
         private readonly ITokenService tokenService;
+        private readonly ILogger logger;
 
-        public AuthController(ITokenService tokenService)
+        public AuthController(ITokenService tokenService, ILogger logger)
         {
             this.tokenService = tokenService;
+            this.logger = logger;
         }
 
         [HttpPost]
@@ -28,7 +31,8 @@ namespace CZ.TUL.PWA.Messenger.Server.Controllers
             var user = await this.tokenService.ValidateUser(givenUser.UserName, givenUser.Password);
             if (user == null)
             {
-                // TODO
+                this.logger.Information("Invalid login attempt");
+
                 return this.BadRequest();
             }
 
