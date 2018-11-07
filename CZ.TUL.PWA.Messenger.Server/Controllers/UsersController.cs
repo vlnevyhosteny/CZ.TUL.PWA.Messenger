@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using Serilog;
+using Microsoft.Extensions.Logging;
 
 namespace CZ.TUL.PWA.Messenger.Server.Controllers
 {
@@ -49,7 +49,7 @@ namespace CZ.TUL.PWA.Messenger.Server.Controllers
 
             if (!result.Succeeded)
             {
-                this.logger.Debug("Unable to create user");
+                this.logger.LogDebug("Unable to create user");
 
                 return new BadRequestResult();
             }

@@ -42,7 +42,7 @@ namespace CZ.TUL.PWA.Messenger.Server.Tests.Controllers
             var response = await client.GetAsync("/api/messages");
             response.EnsureSuccessStatusCode();
 
-            var messages = response.Content.ReadAsAsync(typeof(IEnumerable<MessageViewModel>)).Result as IEnumerable<MessageViewModel>;
+            var messages = response.Content.ReadAsAsync(typeof(IEnumerable<EditMessageViewModel>)).Result as IEnumerable<EditMessageViewModel>;
 
             int messagesCount = await context.Messages.CountAsync(x => x.OwnerId == testUser.Id);
 
@@ -69,7 +69,7 @@ namespace CZ.TUL.PWA.Messenger.Server.Tests.Controllers
             var response = await client.GetAsync($"/api/messages/{message.MessageId}");
             response.EnsureSuccessStatusCode();
 
-            var responseMessage = response.Content.ReadAsAsync(typeof(MessageViewModel)).Result as MessageViewModel;
+            var responseMessage = response.Content.ReadAsAsync(typeof(EditMessageViewModel)).Result as EditMessageViewModel;
 
             Assert.NotNull(responseMessage);
             Assert.Equal(message.Content, message.Content);
@@ -87,29 +87,20 @@ namespace CZ.TUL.PWA.Messenger.Server.Tests.Controllers
             MessengerContext context = this.factory.Server.Host.Services.GetService(typeof(MessengerContext))
                                                as MessengerContext;
 
-            UserManager<User> userManager = this.factory.Server.Host.Services.GetService(typeof(UserManager<User>))
-                                    as UserManager<User>;
+            this.SeedDataForMessagesTesting(context);
+            User testUser = await context.Users.FirstAsync();
+            Message message = await context.Messages.Skip(1).FirstAsync();
 
-            foreach (var item in this.GenerateUsers(5))
-            {
-                await userManager.CreateAsync(item);
-            }
+            string newContent = "new content";
 
-            var dbUser = await context.Users.Skip(2).FirstAsync();
-
-            string newName = "New Name";
-
-            var requestBody = new UserViewModel { Id = dbUser.Id, UserName = dbUser.UserName, Name = newName };
+            var requestBody = new EditMessageViewModel { MessageId = message.MessageId, Content = newContent };
             var requestContent = new StringContent(JsonConvert.SerializeObject(requestBody), Encoding.UTF8, "application/json");
-            var response = await client.PutAsync($"/api/users/{dbUser.Id}", requestContent);
+            var response = await client.PutAsync($"/api/messages/{message.MessageId}", requestContent);
             response.EnsureSuccessStatusCode();
 
-            userManager = this.factory.Server.Host.Services.GetService(typeof(UserManager<User>))
-                                    as UserManager<User>;
+            Message updated = await context.Messages.SingleAsync(x => x.MessageId == message.MessageId);
 
-            var updatedUser = await userManager.FindByIdAsync(dbUser.Id);
-
-            Assert.Equal(newName, updatedUser.Name);
+            Assert.Equal(newContent, updated.Content);
         }
 
         [Fact]
@@ -124,20 +115,20 @@ namespace CZ.TUL.PWA.Messenger.Server.Tests.Controllers
             MessengerContext context = this.factory.Server.Host.Services.GetService(typeof(MessengerContext))
                                                as MessengerContext;
 
-            await context.Users.AddRangeAsync(this.GenerateUsers(5));
-            await context.SaveChangesAsync();
+            this.SeedDataForMessagesTesting(context);
+            User testUser = await context.Users.FirstAsync();
+            Message message = await context.Messages.Skip(1).FirstAsync();
 
-            var dbUser = await context.Users.Skip(2).FirstAsync();
-            int previousCount = await context.Users.CountAsync();
+            int previousCount = await context.Messages.CountAsync();
 
-            var response = await client.DeleteAsync($"/api/users/{dbUser.Id}");
+            var response = await client.DeleteAsync($"/api/messages/{message.MessageId}");
             response.EnsureSuccessStatusCode();
 
-            int currentCount = await context.Users.CountAsync();
+            int currentCount = await context.Messages.CountAsync();
 
             Assert.NotEqual(previousCount, currentCount);
             Assert.Equal(previousCount, currentCount + 1);
-            Assert.False(await context.Users.AnyAsync(x => x.Id == dbUser.Id));
+            Assert.False(await context.Messages.AnyAsync(x => x.MessageId == message.MessageId));
         }
 
         private async void SeedDataForMessagesTesting(MessengerContext context)

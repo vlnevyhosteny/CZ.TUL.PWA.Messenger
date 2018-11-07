@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CZ.TUL.PWA.Messenger.Server.Model;
 using CZ.TUL.PWA.Messenger.Server.Services;
-using Serilog;
+using Microsoft.Extensions.Logging;
 
 namespace CZ.TUL.PWA.Messenger.Server.Controllers
 {
@@ -99,7 +99,7 @@ namespace CZ.TUL.PWA.Messenger.Server.Controllers
                 }
                 else
                 {
-                    this.logger.Error("Unable to update UserConversation", e);
+                    this.logger.LogError("Unable to update UserConversation", e);
 
                     throw;
                 }
