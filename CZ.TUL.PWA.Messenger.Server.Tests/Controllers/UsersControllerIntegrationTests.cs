@@ -17,25 +17,26 @@ namespace CZ.TUL.PWA.Messenger.Server.Tests.Controllers
     public class UsersControllerIntegrationTests
         : IClassFixture<MessengerWebApplicationFactory<Startup>>
     {
-        private readonly MessengerWebApplicationFactory<Startup> _factory;
+        private readonly MessengerWebApplicationFactory<Startup> factory;
 
         public UsersControllerIntegrationTests(MessengerWebApplicationFactory<Startup> factory)
         {
-            _factory = factory;
+            this.factory = factory;
         }
 
         [Fact]
         public async Task Get_ShouldSuccess()
         {
-            var client = _factory.CreateClient();
+            var client = this.factory.CreateClient();
 
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer",
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(
+                "Bearer",
                 await AuthenticationUtilities.GetTestUserAccessTokenAsync(client));
 
-            MessengerContext context = _factory.Server.Host.Services.GetService(typeof(MessengerContext)) 
+            MessengerContext context = this.factory.Server.Host.Services.GetService(typeof(MessengerContext))
                                                as MessengerContext;
 
-            await context.Users.AddRangeAsync(GenerateUsers(5));
+            await context.Users.AddRangeAsync(this.GenerateUsers(5));
 
             var response = await client.GetAsync("/api/users");
             response.EnsureSuccessStatusCode();
@@ -51,15 +52,16 @@ namespace CZ.TUL.PWA.Messenger.Server.Tests.Controllers
         [Fact]
         public async Task GetById_ShouldSuccess()
         {
-            var client = _factory.CreateClient();
+            var client = this.factory.CreateClient();
 
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer",
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(
+                "Bearer",
                 await AuthenticationUtilities.GetTestUserAccessTokenAsync(client));
 
-            MessengerContext context = _factory.Server.Host.Services.GetService(typeof(MessengerContext))
+            MessengerContext context = this.factory.Server.Host.Services.GetService(typeof(MessengerContext))
                                                as MessengerContext;
 
-            await context.Users.AddRangeAsync(GenerateUsers(5));
+            await context.Users.AddRangeAsync(this.GenerateUsers(5));
             await context.SaveChangesAsync();
 
             var dbUser = await context.Users.Skip(2).FirstAsync();
@@ -76,15 +78,16 @@ namespace CZ.TUL.PWA.Messenger.Server.Tests.Controllers
         [Fact]
         public async Task PutUpdate_ShouldSuccess()
         {
-            var client = _factory.CreateClient();
+            var client = this.factory.CreateClient();
 
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer",
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(
+                "Bearer",
                 await AuthenticationUtilities.GetTestUserAccessTokenAsync(client));
 
-            MessengerContext context = _factory.Server.Host.Services.GetService(typeof(MessengerContext))
+            MessengerContext context = this.factory.Server.Host.Services.GetService(typeof(MessengerContext))
                                                as MessengerContext;
 
-            UserManager<User> userManager = this._factory.Server.Host.Services.GetService(typeof(UserManager<User>))
+            UserManager<User> userManager = this.factory.Server.Host.Services.GetService(typeof(UserManager<User>))
                                     as UserManager<User>;
 
             foreach (var item in this.GenerateUsers(5))
@@ -101,26 +104,27 @@ namespace CZ.TUL.PWA.Messenger.Server.Tests.Controllers
             var response = await client.PutAsync($"/api/users/{dbUser.Id}", requestContent);
             response.EnsureSuccessStatusCode();
 
-            userManager = this._factory.Server.Host.Services.GetService(typeof(UserManager<User>))
+            userManager = this.factory.Server.Host.Services.GetService(typeof(UserManager<User>))
                                     as UserManager<User>;
 
             var updatedUser = await userManager.FindByIdAsync(dbUser.Id);
-            
+
             Assert.Equal(newName, updatedUser.Name);
         }
 
         [Fact]
         public async Task Delete_ShouldSuccess()
         {
-            var client = _factory.CreateClient();
+            var client = this.factory.CreateClient();
 
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer",
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(
+                "Bearer",
                 await AuthenticationUtilities.GetTestUserAccessTokenAsync(client));
 
-            MessengerContext context = _factory.Server.Host.Services.GetService(typeof(MessengerContext))
+            MessengerContext context = this.factory.Server.Host.Services.GetService(typeof(MessengerContext))
                                                as MessengerContext;
 
-            await context.Users.AddRangeAsync(GenerateUsers(5));
+            await context.Users.AddRangeAsync(this.GenerateUsers(5));
             await context.SaveChangesAsync();
 
             var dbUser = await context.Users.Skip(2).FirstAsync();
@@ -136,11 +140,11 @@ namespace CZ.TUL.PWA.Messenger.Server.Tests.Controllers
             Assert.False(await context.Users.AnyAsync(x => x.Id == dbUser.Id));
         }
 
-        private IEnumerable<User> GenerateUsers(int count) 
+        private IEnumerable<User> GenerateUsers(int count)
         {
             var result = new User[count];
 
-            for (int i = 0; i < count; i++) 
+            for (int i = 0; i < count; i++)
             {
                 result[i] = new User
                 {
