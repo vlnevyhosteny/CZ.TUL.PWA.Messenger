@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CZ.TUL.PWA.Messenger.Server.Model;
+using CZ.TUL.PWA.Messenger.Server.Services;
+using Serilog;
 
 namespace CZ.TUL.PWA.Messenger.Server.Controllers
 {
@@ -14,17 +16,31 @@ namespace CZ.TUL.PWA.Messenger.Server.Controllers
     public class UserConversationsController : ControllerBase
     {
         private readonly MessengerContext context;
+        private readonly ITokenService tokenService;
+        private readonly ILogger logger;
 
-        public UserConversationsController(MessengerContext context)
+        public UserConversationsController(MessengerContext context, TokenService tokenService, ILogger logger)
         {
             this.context = context;
+            this.tokenService = tokenService;
+            this.logger = logger;
         }
 
         // GET: api/UserConversations
         [HttpGet]
-        public IEnumerable<UserConversation> GetUserConversation()
+        public async Task<IEnumerable<UserConversation>> GetUserConversation()
         {
-            return this.context.UserConversation;
+            string userId = await this.tokenService.GetCurrentUserId(this.User);
+
+            return await this.context.UserConversation.Where(x => x.UserId == userId).ToArrayAsync();
+        }
+
+        [HttpGet("owned")]
+        public async Task<IEnumerable<UserConversation>> GetOwnedUserConversation()
+        {
+            string userId = await this.tokenService.GetCurrentUserId(this.User);
+
+            return await this.context.UserConversation.Where(x => x.UserId == userId && x.IsOwner).ToArrayAsync();
         }
 
         // GET: api/UserConversations/5
@@ -36,7 +52,10 @@ namespace CZ.TUL.PWA.Messenger.Server.Controllers
                 return this.BadRequest(this.ModelState);
             }
 
-            var userConversation = await this.context.UserConversation.FindAsync(id);
+            string userId = await this.tokenService.GetCurrentUserId(this.User);
+
+            var userConversation = await this.context.UserConversation.SingleOrDefaultAsync(x => x.UserId == userId
+                                                                                            && x.ConversationId == id);
 
             if (userConversation == null)
             {
@@ -60,13 +79,19 @@ namespace CZ.TUL.PWA.Messenger.Server.Controllers
                 return this.BadRequest();
             }
 
+            string userId = await this.tokenService.GetCurrentUserId(this.User);
+            if (this.context.UserConversation.Any(x => x.ConversationId == id && x.UserId == userId && x.IsOwner) == false)
+            {
+                return this.BadRequest("UserConversation not belongs to user");
+            }
+
             this.context.Entry(userConversation).State = EntityState.Modified;
 
             try
             {
                 await this.context.SaveChangesAsync();
             }
-            catch (DbUpdateConcurrencyException)
+            catch (DbUpdateConcurrencyException e)
             {
                 if (!this.UserConversationExists(id))
                 {
@@ -74,6 +99,8 @@ namespace CZ.TUL.PWA.Messenger.Server.Controllers
                 }
                 else
                 {
+                    this.logger.Error("Unable to update UserConversation", e);
+
                     throw;
                 }
             }
@@ -119,7 +146,9 @@ namespace CZ.TUL.PWA.Messenger.Server.Controllers
                 return this.BadRequest(this.ModelState);
             }
 
-            var userConversation = await this.context.UserConversation.FindAsync(id);
+            string userId = await this.tokenService.GetCurrentUserId(this.User);
+            var userConversation = await this.context.UserConversation.SingleOrDefaultAsync(x => x.UserId == userId
+                                                                                            && x.ConversationId == id);
             if (userConversation == null)
             {
                 return this.NotFound();
