@@ -29,7 +29,6 @@
     <Compile Remove="Auth\PasswordHasherTests.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Controllers\" />
     <Folder Include="Config\" />
     <Folder Include="Utilities\" />
   </ItemGroup>

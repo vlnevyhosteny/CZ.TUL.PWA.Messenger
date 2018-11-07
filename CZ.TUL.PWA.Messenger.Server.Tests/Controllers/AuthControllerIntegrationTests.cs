@@ -14,12 +14,12 @@ using Xunit;
 
 namespace CZ.TUL.PWA.Messenger.Server.Tests.Controllers
 {
-    public class AuthControllerIntegrationTest
+    public class AuthControllerIntegrationTests
         : IClassFixture<MessengerWebApplicationFactory<Startup>>
     {
         private readonly MessengerWebApplicationFactory<Startup> factory;
 
-        public AuthControllerIntegrationTest(MessengerWebApplicationFactory<Startup> factory)
+        public AuthControllerIntegrationTests(MessengerWebApplicationFactory<Startup> factory)
         {
             this.factory = factory;
         }

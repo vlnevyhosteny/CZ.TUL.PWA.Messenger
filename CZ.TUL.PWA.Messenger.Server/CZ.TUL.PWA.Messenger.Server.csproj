@@ -10,7 +10,6 @@
     <Folder Include="Migrations\" />
     <Folder Include="Config\" />
     <Folder Include="Extensions\" />
-    <Folder Include="ViewModels\" />
     <Folder Include="Services\" />
   </ItemGroup>
 
