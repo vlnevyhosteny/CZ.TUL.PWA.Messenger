@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Security.Claims;
+using System.Threading.Tasks;
 using CZ.TUL.PWA.Messenger.Server.Model;
 
 namespace CZ.TUL.PWA.Messenger.Server.Services
@@ -20,5 +21,7 @@ namespace CZ.TUL.PWA.Messenger.Server.Services
         string GetUserNameFromJwtToken(string token);
 
         Task<User> ValidateRefreshToken(string userName, string refreshToken);
+
+        Task<string> GetCurrentUserId(ClaimsPrincipal claimsPrincipal);
     }
 }

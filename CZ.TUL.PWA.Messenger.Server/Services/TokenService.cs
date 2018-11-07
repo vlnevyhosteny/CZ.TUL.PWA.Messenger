@@ -68,6 +68,13 @@ namespace CZ.TUL.PWA.Messenger.Server.Services
             }
         }
 
+        public async Task<string> GetCurrentUserId(ClaimsPrincipal claimsPrincipal)
+        {
+            User user = await this.userManager.GetUserAsync(claimsPrincipal);
+
+            return user.Id;
+        }
+
         public async Task<RefreshToken> GetRefreshToken(User user)
         {
             return await this.context.RefreshTokens.SingleOrDefaultAsync(x => x.UserId == user.Id);

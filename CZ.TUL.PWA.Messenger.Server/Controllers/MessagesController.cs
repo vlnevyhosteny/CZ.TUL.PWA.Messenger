@@ -4,6 +4,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CZ.TUL.PWA.Messenger.Server.Model;
+using CZ.TUL.PWA.Messenger.Server.Services;
+using Serilog;
 
 namespace CZ.TUL.PWA.Messenger.Server.Controllers
 {
@@ -12,17 +14,23 @@ namespace CZ.TUL.PWA.Messenger.Server.Controllers
     public class MessagesController : ControllerBase
     {
         private readonly MessengerContext context;
+        private readonly ITokenService tokenService;
+        private readonly ILogger logger;
 
-        public MessagesController(MessengerContext context)
+        public MessagesController(MessengerContext context, TokenService tokenService, ILogger logger)
         {
             this.context = context;
+            this.tokenService = tokenService;
+            this.logger = logger;
         }
 
         // GET: api/Messages
         [HttpGet]
-        public IEnumerable<Message> GetMessages()
+        public async Task<IEnumerable<Message>> GetMessages()
         {
-            return this.context.Messages;
+            string userId = await this.tokenService.GetCurrentUserId(this.User);
+
+            return await this.context.Messages.Where(x => x.OwnerId == userId).ToArrayAsync();
         }
 
         // GET: api/Messages/5
@@ -34,7 +42,10 @@ namespace CZ.TUL.PWA.Messenger.Server.Controllers
                 return this.BadRequest(this.ModelState);
             }
 
-            var message = await this.context.Messages.FindAsync(id);
+            string userId = await this.tokenService.GetCurrentUserId(this.User);
+
+            var message = await this.context.Messages.SingleOrDefaultAsync(x => x.OwnerId == userId
+                                                                            && x.MessageId == id);
 
             if (message == null)
             {
@@ -58,13 +69,19 @@ namespace CZ.TUL.PWA.Messenger.Server.Controllers
                 return this.BadRequest();
             }
 
+            string userId = await this.tokenService.GetCurrentUserId(this.User);
+            if (this.context.Messages.Any(x => x.MessageId == id && x.OwnerId == userId) == false)
+            {
+                return this.BadRequest("Message not belongs to user");
+            }
+
             this.context.Entry(message).State = EntityState.Modified;
 
             try
             {
                 await this.context.SaveChangesAsync();
             }
-            catch (DbUpdateConcurrencyException)
+            catch (DbUpdateConcurrencyException e)
             {
                 if (!this.MessageExists(id))
                 {
@@ -72,6 +89,8 @@ namespace CZ.TUL.PWA.Messenger.Server.Controllers
                 }
                 else
                 {
+                    this.logger.Error("Unable to update Message", e);
+
                     throw;
                 }
             }
@@ -103,7 +122,9 @@ namespace CZ.TUL.PWA.Messenger.Server.Controllers
                 return this.BadRequest(this.ModelState);
             }
 
-            var message = await this.context.Messages.FindAsync(id);
+            string userId = await this.tokenService.GetCurrentUserId(this.User);
+            var message = await this.context.Messages.SingleOrDefaultAsync(x => x.OwnerId == userId
+                                                                            && x.MessageId == id);
             if (message == null)
             {
                 return this.NotFound();
