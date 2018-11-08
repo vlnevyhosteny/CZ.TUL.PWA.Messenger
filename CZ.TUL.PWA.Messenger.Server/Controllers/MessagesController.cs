@@ -6,6 +6,8 @@ using Microsoft.EntityFrameworkCore;
 using CZ.TUL.PWA.Messenger.Server.Model;
 using CZ.TUL.PWA.Messenger.Server.Services;
 using Microsoft.Extensions.Logging;
+using CZ.TUL.PWA.Messenger.Server.ViewModels;
+using CZ.TUL.PWA.Messenger.Server.Extensions;
 
 namespace CZ.TUL.PWA.Messenger.Server.Controllers
 {
@@ -17,6 +19,12 @@ namespace CZ.TUL.PWA.Messenger.Server.Controllers
         private readonly ITokenService tokenService;
         private readonly ILogger logger;
 
+        private readonly PagingViewModel defaultPaging = new PagingViewModel
+        {
+            PageNumber = 1,
+            PageSize = 100
+        };
+
         public MessagesController(MessengerContext context, TokenService tokenService, ILogger logger)
         {
             this.context = context;
@@ -26,11 +34,19 @@ namespace CZ.TUL.PWA.Messenger.Server.Controllers
 
         // GET: api/Messages
         [HttpGet]
-        public async Task<IEnumerable<Message>> GetMessages()
+        public async Task<IEnumerable<Message>> GetMessages([FromBody] PagingViewModel paging = null)
         {
+            if (paging == null || this.ModelState.IsValid == false)
+            {
+                paging = this.defaultPaging;
+            }
+
             string userId = await this.tokenService.GetCurrentUserId(this.User);
 
-            return await this.context.Messages.Where(x => x.OwnerId == userId).ToArrayAsync();
+            return await this.context.Messages.Where(x => x.OwnerId == userId)
+                .Skip(paging.ItemSkipCount())
+                .Take(paging.PageSize)
+                .ToArrayAsync();
         }
 
         // GET: api/Messages/5

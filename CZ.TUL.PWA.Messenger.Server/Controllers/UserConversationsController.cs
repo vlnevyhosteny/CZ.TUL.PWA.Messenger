@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using CZ.TUL.PWA.Messenger.Server.Model;
 using CZ.TUL.PWA.Messenger.Server.Services;
 using Microsoft.Extensions.Logging;
+using CZ.TUL.PWA.Messenger.Server.ViewModels;
+using CZ.TUL.PWA.Messenger.Server.Extensions;
 
 namespace CZ.TUL.PWA.Messenger.Server.Controllers
 {
@@ -19,6 +21,12 @@ namespace CZ.TUL.PWA.Messenger.Server.Controllers
         private readonly ITokenService tokenService;
         private readonly ILogger logger;
 
+        private readonly PagingViewModel defaultPaging = new PagingViewModel
+        {
+            PageNumber = 1,
+            PageSize = 100
+        };
+
         public UserConversationsController(MessengerContext context, TokenService tokenService, ILogger logger)
         {
             this.context = context;
@@ -28,19 +36,35 @@ namespace CZ.TUL.PWA.Messenger.Server.Controllers
 
         // GET: api/UserConversations
         [HttpGet]
-        public async Task<IEnumerable<UserConversation>> GetUserConversation()
+        public async Task<IEnumerable<UserConversation>> GetUserConversation([FromBody] PagingViewModel paging = null)
         {
+            if (paging == null || this.ModelState.IsValid == false)
+            {
+                paging = this.defaultPaging;
+            }
+
             string userId = await this.tokenService.GetCurrentUserId(this.User);
 
-            return await this.context.UserConversation.Where(x => x.UserId == userId).ToArrayAsync();
+            return await this.context.UserConversation.Where(x => x.UserId == userId)
+                .Skip(paging.ItemSkipCount())
+                .Take(paging.PageSize)
+                .ToArrayAsync();
         }
 
         [HttpGet("owned")]
-        public async Task<IEnumerable<UserConversation>> GetOwnedUserConversation()
+        public async Task<IEnumerable<UserConversation>> GetOwnedUserConversation([FromBody] PagingViewModel paging = null)
         {
+            if (paging == null || this.ModelState.IsValid == false)
+            {
+                paging = this.defaultPaging;
+            }
+
             string userId = await this.tokenService.GetCurrentUserId(this.User);
 
-            return await this.context.UserConversation.Where(x => x.UserId == userId && x.IsOwner).ToArrayAsync();
+            return await this.context.UserConversation.Where(x => x.UserId == userId && x.IsOwner)
+                .Skip(paging.ItemSkipCount())
+                .Take(paging.PageSize)
+                .ToArrayAsync();
         }
 
         // GET: api/UserConversations/5
