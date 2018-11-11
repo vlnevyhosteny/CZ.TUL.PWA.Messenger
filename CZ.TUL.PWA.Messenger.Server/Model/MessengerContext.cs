@@ -34,6 +34,12 @@ namespace CZ.TUL.PWA.Messenger.Server.Model
             set;
         }
 
+        public DbSet<UserConversation> UserConversations
+        {
+            get;
+            set;
+        }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             this.SpecifyMySqlIndexLengthSpecification(builder);
