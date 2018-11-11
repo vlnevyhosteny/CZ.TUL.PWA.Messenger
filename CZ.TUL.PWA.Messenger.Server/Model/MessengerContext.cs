@@ -34,7 +34,7 @@ namespace CZ.TUL.PWA.Messenger.Server.Model
             set;
         }
 
-        public DbSet<UserConversation> UserConversation
+        public DbSet<UserConversation> UserConversations
         {
             get;
             set;
