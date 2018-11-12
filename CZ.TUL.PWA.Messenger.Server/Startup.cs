@@ -52,6 +52,7 @@ namespace CZ.TUL.PWA.Messenger.Server
                         };
                     });
 
+
             var builder = services.AddIdentityCore<User>(o =>
             {
                 o.Password.RequireDigit = false;
@@ -72,8 +73,8 @@ namespace CZ.TUL.PWA.Messenger.Server
                 app.UseDeveloperExceptionPage();
             }
 
+
             loggerFactory.AddSerilog();
-            loggerFactory.AddFile(this.configuration["Logging:FilePath"]);
 
             app.UseAuthentication();
             app.UseMvc();

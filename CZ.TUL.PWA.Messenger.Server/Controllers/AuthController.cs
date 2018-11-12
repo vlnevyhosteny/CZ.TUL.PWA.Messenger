@@ -4,6 +4,7 @@ using CZ.TUL.PWA.Messenger.Server.Services;
 using CZ.TUL.PWA.Messenger.Server.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Serilog;
 
 namespace CZ.TUL.PWA.Messenger.Server.Controllers
 {
@@ -11,9 +12,9 @@ namespace CZ.TUL.PWA.Messenger.Server.Controllers
     public class AuthController : Controller
     {
         private readonly ITokenService tokenService;
-        private readonly ILogger logger;
+        private readonly ILogger<AuthController> logger;
 
-        public AuthController(ITokenService tokenService, ILogger logger)
+        public AuthController(ITokenService tokenService, ILogger<AuthController> logger)
         {
             this.tokenService = tokenService;
             this.logger = logger;

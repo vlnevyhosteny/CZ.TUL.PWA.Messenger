@@ -15,21 +15,22 @@ namespace CZ.TUL.PWA.Messenger.Server.Services
     using Microsoft.AspNetCore.Identity;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
-    using Microsoft.IdentityModel.Tokens;
     using Serilog;
+    using Microsoft.IdentityModel.Tokens;
+    using Microsoft.Extensions.Logging;
 
     public class TokenService : ITokenService
     {
         private readonly IConfiguration configuration;
         private readonly UserManager<User> userManager;
         private readonly MessengerContext context;
-        private readonly ILogger logger;
+        private readonly ILogger<TokenService> logger;
 
         public TokenService(
                             IConfiguration configuration,
                             UserManager<User> userManager,
                             MessengerContext context,
-                            ILogger logger)
+                            ILogger<TokenService> logger)
         {
             this.configuration = configuration;
             this.userManager = userManager;
@@ -98,7 +99,7 @@ namespace CZ.TUL.PWA.Messenger.Server.Services
             if (!(securityToken is JwtSecurityToken jwtSecurityToken)
                 || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
             {
-                this.logger.Information("Invalid access token");
+                this.logger.LogInformation("Invalid access token");
 
                 throw new SecurityTokenException("Invalid token");
             }

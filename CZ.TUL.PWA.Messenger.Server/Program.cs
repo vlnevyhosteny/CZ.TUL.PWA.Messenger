@@ -7,6 +7,8 @@ using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Serilog;
+using Serilog.Events;
 
 namespace CZ.TUL.PWA.Messenger.Server
 {
@@ -14,13 +16,38 @@ namespace CZ.TUL.PWA.Messenger.Server
     {
         public static void Main(string[] args)
         {
-            CreateWebHostBuilder(args).Build().Run();
+            Log.Logger = new LoggerConfiguration()
+                .MinimumLevel.Debug()
+                .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
+                .Enrich.FromLogContext()
+                .WriteTo.RollingFile("Logs/Messenger.log")
+                .CreateLogger();
+
+            try
+            {
+                Log.Information("Starting web host");
+
+                CreateWebHostBuilder(args).Build().Run();
+
+                return;
+            }
+            catch (Exception ex)
+            {
+                Log.Fatal(ex, "Host terminated unexpectedly");
+
+                return;
+            }
+            finally
+            {
+                Log.CloseAndFlush();
+            }
         }
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
                    .ConfigureAppConfiguration(ConfigConfiguration)
-                   .UseStartup<Startup>();
+                   .UseStartup<Startup>()
+                   .UseSerilog();
 
         private static void ConfigConfiguration(WebHostBuilderContext ctx, IConfigurationBuilder config)
         {

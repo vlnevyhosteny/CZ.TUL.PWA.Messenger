@@ -20,9 +20,9 @@ namespace CZ.TUL.PWA.Messenger.Server.Controllers
         private readonly IConfiguration configuration;
         private readonly MessengerContext messengerContext;
         private readonly UserManager<User> userManager;
-        private readonly ILogger logger;
+        private readonly ILogger<UsersController> logger;
 
-        public UsersController(IConfiguration configuration, MessengerContext messengerContext, UserManager<User> userManager, ILogger logger)
+        public UsersController(IConfiguration configuration, MessengerContext messengerContext, UserManager<User> userManager, ILogger<UsersController> logger)
         {
             this.configuration = configuration;
             this.messengerContext = messengerContext;

@@ -19,7 +19,7 @@ namespace CZ.TUL.PWA.Messenger.Server.Controllers
     {
         private readonly MessengerContext context;
         private readonly ITokenService tokenService;
-        private readonly ILogger logger;
+        private readonly ILogger<UserConversationsController> logger;
 
         private readonly PagingViewModel defaultPaging = new PagingViewModel
         {
@@ -27,7 +27,7 @@ namespace CZ.TUL.PWA.Messenger.Server.Controllers
             PageSize = 100
         };
 
-        public UserConversationsController(MessengerContext context, TokenService tokenService, ILogger logger)
+        public UserConversationsController(MessengerContext context, TokenService tokenService, ILogger<UserConversationsController> logger)
         {
             this.context = context;
             this.tokenService = tokenService;
