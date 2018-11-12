@@ -148,7 +148,7 @@ namespace CZ.TUL.PWA.Messenger.Server.Tests.Controllers
                 IsOwner = true,
                 UserId = testUser.Id
             };
-            await context.UserConversation.AddAsync(userConversation);
+            await context.UserConversations.AddAsync(userConversation);
             await context.SaveChangesAsync();
 
             await context.Messages.AddRangeAsync(new Message[]

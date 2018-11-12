@@ -45,7 +45,7 @@ namespace CZ.TUL.PWA.Messenger.Server.Controllers
 
             string userId = await this.tokenService.GetCurrentUserId(this.User);
 
-            return await this.context.UserConversation.Where(x => x.UserId == userId)
+            return await this.context.UserConversations.Where(x => x.UserId == userId)
                 .Skip(paging.ItemSkipCount())
                 .Take(paging.PageSize)
                 .ToArrayAsync();
@@ -61,7 +61,7 @@ namespace CZ.TUL.PWA.Messenger.Server.Controllers
 
             string userId = await this.tokenService.GetCurrentUserId(this.User);
 
-            return await this.context.UserConversation.Where(x => x.UserId == userId && x.IsOwner)
+            return await this.context.UserConversations.Where(x => x.UserId == userId && x.IsOwner)
                 .Skip(paging.ItemSkipCount())
                 .Take(paging.PageSize)
                 .ToArrayAsync();
@@ -78,7 +78,7 @@ namespace CZ.TUL.PWA.Messenger.Server.Controllers
 
             string userId = await this.tokenService.GetCurrentUserId(this.User);
 
-            var userConversation = await this.context.UserConversation.SingleOrDefaultAsync(x => x.UserId == userId
+            var userConversation = await this.context.UserConversations.SingleOrDefaultAsync(x => x.UserId == userId
                                                                                             && x.ConversationId == id);
 
             if (userConversation == null)
@@ -104,7 +104,7 @@ namespace CZ.TUL.PWA.Messenger.Server.Controllers
             }
 
             string userId = await this.tokenService.GetCurrentUserId(this.User);
-            if (this.context.UserConversation.Any(x => x.ConversationId == id && x.UserId == userId && x.IsOwner) == false)
+            if (this.context.UserConversations.Any(x => x.ConversationId == id && x.UserId == userId && x.IsOwner) == false)
             {
                 return this.BadRequest("UserConversation not belongs to user");
             }
@@ -141,7 +141,7 @@ namespace CZ.TUL.PWA.Messenger.Server.Controllers
                 return this.BadRequest(this.ModelState);
             }
 
-            this.context.UserConversation.Add(userConversation);
+            this.context.UserConversations.Add(userConversation);
             try
             {
                 await this.context.SaveChangesAsync();
@@ -171,14 +171,14 @@ namespace CZ.TUL.PWA.Messenger.Server.Controllers
             }
 
             string userId = await this.tokenService.GetCurrentUserId(this.User);
-            var userConversation = await this.context.UserConversation.SingleOrDefaultAsync(x => x.UserId == userId
+            var userConversation = await this.context.UserConversations.SingleOrDefaultAsync(x => x.UserId == userId
                                                                                             && x.ConversationId == id);
             if (userConversation == null)
             {
                 return this.NotFound();
             }
 
-            this.context.UserConversation.Remove(userConversation);
+            this.context.UserConversations.Remove(userConversation);
             await this.context.SaveChangesAsync();
 
             return this.Ok(userConversation);
@@ -186,7 +186,7 @@ namespace CZ.TUL.PWA.Messenger.Server.Controllers
 
         private bool UserConversationExists(int id)
         {
-            return this.context.UserConversation.Any(e => e.ConversationId == id);
+            return this.context.UserConversations.Any(e => e.ConversationId == id);
         }
     }
 }
