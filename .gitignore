@@ -342,3 +342,5 @@ ASALocalRun/
 
 CZ.TUL.PWA.Messenger.paw
 CZ.TUL.PWA.Messenger.Server/Config/secretappsettings.json
+CZ.TUL.PWA.Messenger.Client/CZ-TUL-PWA-Messenger-Client/.vscode/chrome
+CZ.TUL.PWA.Messenger.Client/CZ-TUL-PWA-Messenger-Client_old
