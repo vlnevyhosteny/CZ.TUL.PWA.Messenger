@@ -29,6 +29,8 @@ namespace CZ.TUL.PWA.Messenger.Server
         {
             services.AddMvc();
 
+            services.AddCors();
+
             services
                 .AddDbContext<MessengerContext>(option => option.UseMySql(this.configuration
                                                                               .GetConnectionString("MessengerDatabase")));
@@ -73,6 +75,10 @@ namespace CZ.TUL.PWA.Messenger.Server
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseCors(builder =>
+                builder.WithOrigins("http://localhost:4200")
+                .AllowAnyHeader()
+                .AllowAnyMethod());
 
             loggerFactory.AddSerilog();
 
