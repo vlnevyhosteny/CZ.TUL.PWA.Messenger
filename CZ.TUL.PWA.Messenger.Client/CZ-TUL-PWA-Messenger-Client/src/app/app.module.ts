@@ -9,9 +9,13 @@ import { routing }        from './app.routing';
 import { JwtInterceptor, ErrorInterceptor } from './_helpers';
 import { HomeComponent } from './home';
 import { LoginComponent } from './login';
+import { UsereditComponent } from './useredit/useredit.component';
+
+import { RouterModule, Routes } from '@angular/router';
 
 @NgModule({
     imports: [
+        routing,
         BrowserModule,
         ReactiveFormsModule,
         HttpClientModule,
