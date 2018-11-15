@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
+using Swashbuckle.AspNetCore.Swagger;
 
 namespace CZ.TUL.PWA.Messenger.Server
 {
@@ -54,6 +55,10 @@ namespace CZ.TUL.PWA.Messenger.Server
                         };
                     });
 
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new Info { Title = "Messenger API", Version = "v1" });
+            });
 
             var builder = services.AddIdentityCore<User>(o =>
             {
@@ -81,6 +86,12 @@ namespace CZ.TUL.PWA.Messenger.Server
                 .AllowAnyMethod());
 
             loggerFactory.AddSerilog();
+
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Messenger API V1");
+            });
 
             app.UseAuthentication();
             app.UseMvc();
