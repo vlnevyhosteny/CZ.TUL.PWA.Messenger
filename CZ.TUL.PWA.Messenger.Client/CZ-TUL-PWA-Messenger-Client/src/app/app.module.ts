@@ -11,7 +11,8 @@ import { HomeComponent } from './home';
 import { LoginComponent } from './login';
 import { UsereditComponent } from './useredit/useredit.component';
 
-import { RouterModule, Routes } from '@angular/router';
+import { RouterModule, Routes } from '@angular/router';;
+import { RegistrationComponent } from './registration/registration.component'
 
 @NgModule({
     imports: [
@@ -25,7 +26,8 @@ import { RouterModule, Routes } from '@angular/router';
         AppComponent,
         HomeComponent,
         LoginComponent
-    ],
+,
+        RegistrationComponent    ],
     providers: [
         { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
         { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
