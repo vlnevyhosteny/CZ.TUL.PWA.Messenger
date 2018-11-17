@@ -113,6 +113,33 @@ namespace CZ.TUL.PWA.Messenger.Server.Tests.Controllers
         }
 
         [Fact]
+        public async Task Post_ShouldSuccess()
+        {
+            var client = this.factory.CreateClient();
+
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(
+                "Bearer",
+                await AuthenticationUtilities.GetTestUserAccessTokenAsync(client));
+
+            MessengerContext context = this.factory.Server.Host.Services.GetService(typeof(MessengerContext))
+                                               as MessengerContext;
+
+            User user = this.GenerateUsers(1).Single();
+
+            var requestBody = new UserCredentialsViewModel { Password = "testpwd", UserName = user.UserName, Name = user.Name };
+            var requestContent = new StringContent(JsonConvert.SerializeObject(requestBody), Encoding.UTF8, "application/json");
+            var response = await client.PostAsync($"/api/users", requestContent);
+            response.EnsureSuccessStatusCode();
+
+            UserManager<User> userManager = this.factory.Server.Host.Services.GetService(typeof(UserManager<User>))
+                                    as UserManager<User>;
+
+            var insertedUser = await userManager.FindByNameAsync(user.UserName);
+
+            Assert.NotNull(insertedUser);
+        }
+
+        [Fact]
         public async Task Delete_ShouldSuccess()
         {
             var client = this.factory.CreateClient();

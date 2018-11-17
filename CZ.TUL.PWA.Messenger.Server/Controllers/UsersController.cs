@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using CZ.TUL.PWA.Messenger.Server.Extensions;
 
 namespace CZ.TUL.PWA.Messenger.Server.Controllers
 {
@@ -49,12 +50,12 @@ namespace CZ.TUL.PWA.Messenger.Server.Controllers
 
             if (!result.Succeeded)
             {
-                this.logger.LogDebug("Unable to create user");
+                this.logger.LogDebug("Unable to create user", result.Errors.ToResponseString());
 
-                return new BadRequestResult();
+                return new BadRequestObjectResult(result.Errors.ToResponseString());
             }
 
-            return new OkObjectResult("Account created");
+            return new OkResult();
         }
 
         [HttpGet]
