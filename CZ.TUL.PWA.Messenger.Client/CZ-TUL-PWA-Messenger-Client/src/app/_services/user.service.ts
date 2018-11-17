@@ -14,10 +14,10 @@ export class UserService {
     constructor(private http: HttpClient) { }
 
     getAll() {
-        return this.http.get<User[]>(`${config.apiUrl}/users`);
+        return this.http.get<User[]>(`${config.apiUrl}/Users`);
     }
 
     public registerUser(userName: string, password: string, name: string): Observable<any> {
-        return this.http.post<any>(`${this.baseUrl}/auth/login`, { userName, password, name });
+        return this.http.post<any>(`${this.baseUrl}/Users`, { userName, password, name });
     }
 }

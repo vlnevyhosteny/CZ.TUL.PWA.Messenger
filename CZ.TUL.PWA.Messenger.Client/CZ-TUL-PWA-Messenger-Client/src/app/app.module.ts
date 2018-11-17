@@ -9,10 +9,9 @@ import { routing }        from './app.routing';
 import { JwtInterceptor, ErrorInterceptor } from './_helpers';
 import { HomeComponent } from './home';
 import { LoginComponent } from './login';
-import { UsereditComponent } from './useredit/useredit.component';
 
-import { RouterModule, Routes } from '@angular/router';;
-import { RegistrationComponent } from './registration/registration.component'
+import { RouterModule, Routes } from '@angular/router';
+import { RegistrationComponent } from './registration/registration.component';
 
 @NgModule({
     imports: [
@@ -25,9 +24,9 @@ import { RegistrationComponent } from './registration/registration.component'
     declarations: [
         AppComponent,
         HomeComponent,
-        LoginComponent
-,
-        RegistrationComponent    ],
+        LoginComponent,
+        RegistrationComponent
+    ],
     providers: [
         { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
         { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
