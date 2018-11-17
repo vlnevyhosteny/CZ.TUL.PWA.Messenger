@@ -4,6 +4,12 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using CZ.TUL.PWA.Messenger.Server.Services;
+using System.Threading.Tasks;
+using CZ.TUL.PWA.Messenger.Server.ViewModels;
+using System.Collections.Generic;
+using System;
+using System.Linq;
+using Microsoft.EntityFrameworkCore;
 
 namespace CZ.TUL.PWA.Messenger.Server.Controllers
 {

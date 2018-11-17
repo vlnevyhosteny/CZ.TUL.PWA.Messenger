@@ -1,0 +1,10 @@
+{
+	"folders": [
+		{
+			"path": "cz-tul-pwa-messenger-client"
+		}
+	],
+	"settings": {
+		"git.ignoreLimitWarning": true
+	}
+}

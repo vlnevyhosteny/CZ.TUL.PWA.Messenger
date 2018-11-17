@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "CZ-TUL-PWA-Messenger-Client": {
+    "cz-tul-pwa-messenger-client": {
       "root": "",
       "sourceRoot": "src",
       "projectType": "application",
@@ -13,7 +13,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/CZ-TUL-PWA-Messenger-Client",
+            "outputPath": "dist/cz-tul-pwa-messenger-client",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -50,18 +50,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "CZ-TUL-PWA-Messenger-Client:build"
+            "browserTarget": "cz-tul-pwa-messenger-client:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "CZ-TUL-PWA-Messenger-Client:build:production"
+              "browserTarget": "cz-tul-pwa-messenger-client:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "CZ-TUL-PWA-Messenger-Client:build"
+            "browserTarget": "cz-tul-pwa-messenger-client:build"
           }
         },
         "test": {
@@ -95,7 +95,7 @@
         }
       }
     },
-    "CZ-TUL-PWA-Messenger-Client-e2e": {
+    "cz-tul-pwa-messenger-client-e2e": {
       "root": "e2e/",
       "projectType": "application",
       "architect": {
@@ -103,11 +103,11 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "CZ-TUL-PWA-Messenger-Client:serve"
+            "devServerTarget": "cz-tul-pwa-messenger-client:serve"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "CZ-TUL-PWA-Messenger-Client:serve:production"
+              "devServerTarget": "cz-tul-pwa-messenger-client:serve:production"
             }
           }
         },
@@ -123,5 +123,5 @@
       }
     }
   },
-  "defaultProject": "CZ-TUL-PWA-Messenger-Client"
+  "defaultProject": "cz-tul-pwa-messenger-client"
 }
