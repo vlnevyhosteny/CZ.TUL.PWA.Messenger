@@ -24,4 +24,34 @@ export class AuthenticationService {
     logout() {
         localStorage.removeItem('currentUser');
     }
+
+    getAuthToken(): string {
+        const currentUser = localStorage.getItem('currentUser');
+
+        if (currentUser === undefined) {
+            return undefined;
+        }
+
+        const jsonObject = JSON.parse(currentUser);
+        if (jsonObject.Token === undefined) {
+            return undefined;
+        } else {
+            return jsonObject.Token;
+        }
+    }
+
+    getRefreshToken(): string {
+        const currentUser = localStorage.getItem('currentUser');
+
+        if (currentUser === undefined) {
+            return undefined;
+        }
+
+        const jsonObject = JSON.parse(currentUser);
+        if (jsonObject.RefreshToken === undefined) {
+            return undefined;
+        } else {
+            return jsonObject.RefreshToken;
+        }
+    }
 }
