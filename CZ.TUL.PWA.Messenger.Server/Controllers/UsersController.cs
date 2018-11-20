@@ -63,6 +63,16 @@ namespace CZ.TUL.PWA.Messenger.Server.Controllers
                              .Select(x => new UserViewModel { Id = x.Id, UserName = x.UserName, Name = x.Name })
                              .ToListAsync();
 
+        [HttpGet]
+        public async Task<IEnumerable<UserViewModel>> Get([FromQuery] int limit = 100, [FromQuery]int offset = 0)
+        {
+            return await this.messengerContext.Users
+                            .Select(x => new UserViewModel { Id = x.Id, UserName = x.UserName, Name = x.Name })
+                            .Skip(offset)
+                            .Take(limit)
+                            .ToListAsync();
+        }
+
         [HttpGet("{id}")]
         public async Task<UserViewModel> Get(string id) => await this.messengerContext.Users
                                                                      .Select(x => new UserViewModel { Id = x.Id, UserName = x.UserName, Name = x.Name })

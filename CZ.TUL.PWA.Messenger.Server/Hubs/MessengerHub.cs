@@ -52,7 +52,7 @@ namespace CZ.TUL.PWA.Messenger.Server.Hubs
                 Owner = owner
             });
 
-            var addressesClientIds = conversation.UserConversations
+            List<string> addressesClientIds = conversation.UserConversations
                 .Where(x => x.UserId != inputMessage.UserId)
                 .Select(x => x.UserId)
                 .ToList();

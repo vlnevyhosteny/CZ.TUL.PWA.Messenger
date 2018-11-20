@@ -19,12 +19,6 @@ namespace CZ.TUL.PWA.Messenger.Server.Controllers
         private readonly ITokenService tokenService;
         private readonly ILogger<MessagesController> logger;
 
-        private readonly PagingViewModel defaultPaging = new PagingViewModel
-        {
-            PageNumber = 1,
-            PageSize = 100
-        };
-
         public MessagesController(MessengerContext context, ITokenService tokenService, ILogger<MessagesController> logger)
         {
             this.context = context;
@@ -34,18 +28,13 @@ namespace CZ.TUL.PWA.Messenger.Server.Controllers
 
         // GET: api/Messages
         [HttpGet]
-        public async Task<IEnumerable<Message>> GetMessages([FromBody] PagingViewModel paging = null)
+        public async Task<IEnumerable<Message>> GetMessages([FromQuery] int limit = 50, [FromQuery]int offset = 0)
         {
-            if (paging == null || this.ModelState.IsValid == false)
-            {
-                paging = this.defaultPaging;
-            }
-
             string userId = await this.tokenService.GetCurrentUserId(this.User);
 
             return await this.context.Messages.Where(x => x.OwnerId == userId)
-                .Skip(paging.ItemSkipCount())
-                .Take(paging.PageSize)
+                .Skip(offset)
+                .Take(limit)
                 .ToArrayAsync();
         }
 
