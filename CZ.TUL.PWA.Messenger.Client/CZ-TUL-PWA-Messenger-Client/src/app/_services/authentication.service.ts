@@ -1,7 +1,8 @@
 ﻿import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { environment } from '../../../../cz-tul-pwa-messenger-client/src/environments/environment';
+import { ReplaySubject, throwError, Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class AuthenticationService {
@@ -21,6 +22,24 @@ export class AuthenticationService {
             }));
     }
 
+    refresh(): Observable<any> {
+        const Token = this.getAuthToken();
+        const RefreshToken = this.getRefreshToken();
+
+        const refreshResponse =  this.http.post<any>(`${this.baseUrl}/auth/refresh`, { Token, RefreshToken });
+
+        const refreshSubject = new ReplaySubject<any>(1);
+        refreshSubject.subscribe((res: any) => {
+            localStorage.setItem('currentUser', JSON.stringify(res));
+        }, error => {
+            return throwError(error);
+        });
+
+        refreshResponse.subscribe(refreshSubject);
+
+        return refreshResponse;
+    }
+
     logout() {
         localStorage.removeItem('currentUser');
     }
@@ -33,10 +52,10 @@ export class AuthenticationService {
         }
 
         const jsonObject = JSON.parse(currentUser);
-        if (jsonObject.Token === undefined) {
+        if (jsonObject.token === undefined) {
             return undefined;
         } else {
-            return jsonObject.Token;
+            return jsonObject.token;
         }
     }
 
@@ -48,10 +67,10 @@ export class AuthenticationService {
         }
 
         const jsonObject = JSON.parse(currentUser);
-        if (jsonObject.RefreshToken === undefined) {
+        if (jsonObject.refreshToken === undefined) {
             return undefined;
         } else {
-            return jsonObject.RefreshToken;
+            return jsonObject.refreshToken;
         }
     }
 }

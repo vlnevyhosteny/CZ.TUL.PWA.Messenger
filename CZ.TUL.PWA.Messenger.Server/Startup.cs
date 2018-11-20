@@ -82,8 +82,9 @@ namespace CZ.TUL.PWA.Messenger.Server
 
             app.UseCors(builder =>
                 builder.WithOrigins("http://localhost:4200")
-                .AllowAnyHeader()
-                .AllowAnyMethod());
+                        .AllowAnyOrigin()
+                        .AllowAnyHeader()
+                        .AllowAnyMethod());
 
             loggerFactory.AddSerilog();
 
