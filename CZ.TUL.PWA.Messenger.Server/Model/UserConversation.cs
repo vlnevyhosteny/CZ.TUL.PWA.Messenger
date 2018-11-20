@@ -20,6 +20,18 @@
             set;
         }
 
+        public bool NotRead
+        {
+            get;
+            set;
+        }
+
+        public int NotReadCount
+        {
+            get;
+            set;
+        }
+
         public User User
         {
             get;
