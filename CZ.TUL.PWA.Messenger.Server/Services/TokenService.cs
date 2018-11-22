@@ -76,10 +76,7 @@ namespace CZ.TUL.PWA.Messenger.Server.Services
             return user.Id;
         }
 
-        public async Task<RefreshToken> GetRefreshToken(User user)
-        {
-            return await this.context.RefreshTokens.SingleOrDefaultAsync(x => x.UserId == user.Id);
-        }
+        public Task<RefreshToken> GetRefreshToken(User user) => this.context.RefreshTokens.SingleOrDefaultAsync(x => x.UserId == user.Id);
 
         public string GetUserNameFromJwtToken(string token)
         {
@@ -93,9 +90,8 @@ namespace CZ.TUL.PWA.Messenger.Server.Services
             };
 
             var tokenHandler = new JwtSecurityTokenHandler();
-            SecurityToken securityToken;
 
-            var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out securityToken);
+            var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out SecurityToken securityToken);
             if (!(securityToken is JwtSecurityToken jwtSecurityToken)
                 || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
             {
