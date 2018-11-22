@@ -22,22 +22,20 @@ export class AuthenticationService {
             }));
     }
 
-    refresh(): Observable<any> {
+    refresh(): Observable<string> {
         const Token = this.getAuthToken();
         const RefreshToken = this.getRefreshToken();
 
-        const refreshResponse =  this.http.post<any>(`${this.baseUrl}/auth/refresh`, { Token, RefreshToken });
+        return this.http.post<any>(`${this.baseUrl}/auth/refresh`, { Token, RefreshToken })
+                    .pipe(
+                        map(res => {
+                            if (res) {
+                                localStorage.setItem('currentUser', JSON.stringify(res));
+                            }
 
-        const refreshSubject = new ReplaySubject<any>(1);
-        refreshSubject.subscribe((res: any) => {
-            localStorage.setItem('currentUser', JSON.stringify(res));
-        }, error => {
-            return throwError(error);
-        });
-
-        refreshResponse.subscribe(refreshSubject);
-
-        return refreshResponse;
+                            return res;
+                        })
+                    );
     }
 
     logout() {
