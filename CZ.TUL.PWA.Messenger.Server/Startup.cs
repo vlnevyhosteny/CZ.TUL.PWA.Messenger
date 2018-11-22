@@ -1,4 +1,5 @@
 using System.Text;
+using CZ.TUL.PWA.Messenger.Server.Hubs;
 using CZ.TUL.PWA.Messenger.Server.Model;
 using CZ.TUL.PWA.Messenger.Server.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -31,6 +32,8 @@ namespace CZ.TUL.PWA.Messenger.Server
             services.AddMvc();
 
             services.AddCors();
+
+            services.AddSignalR();
 
             services
                 .AddDbContext<MessengerContext>(option => option.UseMySql(this.configuration
@@ -92,6 +95,11 @@ namespace CZ.TUL.PWA.Messenger.Server
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Messenger API V1");
+            });
+
+            app.UseSignalR(routes =>
+            {
+                routes.MapHub<MessengerHub>("/chat");
             });
 
             app.UseAuthentication();

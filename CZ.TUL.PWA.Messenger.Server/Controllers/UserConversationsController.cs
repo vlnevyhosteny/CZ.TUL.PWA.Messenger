@@ -21,12 +21,6 @@ namespace CZ.TUL.PWA.Messenger.Server.Controllers
         private readonly ITokenService tokenService;
         private readonly ILogger<UserConversationsController> logger;
 
-        private readonly PagingViewModel defaultPaging = new PagingViewModel
-        {
-            PageNumber = 1,
-            PageSize = 100
-        };
-
         public UserConversationsController(MessengerContext context, TokenService tokenService, ILogger<UserConversationsController> logger)
         {
             this.context = context;
@@ -36,34 +30,24 @@ namespace CZ.TUL.PWA.Messenger.Server.Controllers
 
         // GET: api/UserConversations
         [HttpGet]
-        public async Task<IEnumerable<UserConversation>> GetUserConversation([FromBody] PagingViewModel paging = null)
+        public async Task<IEnumerable<UserConversation>> GetUserConversation([FromQuery] int limit = 100, [FromQuery]int offset = 0)
         {
-            if (paging == null || this.ModelState.IsValid == false)
-            {
-                paging = this.defaultPaging;
-            }
-
             string userId = await this.tokenService.GetCurrentUserId(this.User);
 
             return await this.context.UserConversations.Where(x => x.UserId == userId)
-                .Skip(paging.ItemSkipCount())
-                .Take(paging.PageSize)
+                .Skip(offset)
+                .Take(limit)
                 .ToArrayAsync();
         }
 
         [HttpGet("owned")]
-        public async Task<IEnumerable<UserConversation>> GetOwnedUserConversation([FromBody] PagingViewModel paging = null)
+        public async Task<IEnumerable<UserConversation>> GetOwnedUserConversation([FromQuery] int limit = 100, [FromQuery]int offset = 0)
         {
-            if (paging == null || this.ModelState.IsValid == false)
-            {
-                paging = this.defaultPaging;
-            }
-
             string userId = await this.tokenService.GetCurrentUserId(this.User);
 
             return await this.context.UserConversations.Where(x => x.UserId == userId && x.IsOwner)
-                .Skip(paging.ItemSkipCount())
-                .Take(paging.PageSize)
+                .Skip(offset)
+                .Take(limit)
                 .ToArrayAsync();
         }
 
