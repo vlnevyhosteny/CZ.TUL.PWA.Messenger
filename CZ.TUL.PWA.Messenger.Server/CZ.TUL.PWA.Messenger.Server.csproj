@@ -6,10 +6,39 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\" />
+    <Folder Include="Model\" />
+    <Folder Include="Migrations\" />
+    <Folder Include="Config\" />
+    <Folder Include="Services\" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR" Version="1.0.4" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="2.1.4" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.1.4" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.1.4" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.1" />
+    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="2.1.2" />
+    <PackageReference Include="Serilog.Extensions.Logging.File" Version="1.1.0" />
+    <PackageReference Include="StyleCop.Analyzers" Version="1.0.2" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Remove="Migrations\MessengerContextFactory.cs" />
+    <Compile Remove="Auth\PasswordHasher.cs" />
+    <Compile Remove="Model\AppUser.cs" />
+    <Compile Remove="Config\AuthSecretConfig.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Remove="Properties\secretappsettings.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Update="Config\appsettings.development.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="Config\secretappsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
 </Project>
