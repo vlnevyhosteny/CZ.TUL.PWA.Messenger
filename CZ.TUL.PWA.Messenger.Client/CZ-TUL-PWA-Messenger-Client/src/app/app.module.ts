@@ -1,10 +1,10 @@
-﻿import { NgModule }      from '@angular/core';
+﻿import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { ReactiveFormsModule }    from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
-import { AppComponent }  from './app.component';
-import { routing }        from './app.routing';
+import { AppComponent } from './app.component';
+import { routing } from './app.routing';
 
 import { JwtInterceptor, ErrorInterceptor } from './_helpers';
 import { HomeComponent } from './home';
@@ -18,8 +18,7 @@ import { RegistrationComponent } from './registration/registration.component';
         routing,
         BrowserModule,
         ReactiveFormsModule,
-        HttpClientModule,
-        routing
+        HttpClientModule
     ],
     declarations: [
         AppComponent,
