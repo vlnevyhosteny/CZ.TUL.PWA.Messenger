@@ -6,6 +6,7 @@ import { ConversationService } from '../_services/conversations.service';
 @Component({templateUrl: 'home.component.html'})
 export class HomeComponent implements OnInit {
     conversations: Conversation[] = [];
+    selectedConversation: Conversation;
 
     constructor(private userService: UserService,
         private conversationService: ConversationService) {}

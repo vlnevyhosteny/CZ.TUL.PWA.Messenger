@@ -59,11 +59,6 @@ namespace CZ.TUL.PWA.Messenger.Server.Controllers
         }
 
         [HttpGet]
-        public async Task<IEnumerable<UserViewModel>> Get() => await this.messengerContext.Users
-                             .Select(x => new UserViewModel { Id = x.Id, UserName = x.UserName, Name = x.Name })
-                             .ToListAsync();
-
-        [HttpGet]
         public async Task<IEnumerable<UserViewModel>> Get([FromQuery] int limit = 100, [FromQuery]int offset = 0)
             => await this.messengerContext.Users
                             .Skip(offset)
@@ -71,8 +66,8 @@ namespace CZ.TUL.PWA.Messenger.Server.Controllers
                             .Select(x => new UserViewModel { Id = x.Id, UserName = x.UserName, Name = x.Name })
                             .ToListAsync();
 
-        [HttpGet]
-        public async Task<IEnumerable<UserViewModel>> Get([FromQuery] string userNameContains, [FromQuery] int limit = 100, [FromQuery]int offset = 0)
+        [HttpGet("userNameContains")]
+        public async Task<IEnumerable<UserViewModel>> GetUserNameContains([FromQuery] string userNameContains, [FromQuery] int limit = 100, [FromQuery]int offset = 0)
             => await this.messengerContext.Users
                             .Where(x => x.UserName.Contains(userNameContains))
                             .Skip(offset)
