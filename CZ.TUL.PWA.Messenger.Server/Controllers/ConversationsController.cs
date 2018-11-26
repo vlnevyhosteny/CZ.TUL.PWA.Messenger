@@ -1,16 +1,16 @@
-﻿using CZ.TUL.PWA.Messenger.Server.Model;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using CZ.TUL.PWA.Messenger.Server.Services;
-using System.Threading.Tasks;
-using CZ.TUL.PWA.Messenger.Server.ViewModels;
+﻿using System;
 using System.Collections.Generic;
-using System;
 using System.Linq;
-using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
 using CZ.TUL.PWA.Messenger.Server.Extensions;
+using CZ.TUL.PWA.Messenger.Server.Model;
+using CZ.TUL.PWA.Messenger.Server.Services;
+using CZ.TUL.PWA.Messenger.Server.ViewModels;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using Swashbuckle.AspNetCore.Swagger;
 
 namespace CZ.TUL.PWA.Messenger.Server.Controllers
 {
@@ -21,12 +21,18 @@ namespace CZ.TUL.PWA.Messenger.Server.Controllers
         private readonly MessengerContext messengerContext;
         private readonly ITokenService tokenService;
         private readonly IConversationService conversationService;
+        private readonly ILogger<ConversationsController> logger;
 
-        public ConversationsController(MessengerContext messengerContext, IConversationService conversationService, ITokenService tokenService)
+        public ConversationsController(
+            MessengerContext messengerContext,
+            IConversationService conversationService,
+            ITokenService tokenService,
+            ILogger<ConversationsController> logger)
         {
             this.messengerContext = messengerContext;
             this.conversationService = conversationService;
             this.tokenService = tokenService;
+            this.logger = logger;
         }
 
         [HttpPost]
@@ -64,44 +70,84 @@ namespace CZ.TUL.PWA.Messenger.Server.Controllers
                              }).ToListAsync();
         }
 
-        //[HttpGet("{id}")]
-        //public async Task<UserViewModel> Get(string id) => await this.messengerContext.Users
-        //                                                             .Select(x => new UserViewModel { Id = x.Id, UserName = x.UserName, Name = x.Name })
-        //                                                             .SingleOrDefaultAsync(x => x.Id == id);
+        [HttpGet("{id}")]
+        public async Task<ConversationViewModel> Get([FromRoute] int id)
+        {
+            string userId = (await this.tokenService.GetCurrentUser(this.User)).Id;
 
-        //[HttpPut("{id}")]
-        //public async Task<IActionResult> Update(string id, [FromBody]UserViewModel userViewModel)
-        //{
-        //    if (!this.ModelState.IsValid)
-        //    {
-        //        return this.BadRequest();
-        //    }
+            return await this.messengerContext.Conversations
+                                    .Include(x => x.UserConversations)
+                                    .Select(x => new ConversationViewModel
+                                    {
+                                        ConversationId = x.ConversationId,
+                                        Name = x.Name,
+                                        Addressees = x.UserConversations.Select(y => y.User.ToViewModel())
+                                    })
+                                    .SingleOrDefaultAsync(x => x.ConversationId == id
+                                                          && x.Addressees.Any(y => y.Id == userId));
+        }
 
-        //    var user = await this.userManager.FindByIdAsync(id);
-        //    if (user == null)
-        //    {
-        //        return this.NotFound();
-        //    }
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutMessage([FromRoute] int id, [FromBody] ConversationViewModel conversation)
+        {
+            if (!this.ModelState.IsValid)
+            {
+                return this.BadRequest(this.ModelState);
+            }
 
-        //    user.Name = userViewModel.Name;
+            if (id != conversation.ConversationId)
+            {
+                return this.BadRequest("Conversation ids are not the same.");
+            }
 
-        //    await this.userManager.UpdateAsync(user);
+            string userId = (await this.tokenService.GetCurrentUser(this.User)).Id;
+            if (this.messengerContext.UserConversations.Any(x => x.UserId == userId && x.ConversationId == id) == false)
+            {
+                return this.BadRequest("Conversation not belongs to user");
+            }
 
-        //    return this.NoContent();
-        //}
+            Conversation conversationUpdated = new Conversation
+            {
+                ConversationId = conversation.ConversationId,
+                Name = conversation.Name
+            };
 
-        //[HttpDelete("{id}")]
-        //public async Task<IAsyncResult> Delete(string id)
-        //{
-        //    var user = await this.userManager.FindByIdAsync(id);
-        //    if (user == null)
-        //    {
-        //        return Task.FromResult(this.NotFound());
-        //    }
+            this.messengerContext.Entry(conversationUpdated).State = EntityState.Modified;
 
-        //    await this.userManager.DeleteAsync(user);
+            try
+            {
+                await this.messengerContext.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException e)
+            {
+                this.logger.LogError("Unable to update Conversation", e);
 
-        //    return Task.FromResult(this.NoContent());
-        //}
+                throw;
+            }
+
+            return this.NoContent();
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete([FromRoute] int id)
+        {
+            if (!this.ModelState.IsValid)
+            {
+                return this.BadRequest(this.ModelState);
+            }
+
+            string userId = (await this.tokenService.GetCurrentUser(this.User)).Id;
+            if (this.messengerContext.UserConversations.Any(x => x.UserId == userId && x.ConversationId == id) == false)
+            {
+                return this.BadRequest("Conversation not belongs to user");
+            }
+
+            Conversation conversation = await this.messengerContext.Conversations.FindAsync(id);
+
+            this.messengerContext.Conversations.Remove(conversation);
+            await this.messengerContext.SaveChangesAsync();
+
+            return this.Ok();
+        }
     }
 }
