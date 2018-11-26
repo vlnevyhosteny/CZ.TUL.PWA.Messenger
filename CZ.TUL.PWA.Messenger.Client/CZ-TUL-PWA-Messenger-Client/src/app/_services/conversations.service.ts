@@ -12,18 +12,8 @@ export class ConversationService {
 
     constructor(private http: HttpClient) { }
 
-    getConversationForUser(userId: string): Observable<Conversation[]> {
-        return this.http.get(this.baseUrl)
-            .pipe(
-                map((res: Response) => {
-                    const parsed = res.json();
-                    var conversations: Conversation[] = [];
-
-
-                    return conversations;
-                }),
-                catchError(error => of([]))
-            );
+    getConversationForUser(userId: string) {
+        return this.http.get<Array<Conversation>>(this.baseUrl);
     }
 
 }
