@@ -49,8 +49,7 @@ namespace CZ.TUL.PWA.Messenger.Server.Controllers
         {
             string userId = (await this.tokenService.GetCurrentUser(this.User)).Id;
 
-            return await this.context.Messages.Where(x => x.OwnerId == userId
-                                                     && x.Conversation.ConversationId == id)
+            return await this.context.Messages.Where(x => x.Conversation.ConversationId == id)
                 .Include(x => x.Conversation)
                 .Include(x => x.Owner)
                 .Skip(offset)

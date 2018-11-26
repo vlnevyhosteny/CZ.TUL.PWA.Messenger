@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using CZ.TUL.PWA.Messenger.Server.Extensions;
 
 namespace CZ.TUL.PWA.Messenger.Server.Controllers
 {
@@ -51,15 +52,16 @@ namespace CZ.TUL.PWA.Messenger.Server.Controllers
         {
             string userId = (await this.tokenService.GetCurrentUser(this.User)).Id;
 
-            return await this.messengerContext.UserConversations
-                             .Include(x => x.Conversation)
-                             .Where(x => x.UserId == userId)
+            return await this.messengerContext.Conversations
+                             .Include(x => x.UserConversations)
+                             .Where(x => x.UserConversations
+                                    .Any(y => y.UserId == userId))
                              .Select(x => new ConversationViewModel
                              {
-                                ConversationId = x.ConversationId,
-                                Name = x.Conversation.Name
-                             })
-                             .ToListAsync();
+                                 ConversationId = x.ConversationId,
+                                 Name = x.Name,
+                                 Addressees = x.UserConversations.Select(y => y.User.ToViewModel())
+                             }).ToListAsync();
         }
 
         //[HttpGet("{id}")]
