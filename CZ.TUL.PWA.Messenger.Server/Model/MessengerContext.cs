@@ -66,6 +66,14 @@ namespace CZ.TUL.PWA.Messenger.Server.Model
                    .HasOne(t => t.User)
                    .WithOne()
                    .HasForeignKey<RefreshToken>(t => t.UserId);
+
+            builder.Entity<Message>()
+                   .Property(x => x.MessageId)
+                   .ValueGeneratedOnAdd();
+
+            builder.Entity<Conversation>()
+                   .Property(x => x.ConversationId)
+                   .ValueGeneratedOnAdd();
         }
 
         private void SpecifyMySqlIndexLengthSpecification(ModelBuilder builder)
