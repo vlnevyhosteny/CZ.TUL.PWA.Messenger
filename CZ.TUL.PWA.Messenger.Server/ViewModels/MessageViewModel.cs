@@ -1,5 +1,4 @@
-﻿using CZ.TUL.PWA.Messenger.Server.Model;
-using System;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace CZ.TUL.PWA.Messenger.Server.ViewModels
@@ -12,13 +11,13 @@ namespace CZ.TUL.PWA.Messenger.Server.ViewModels
             set;
         }
 
-        public User Owner
+        public UserViewModel Owner
         {
             get;
             set;
         }
 
-        public Conversation Conversation
+        public ConversationViewModel Conversation
         {
             get;
             set;

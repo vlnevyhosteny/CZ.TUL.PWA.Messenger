@@ -6,6 +6,8 @@ using Microsoft.EntityFrameworkCore;
 using CZ.TUL.PWA.Messenger.Server.Model;
 using CZ.TUL.PWA.Messenger.Server.Services;
 using Microsoft.Extensions.Logging;
+using CZ.TUL.PWA.Messenger.Server.Extensions;
+using CZ.TUL.PWA.Messenger.Server.ViewModels;
 
 namespace CZ.TUL.PWA.Messenger.Server.Controllers
 {
@@ -26,13 +28,14 @@ namespace CZ.TUL.PWA.Messenger.Server.Controllers
 
         // GET: api/Messages
         [HttpGet]
-        public async Task<IEnumerable<Message>> GetMessages([FromQuery] int limit = 50, [FromQuery]int offset = 0)
+        public async Task<IEnumerable<MessageViewModel>> GetMessages([FromQuery] int limit = 50, [FromQuery]int offset = 0)
         {
             string userId = (await this.tokenService.GetCurrentUser(this.User)).Id;
 
             return await this.context.Messages.Where(x => x.OwnerId == userId)
                 .Skip(offset)
                 .Take(limit)
+                .Select(x => x.ToViewModel())
                 .ToArrayAsync();
         }
 
@@ -55,7 +58,7 @@ namespace CZ.TUL.PWA.Messenger.Server.Controllers
                 return this.NotFound();
             }
 
-            return this.Ok(message);
+            return this.Ok(message.ToViewModel());
         }
 
         // PUT: api/Messages/5
@@ -113,7 +116,7 @@ namespace CZ.TUL.PWA.Messenger.Server.Controllers
             this.context.Messages.Add(message);
             await this.context.SaveChangesAsync();
 
-            return this.CreatedAtAction("GetMessage", new { id = message.MessageId }, message);
+            return this.CreatedAtAction("GetMessage", new { id = message.MessageId }, message.ToViewModel());
         }
 
         // DELETE: api/Messages/5
@@ -136,7 +139,7 @@ namespace CZ.TUL.PWA.Messenger.Server.Controllers
             this.context.Messages.Remove(message);
             await this.context.SaveChangesAsync();
 
-            return this.Ok(message);
+            return this.Ok();
         }
 
         private bool MessageExists(int id)
