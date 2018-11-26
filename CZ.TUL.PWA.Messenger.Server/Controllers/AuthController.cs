@@ -49,6 +49,7 @@ namespace CZ.TUL.PWA.Messenger.Server.Controllers
 
             return new OkObjectResult(new
             {
+                user,
                 token,
                 refreshToken = refreshTokenString
             });
@@ -80,6 +81,7 @@ namespace CZ.TUL.PWA.Messenger.Server.Controllers
 
             return new ObjectResult(new
             {
+                user,
                 token = newJwtToken,
                 refreshToken = newRefreshToken
             });

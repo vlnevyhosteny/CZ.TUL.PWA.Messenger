@@ -6,8 +6,6 @@ using Microsoft.EntityFrameworkCore;
 using CZ.TUL.PWA.Messenger.Server.Model;
 using CZ.TUL.PWA.Messenger.Server.Services;
 using Microsoft.Extensions.Logging;
-using CZ.TUL.PWA.Messenger.Server.ViewModels;
-using CZ.TUL.PWA.Messenger.Server.Extensions;
 
 namespace CZ.TUL.PWA.Messenger.Server.Controllers
 {
@@ -30,7 +28,7 @@ namespace CZ.TUL.PWA.Messenger.Server.Controllers
         [HttpGet]
         public async Task<IEnumerable<Message>> GetMessages([FromQuery] int limit = 50, [FromQuery]int offset = 0)
         {
-            string userId = await this.tokenService.GetCurrentUserId(this.User);
+            string userId = (await this.tokenService.GetCurrentUser(this.User)).Id;
 
             return await this.context.Messages.Where(x => x.OwnerId == userId)
                 .Skip(offset)
@@ -47,7 +45,7 @@ namespace CZ.TUL.PWA.Messenger.Server.Controllers
                 return this.BadRequest(this.ModelState);
             }
 
-            string userId = await this.tokenService.GetCurrentUserId(this.User);
+            string userId = (await this.tokenService.GetCurrentUser(this.User)).Id;
 
             var message = await this.context.Messages.SingleOrDefaultAsync(x => x.OwnerId == userId
                                                                             && x.MessageId == id);
@@ -74,7 +72,7 @@ namespace CZ.TUL.PWA.Messenger.Server.Controllers
                 return this.BadRequest();
             }
 
-            string userId = await this.tokenService.GetCurrentUserId(this.User);
+            string userId = (await this.tokenService.GetCurrentUser(this.User)).Id;
             if (this.context.Messages.Any(x => x.MessageId == id && x.OwnerId == userId) == false)
             {
                 return this.BadRequest("Message not belongs to user");
@@ -127,7 +125,7 @@ namespace CZ.TUL.PWA.Messenger.Server.Controllers
                 return this.BadRequest(this.ModelState);
             }
 
-            string userId = await this.tokenService.GetCurrentUserId(this.User);
+            string userId = (await this.tokenService.GetCurrentUser(this.User)).Id;
             var message = await this.context.Messages.SingleOrDefaultAsync(x => x.OwnerId == userId
                                                                             && x.MessageId == id);
             if (message == null)

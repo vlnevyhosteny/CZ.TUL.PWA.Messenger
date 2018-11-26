@@ -37,9 +37,10 @@ namespace CZ.TUL.PWA.Messenger.Server
 
             services
                 .AddDbContext<MessengerContext>(option => option.UseMySql(this.configuration
-                                                                              .GetConnectionString("MessengerDatabase")));
+                                                                              .GetConnectionString("MessengerDatabase")));                
 
             services.AddScoped<ITokenService, TokenService>();
+            services.AddScoped<IConversationService, ConversationService>();
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                     .AddJwtBearer(options =>

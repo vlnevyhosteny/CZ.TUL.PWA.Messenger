@@ -1,0 +1,29 @@
+import { Injectable } from '@angular/core';
+import { environment } from 'src/environments/environment';
+import { HttpClient } from '@angular/common/http';
+import { Observable, of } from 'rxjs';
+import { Conversation } from '../_models/conversation';
+import { map, catchError } from 'rxjs/operators';
+
+@Injectable({ providedIn: 'root' })
+export class ConversationService {
+
+    private baseUrl = environment.messengerApi + '/Conversations';
+
+    constructor(private http: HttpClient) { }
+
+    getConversationForUser(userId: string): Observable<Conversation[]> {
+        return this.http.get(this.baseUrl)
+            .pipe(
+                map((res: Response) => {
+                    const parsed = res.json();
+                    var conversations: Conversation[] = [];
+
+
+                    return conversations;
+                }),
+                catchError(error => of([]))
+            );
+    }
+
+}

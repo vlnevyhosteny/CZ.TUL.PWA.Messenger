@@ -22,6 +22,6 @@ namespace CZ.TUL.PWA.Messenger.Server.Services
 
         Task<User> ValidateRefreshToken(string userName, string refreshToken);
 
-        Task<string> GetCurrentUserId(ClaimsPrincipal claimsPrincipal);
+        Task<User> GetCurrentUser(ClaimsPrincipal claimsPrincipal);
     }
 }

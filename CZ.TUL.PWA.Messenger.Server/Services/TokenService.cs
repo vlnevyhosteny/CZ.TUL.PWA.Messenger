@@ -69,11 +69,9 @@ namespace CZ.TUL.PWA.Messenger.Server.Services
             }
         }
 
-        public async Task<string> GetCurrentUserId(ClaimsPrincipal claimsPrincipal)
+        public Task<User> GetCurrentUser(ClaimsPrincipal claimsPrincipal)
         {
-            User user = await this.userManager.GetUserAsync(claimsPrincipal);
-
-            return user.Id;
+            return this.userManager.FindByNameAsync(claimsPrincipal.Identity.Name);
         }
 
         public Task<RefreshToken> GetRefreshToken(User user) => this.context.RefreshTokens.SingleOrDefaultAsync(x => x.UserId == user.Id);

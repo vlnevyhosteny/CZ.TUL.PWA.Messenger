@@ -32,7 +32,7 @@ namespace CZ.TUL.PWA.Messenger.Server.Controllers
         [HttpGet]
         public async Task<IEnumerable<UserConversation>> GetUserConversation([FromQuery] int limit = 100, [FromQuery]int offset = 0)
         {
-            string userId = await this.tokenService.GetCurrentUserId(this.User);
+            string userId = (await this.tokenService.GetCurrentUser(this.User)).Id;
 
             return await this.context.UserConversations.Where(x => x.UserId == userId)
                 .Skip(offset)
@@ -43,7 +43,7 @@ namespace CZ.TUL.PWA.Messenger.Server.Controllers
         [HttpGet("owned")]
         public async Task<IEnumerable<UserConversation>> GetOwnedUserConversation([FromQuery] int limit = 100, [FromQuery]int offset = 0)
         {
-            string userId = await this.tokenService.GetCurrentUserId(this.User);
+            string userId = (await this.tokenService.GetCurrentUser(this.User)).Id;
 
             return await this.context.UserConversations.Where(x => x.UserId == userId && x.IsOwner)
                 .Skip(offset)
@@ -60,7 +60,7 @@ namespace CZ.TUL.PWA.Messenger.Server.Controllers
                 return this.BadRequest(this.ModelState);
             }
 
-            string userId = await this.tokenService.GetCurrentUserId(this.User);
+            string userId = (await this.tokenService.GetCurrentUser(this.User)).Id;
 
             var userConversation = await this.context.UserConversations.SingleOrDefaultAsync(x => x.UserId == userId
                                                                                             && x.ConversationId == id);
@@ -87,7 +87,7 @@ namespace CZ.TUL.PWA.Messenger.Server.Controllers
                 return this.BadRequest();
             }
 
-            string userId = await this.tokenService.GetCurrentUserId(this.User);
+            string userId = (await this.tokenService.GetCurrentUser(this.User)).Id;
             if (this.context.UserConversations.Any(x => x.ConversationId == id && x.UserId == userId && x.IsOwner) == false)
             {
                 return this.BadRequest("UserConversation not belongs to user");
@@ -154,7 +154,7 @@ namespace CZ.TUL.PWA.Messenger.Server.Controllers
                 return this.BadRequest(this.ModelState);
             }
 
-            string userId = await this.tokenService.GetCurrentUserId(this.User);
+            string userId = (await this.tokenService.GetCurrentUser(this.User)).Id;
             var userConversation = await this.context.UserConversations.SingleOrDefaultAsync(x => x.UserId == userId
                                                                                             && x.ConversationId == id);
             if (userConversation == null)

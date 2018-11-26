@@ -18,84 +18,88 @@ namespace CZ.TUL.PWA.Messenger.Server.Controllers
     public class ConversationsController : Controller
     {
         private readonly MessengerContext messengerContext;
-        private readonly UserManager<User> userManager;
-        private readonly ConversationService conversationService;
+        private readonly ITokenService tokenService;
+        private readonly IConversationService conversationService;
 
-        public ConversationsController(MessengerContext messengerContext, UserManager<User> userManager, ConversationService conversationService)
+        public ConversationsController(MessengerContext messengerContext, IConversationService conversationService, ITokenService tokenService)
         {
             this.messengerContext = messengerContext;
-            this.userManager = userManager;
             this.conversationService = conversationService;
+            this.tokenService = tokenService;
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] UserCredentialsViewModel userViewModel)
+        public async Task<IActionResult> Post([FromBody] ConversationViewModel conversationViewModel)
         {
             if (!this.ModelState.IsValid)
             {
                 return this.BadRequest(this.ModelState);
             }
 
-            var user = new User()
+            var conversation = new Conversation()
             {
-                UserName = userViewModel.UserName,
-                Name = userViewModel.Name
+                Name = conversationViewModel.Name
             };
 
-            var result = await this.userManager.CreateAsync(user, userViewModel.Password);
+            var result = await this.messengerContext.AddAsync(conversation);
 
-            if (!result.Succeeded)
-            {
-                // TODO
-                return new BadRequestResult();
-            }
-
-            return new OkObjectResult("Account created");
+            return new OkObjectResult(result);
         }
 
         [HttpGet]
-        public async Task<IEnumerable<UserViewModel>> Get() => await this.messengerContext.Users
-                             .Select(x => new UserViewModel { Id = x.Id, UserName = x.UserName, Name = x.Name })
+        public async Task<IEnumerable<ConversationViewModel>> Get()
+        {
+            string userId = (await this.tokenService.GetCurrentUser(this.User)).Id;
+
+            return await this.messengerContext.UserConversations
+                             .Include(x => x.Conversation)
+                             .Where(x => x.UserId == userId)
+                             .Select(x => new ConversationViewModel
+                             {
+                                ConversationId = x.ConversationId,
+                                Name = x.Conversation.Name
+                             })
                              .ToListAsync();
-
-        [HttpGet("{id}")]
-        public async Task<UserViewModel> Get(string id) => await this.messengerContext.Users
-                                                                     .Select(x => new UserViewModel { Id = x.Id, UserName = x.UserName, Name = x.Name })
-                                                                     .SingleOrDefaultAsync(x => x.Id == id);
-
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Update(string id, [FromBody]UserViewModel userViewModel)
-        {
-            if (!this.ModelState.IsValid)
-            {
-                return this.BadRequest();
-            }
-
-            var user = await this.userManager.FindByIdAsync(id);
-            if (user == null)
-            {
-                return this.NotFound();
-            }
-
-            user.Name = userViewModel.Name;
-
-            await this.userManager.UpdateAsync(user);
-
-            return this.NoContent();
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IAsyncResult> Delete(string id)
-        {
-            var user = await this.userManager.FindByIdAsync(id);
-            if (user == null)
-            {
-                return Task.FromResult(this.NotFound());
-            }
+        //[HttpGet("{id}")]
+        //public async Task<UserViewModel> Get(string id) => await this.messengerContext.Users
+        //                                                             .Select(x => new UserViewModel { Id = x.Id, UserName = x.UserName, Name = x.Name })
+        //                                                             .SingleOrDefaultAsync(x => x.Id == id);
 
-            await this.userManager.DeleteAsync(user);
+        //[HttpPut("{id}")]
+        //public async Task<IActionResult> Update(string id, [FromBody]UserViewModel userViewModel)
+        //{
+        //    if (!this.ModelState.IsValid)
+        //    {
+        //        return this.BadRequest();
+        //    }
 
-            return Task.FromResult(this.NoContent());
-        }
+        //    var user = await this.userManager.FindByIdAsync(id);
+        //    if (user == null)
+        //    {
+        //        return this.NotFound();
+        //    }
+
+        //    user.Name = userViewModel.Name;
+
+        //    await this.userManager.UpdateAsync(user);
+
+        //    return this.NoContent();
+        //}
+
+        //[HttpDelete("{id}")]
+        //public async Task<IAsyncResult> Delete(string id)
+        //{
+        //    var user = await this.userManager.FindByIdAsync(id);
+        //    if (user == null)
+        //    {
+        //        return Task.FromResult(this.NotFound());
+        //    }
+
+        //    await this.userManager.DeleteAsync(user);
+
+        //    return Task.FromResult(this.NoContent());
+        //}
     }
 }

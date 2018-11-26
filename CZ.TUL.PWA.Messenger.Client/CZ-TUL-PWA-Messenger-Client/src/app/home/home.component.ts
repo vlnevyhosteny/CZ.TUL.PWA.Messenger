@@ -3,16 +3,20 @@ import { first } from 'rxjs/operators';
 
 import { User } from '../_models';
 import { UserService } from '../_services';
+import { Conversation } from '../_models/conversation';
+import { ConversationService } from '../_services/conversations.service';
 
 @Component({templateUrl: 'home.component.html'})
 export class HomeComponent implements OnInit {
-    users: User[] = [];
+    conversations: Conversation[] = [];
 
-    constructor(private userService: UserService) {}
+    constructor(private userService: UserService,
+        private conversationService: ConversationService) {}
 
     ngOnInit() {
-        this.userService.getAll().pipe(first()).subscribe(users => {
-            this.users = users;
-        });
+        this.conversationService.getConversationForUser('9e2b97e8-5c50-4ab4-a60f-709f16d96cfc')
+            .subscribe(conversation => {
+                this.conversations = conversation;
+            });
     }
 }
