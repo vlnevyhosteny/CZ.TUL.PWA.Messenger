@@ -33,6 +33,26 @@ namespace CZ.TUL.PWA.Messenger.Server.Controllers
             string userId = (await this.tokenService.GetCurrentUser(this.User)).Id;
 
             return await this.context.Messages.Where(x => x.OwnerId == userId)
+                .Include(x => x.Conversation)
+                .Include(x => x.Owner)
+                .Skip(offset)
+                .Take(limit)
+                .Select(x => x.ToViewModel())
+                .ToArrayAsync();
+        }
+
+        [HttpGet("Conversation/{id}")]
+        public async Task<IEnumerable<MessageViewModel>> GetMessagesOfConversation(
+            [FromRoute] int id,
+            [FromQuery] int limit = 50,
+            [FromQuery]int offset = 0)
+        {
+            string userId = (await this.tokenService.GetCurrentUser(this.User)).Id;
+
+            return await this.context.Messages.Where(x => x.OwnerId == userId
+                                                     && x.Conversation.ConversationId == id)
+                .Include(x => x.Conversation)
+                .Include(x => x.Owner)
                 .Skip(offset)
                 .Take(limit)
                 .Select(x => x.ToViewModel())
@@ -50,7 +70,10 @@ namespace CZ.TUL.PWA.Messenger.Server.Controllers
 
             string userId = (await this.tokenService.GetCurrentUser(this.User)).Id;
 
-            var message = await this.context.Messages.SingleOrDefaultAsync(x => x.OwnerId == userId
+            var message = await this.context.Messages
+                                    .Include(x => x.Conversation)
+                                    .Include(x => x.Owner)
+                                    .SingleOrDefaultAsync(x => x.OwnerId == userId
                                                                             && x.MessageId == id);
 
             if (message == null)

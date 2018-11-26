@@ -66,10 +66,10 @@ namespace CZ.TUL.PWA.Messenger.Server.Controllers
                             .Select(x => new UserViewModel { Id = x.Id, UserName = x.UserName, Name = x.Name })
                             .ToListAsync();
 
-        [HttpGet("userNameContains")]
-        public async Task<IEnumerable<UserViewModel>> GetUserNameContains([FromQuery] string userNameContains, [FromQuery] int limit = 100, [FromQuery]int offset = 0)
+        [HttpGet("UserNameContains/{contains}")]
+        public async Task<IEnumerable<UserViewModel>> GetUserNameContains([FromQuery] string contains, [FromQuery] int limit = 100, [FromQuery]int offset = 0)
             => await this.messengerContext.Users
-                            .Where(x => x.UserName.Contains(userNameContains))
+                            .Where(x => x.UserName.Contains(contains))
                             .Skip(offset)
                             .Take(limit)
                             .Select(x => new UserViewModel { Id = x.Id, UserName = x.UserName, Name = x.Name })

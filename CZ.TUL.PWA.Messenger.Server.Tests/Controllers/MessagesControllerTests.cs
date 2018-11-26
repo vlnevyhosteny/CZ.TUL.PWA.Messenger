@@ -1,15 +1,15 @@
-﻿using CZ.TUL.PWA.Messenger.Server.Model;
-using CZ.TUL.PWA.Messenger.Server.Tests.Utilities;
-using CZ.TUL.PWA.Messenger.Server.ViewModels;
-using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
+using CZ.TUL.PWA.Messenger.Server.Model;
+using CZ.TUL.PWA.Messenger.Server.Tests.Utilities;
+using CZ.TUL.PWA.Messenger.Server.ViewModels;
+using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using Xunit;
 
 namespace CZ.TUL.PWA.Messenger.Server.Tests.Controllers
@@ -45,6 +45,34 @@ namespace CZ.TUL.PWA.Messenger.Server.Tests.Controllers
             var messages = response.Content.ReadAsAsync(typeof(IEnumerable<EditMessageViewModel>)).Result as IEnumerable<EditMessageViewModel>;
 
             int messagesCount = await context.Messages.CountAsync(x => x.OwnerId == testUser.Id);
+
+            Assert.NotNull(messages);
+            Assert.Equal(messagesCount, messages.Count());
+        }
+
+        [Fact]
+        public async Task GetByConversation_ShouldSuccess()
+        {
+            var client = this.factory.CreateClient();
+
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(
+                "Bearer",
+                await AuthenticationUtilities.GetTestUserAccessTokenAsync(client));
+
+            MessengerContext context = this.factory.Server.Host.Services.GetService(typeof(MessengerContext))
+                                               as MessengerContext;
+
+            this.SeedDataForMessagesTesting(context);
+            User testUser = await context.Users.FirstAsync();
+            Conversation testConversation = await context.Conversations.FirstAsync();
+
+            var response = await client.GetAsync($"/api/messages/Conversation/{testConversation.ConversationId}");
+            response.EnsureSuccessStatusCode();
+
+            var messages = response.Content.ReadAsAsync(typeof(IEnumerable<EditMessageViewModel>)).Result as IEnumerable<EditMessageViewModel>;
+
+            int messagesCount = await context.Messages.CountAsync(x => x.OwnerId == testUser.Id
+                                                                  && x.Conversation.ConversationId == testConversation.ConversationId);
 
             Assert.NotNull(messages);
             Assert.Equal(messagesCount, messages.Count());

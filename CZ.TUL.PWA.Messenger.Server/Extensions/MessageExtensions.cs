@@ -10,8 +10,8 @@ namespace CZ.TUL.PWA.Messenger.Server.Extensions
             return new MessageViewModel
             {
                 MessageId = message.MessageId,
-                Owner = message.Owner.ToViewModel(),
-                Conversation = message.Conversation.ToViewModel(),
+                Owner = message.Owner?.ToViewModel(),
+                Conversation = message.Conversation?.ToViewModel(),
                 Content = message.Content,
                 DateSent = message.DateSent
             };
