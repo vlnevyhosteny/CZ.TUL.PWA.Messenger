@@ -12,7 +12,7 @@ export class ConversationService {
 
     constructor(private http: HttpClient) { }
 
-    getConversationForUser(userId: string) {
+    getConversations() {
         return this.http.get<Array<Conversation>>(this.baseUrl);
     }
 

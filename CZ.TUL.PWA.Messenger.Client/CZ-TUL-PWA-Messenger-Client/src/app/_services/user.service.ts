@@ -20,4 +20,6 @@ export class UserService {
     public registerUser(userName: string, password: string, name: string): Observable<any> {
         return this.http.post<any>(`${this.baseUrl}/Users`, { userName, password, name });
     }
+
+    
 }

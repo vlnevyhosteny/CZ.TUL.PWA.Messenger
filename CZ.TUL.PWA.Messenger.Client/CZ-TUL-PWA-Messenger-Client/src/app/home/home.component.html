@@ -1,11 +1,8 @@
 ﻿<div class="row userbar">
     <div class="col">
-        user image
+        {{ user.userName }}
     </div>
-    <div class="col">
-        username
-    </div>
-    <div class="col">
+    <div class="col-1">
         <p><a [routerLink]="['/login']">Logout</a></p>
     </div>
 </div>
@@ -22,20 +19,26 @@
     </div>
     <div class="col conversation">
         <div class="row">
-            <div class="col users">
-                user1, user2, ...
-            </div>
-            <div class="col-1">
-                add user
+            <div *ngFor="let address of selectedConversation.addressees" class="col">
+                {{ address.userName }}
             </div>
         </div>
         <div class="row">
-            conversation name
+            <div class="col">
+                {{ selectedConversation.name }}
+            </div>
         </div>
         <div class="row messages">
-            message1,
-            message2,
-            ...
+            <div *ngFor="let message of selectedMessages" class="row">
+                <div *ngIf="isCurrentUserOwnerOfMessage(message)" class="col"></div>
+                <div class="col">
+                    <span>
+                        {{ message.owner.userName }}
+                    </span>
+                    {{ message.content }}
+                </div>
+                <div *ngIf="isCurrentUserOwnerOfMessage(message) === false" class="col"></div>
+            </div>
         </div>
         <div class="row new-message">
             <div class="col">

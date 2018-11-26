@@ -1,4 +1,7 @@
+import { User } from './user';
+
 export class Conversation {
-    id: number;
+    conversationId: number;
     name: string;
+    addressees: User[];
 }
