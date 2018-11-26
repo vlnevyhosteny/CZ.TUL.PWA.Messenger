@@ -22,10 +22,14 @@ namespace CZ.TUL.PWA.Messenger.Server.Migrations
                 name: "UserConversation",
                 newName: "UserConversations");
 
-            migrationBuilder.RenameIndex(
+            migrationBuilder.DropIndex(
                 name: "IX_UserConversation_UserId",
+                table: "UserConversations");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserConversations_UserId",
                 table: "UserConversations",
-                newName: "IX_UserConversations_UserId");
+                column: "UserId");
 
             migrationBuilder.AddColumn<bool>(
                 name: "NotRead",
@@ -87,10 +91,14 @@ namespace CZ.TUL.PWA.Messenger.Server.Migrations
                 name: "UserConversations",
                 newName: "UserConversation");
 
-            migrationBuilder.RenameIndex(
+            migrationBuilder.DropIndex(
                 name: "IX_UserConversations_UserId",
+                table: "UserConversation");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserConversation_UserId",
                 table: "UserConversation",
-                newName: "IX_UserConversation_UserId");
+                column: "UserId");
 
             migrationBuilder.AddPrimaryKey(
                 name: "PK_UserConversation",

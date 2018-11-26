@@ -5,6 +5,7 @@ using CZ.TUL.PWA.Messenger.Server.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Serilog;
+using CZ.TUL.PWA.Messenger.Server.Extensions;
 
 namespace CZ.TUL.PWA.Messenger.Server.Controllers
 {
@@ -30,7 +31,7 @@ namespace CZ.TUL.PWA.Messenger.Server.Controllers
             }
 
             var user = await this.tokenService.ValidateUser(givenUser.UserName, givenUser.Password);
-            if (user == null)
+            if (user == null) 
             {
                 this.logger.LogInformation("Invalid login attempt");
 
@@ -49,7 +50,7 @@ namespace CZ.TUL.PWA.Messenger.Server.Controllers
 
             return new OkObjectResult(new
             {
-                user,
+                user = user.ToViewModel(),
                 token,
                 refreshToken = refreshTokenString
             });
@@ -81,7 +82,7 @@ namespace CZ.TUL.PWA.Messenger.Server.Controllers
 
             return new ObjectResult(new
             {
-                user,
+                user = user.ToViewModel(),
                 token = newJwtToken,
                 refreshToken = newRefreshToken
             });
