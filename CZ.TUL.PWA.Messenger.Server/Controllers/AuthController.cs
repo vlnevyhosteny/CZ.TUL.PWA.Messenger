@@ -31,7 +31,7 @@ namespace CZ.TUL.PWA.Messenger.Server.Controllers
             }
 
             var user = await this.tokenService.ValidateUser(givenUser.UserName, givenUser.Password);
-            if (user == null) 
+            if (user == null)
             {
                 this.logger.LogInformation("Invalid login attempt");
 

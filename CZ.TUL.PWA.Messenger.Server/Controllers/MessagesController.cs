@@ -1,13 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using CZ.TUL.PWA.Messenger.Server.Extensions;
 using CZ.TUL.PWA.Messenger.Server.Model;
 using CZ.TUL.PWA.Messenger.Server.Services;
-using Microsoft.Extensions.Logging;
-using CZ.TUL.PWA.Messenger.Server.Extensions;
 using CZ.TUL.PWA.Messenger.Server.ViewModels;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace CZ.TUL.PWA.Messenger.Server.Controllers
 {

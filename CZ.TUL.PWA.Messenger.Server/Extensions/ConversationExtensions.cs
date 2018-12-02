@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using CZ.TUL.PWA.Messenger.Server.Model;
 using CZ.TUL.PWA.Messenger.Server.ViewModels;
+
 namespace CZ.TUL.PWA.Messenger.Server.Extensions
 {
     public static class ConversationExtensions

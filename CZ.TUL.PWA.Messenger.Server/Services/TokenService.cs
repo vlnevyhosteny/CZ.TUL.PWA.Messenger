@@ -1,24 +1,19 @@
-﻿// <copyright file="TokenService.cs" company="TUL">
-// Copyright (c) PlaceholderCompany. All rights reserved.
-// </copyright>
+﻿using System;
+using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
+using System.Security.Claims;
+using System.Security.Cryptography;
+using System.Text;
+using System.Threading.Tasks;
+using CZ.TUL.PWA.Messenger.Server.Model;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 
 namespace CZ.TUL.PWA.Messenger.Server.Services
 {
-    using System;
-    using System.IdentityModel.Tokens.Jwt;
-    using System.Linq;
-    using System.Security.Claims;
-    using System.Security.Cryptography;
-    using System.Text;
-    using System.Threading.Tasks;
-    using CZ.TUL.PWA.Messenger.Server.Model;
-    using Microsoft.AspNetCore.Identity;
-    using Microsoft.EntityFrameworkCore;
-    using Microsoft.Extensions.Configuration;
-    using Serilog;
-    using Microsoft.IdentityModel.Tokens;
-    using Microsoft.Extensions.Logging;
-
     public class TokenService : ITokenService
     {
         private readonly IConfiguration configuration;
