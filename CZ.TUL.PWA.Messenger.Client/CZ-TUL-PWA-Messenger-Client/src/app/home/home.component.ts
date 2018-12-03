@@ -57,4 +57,10 @@ export class HomeComponent implements OnInit {
     sidebarCollapse() {
         this.sidebarCollapsed = !this.sidebarCollapsed;
     }
+
+    switchConversation(conversation: Conversation) {
+        this.selectedConversation = conversation;
+
+        this.getMessages();
+    }
 }

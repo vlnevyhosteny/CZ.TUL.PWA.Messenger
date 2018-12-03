@@ -5,7 +5,7 @@
             <h3>Conversations</h3>
         </div>
         <ul class="list-unstyled components">
-            <li *ngFor="let conversation of conversations">{{ conversation.name }}</li>
+            <li *ngFor="let conversation of conversations" (click)="switchConversation(conversation)"><a>{{ conversation.name }}</a></li>
         </ul>
     </nav>
 
