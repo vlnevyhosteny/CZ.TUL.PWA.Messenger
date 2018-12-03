@@ -13,6 +13,7 @@ export class HomeComponent implements OnInit {
     selectedConversation: Conversation = new Conversation();
     selectedMessages: Message[];
     user: User;
+    sidebarCollapsed = false;
 
     constructor(private userService: UserService,
         private conversationService: ConversationService,
@@ -51,5 +52,9 @@ export class HomeComponent implements OnInit {
         } else {
             return false;
         }
+    }
+
+    sidebarCollapse() {
+        this.sidebarCollapsed = !this.sidebarCollapsed;
     }
 }
