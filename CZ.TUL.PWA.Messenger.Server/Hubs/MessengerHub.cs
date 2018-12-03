@@ -23,7 +23,7 @@ namespace CZ.TUL.PWA.Messenger.Server.Hubs
             this.logger = logger;
         }
 
-        public async Task SendAsync(InputMessageViewModel inputMessage)
+        public async Task Send(InputMessageViewModel inputMessage)
         {
             Conversation conversation = await this.context.Conversations
                                                     .Include(x => x.UserConversations.Select(y => y.User))

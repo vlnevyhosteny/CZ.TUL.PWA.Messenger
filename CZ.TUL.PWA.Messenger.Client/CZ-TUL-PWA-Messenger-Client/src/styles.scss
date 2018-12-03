@@ -187,11 +187,17 @@ ul {
     transition: all 0.3s;
 
     .messages {
+        background-color: #f5f5f5;
+
         .row {
             margin-bottom: 10px;
             background-color: #47748b
         }
     }    
+
+    .new-message {
+        background-color: #999;
+    }
 }
 
 

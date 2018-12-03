@@ -54,10 +54,10 @@
             </div>
             <div class="row new-message">
                 <div class="col">
-                    new message
+                    <textarea [(ngModel)]="newMessage" name="newMessageInput"></textarea>
                 </div>
                 <div class="col-1">
-                    send
+                    <button type="button" class="btn" (click)="send()">Send</button>
                 </div>
             </div>
         </div>

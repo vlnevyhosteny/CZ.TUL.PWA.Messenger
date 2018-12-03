@@ -1,4 +1,5 @@
 using System.Text;
+using System.Threading.Tasks;
 using CZ.TUL.PWA.Messenger.Server.Hubs;
 using CZ.TUL.PWA.Messenger.Server.Model;
 using CZ.TUL.PWA.Messenger.Server.Services;
@@ -56,6 +57,23 @@ namespace CZ.TUL.PWA.Messenger.Server
                             ValidAudience = this.configuration["Auth:Audience"],
                             IssuerSigningKey = new SymmetricSecurityKey(
                             Encoding.UTF8.GetBytes(this.configuration["AuthSecret:SecurityKey"]))
+                        };
+
+                        options.Events = new JwtBearerEvents
+                        {
+                            OnMessageReceived = context =>
+                            {
+                                var accessToken = context.Request.Query["access_token"];
+
+                                var path = context.HttpContext.Request.Path;
+                                if (!string.IsNullOrEmpty(accessToken) &&
+                                    (path.StartsWithSegments("/Chat")))
+                                {
+                                    context.Token = accessToken;
+                                }
+
+                                return Task.CompletedTask;
+                            }
                         };
                     });
 

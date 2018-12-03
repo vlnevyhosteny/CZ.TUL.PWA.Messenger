@@ -6,6 +6,8 @@ import { Message } from '../_models/message';
 import { User } from '../_models/user';
 import { AuthenticationService } from '../_services/authentication.service';
 import { MessagesService } from '../_services/messages.service';
+import { HubConnection } from '@aspnet/signalr';
+import { MessengerHubService } from '../_services/messengerHub.service';
 
 @Component({templateUrl: 'home.component.html'})
 export class HomeComponent implements OnInit {
@@ -14,13 +16,26 @@ export class HomeComponent implements OnInit {
     selectedMessages: Message[];
     user: User;
     sidebarCollapsed = false;
+    newMessage: string;
+    hubConnection: HubConnection;
 
     constructor(private userService: UserService,
         private conversationService: ConversationService,
         private authenticationService: AuthenticationService,
-        private messagesService: MessagesService) {}
+        private messagesService: MessagesService,
+        private messangerHubService: MessengerHubService) {}
 
     ngOnInit() {
+        this.hubConnection = this.messangerHubService.initializeHubConnection();
+        this.hubConnection.on('broadcastMessage', (message: Message) => {
+            this.messangerHubService.receive(
+                message,
+                this.selectedConversation,
+                this.selectedMessages,
+                this.conversations);
+        });
+        this.hubConnection.start();
+
         this.user = this.authenticationService.getCurrentUser();
         this.selectedConversation.name = 'new conversation';
 
@@ -62,5 +77,24 @@ export class HomeComponent implements OnInit {
         this.selectedConversation = conversation;
 
         this.getMessages();
+    }
+
+    send() {
+        if (this.newMessage !== undefined && this.newMessage !== '') {
+            const message = new Message();
+            message.content = this.newMessage;
+            message.conversation = this.selectedConversation;
+            message.owner = this.user;
+
+            this.messangerHubService.send(message, this.hubConnection);
+
+            this.selectedMessages.push(message);
+
+            this.clearNewMessage();
+        }
+    }
+
+    clearNewMessage() {
+        this.newMessage = '';
     }
 }

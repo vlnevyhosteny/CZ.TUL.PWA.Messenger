@@ -5,7 +5,8 @@
 export const environment = {
   production: false,
 
-  messengerApi: 'https://localhost:5001/api'
+  messengerApi: 'https://localhost:5001/api',
+  messenger: 'https://localhost:5001'
 };
 
 /*
