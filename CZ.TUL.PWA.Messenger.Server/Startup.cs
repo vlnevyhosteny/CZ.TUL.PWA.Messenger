@@ -67,7 +67,7 @@ namespace CZ.TUL.PWA.Messenger.Server
 
                                 var path = context.HttpContext.Request.Path;
                                 if (!string.IsNullOrEmpty(accessToken) &&
-                                    (path.StartsWithSegments("/Chat")))
+                                    path.StartsWithSegments("/chat"))
                                 {
                                     context.Token = accessToken;
                                 }
@@ -106,7 +106,8 @@ namespace CZ.TUL.PWA.Messenger.Server
                 builder.WithOrigins("http://localhost:4200")
                         .AllowAnyOrigin()
                         .AllowAnyHeader()
-                        .AllowAnyMethod());
+                        .AllowAnyMethod()
+                        .AllowCredentials());
 
             loggerFactory.AddSerilog();
 

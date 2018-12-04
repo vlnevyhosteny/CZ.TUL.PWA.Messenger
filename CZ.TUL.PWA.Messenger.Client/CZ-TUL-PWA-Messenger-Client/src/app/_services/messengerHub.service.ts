@@ -10,7 +10,7 @@ import { AuthenticationService } from './authentication.service';
 @Injectable({ providedIn: 'root' })
 export class MessengerHubService {
 
-    private baseUrl = environment.messenger + '/Chat';
+    private baseUrl = environment.messenger + '/chat';
 
     constructor(private http: HttpClient,
                 private conversationService: ConversationService,
@@ -27,7 +27,12 @@ export class MessengerHubService {
     }
 
     send(message: Message, hubConnection: HubConnection) {
-        hubConnection.invoke('Send', message);
+        hubConnection.invoke('Send',
+            {
+                ConversationId: message.conversation.conversationId,
+                UserId: message.owner.id,
+                Content: message.content
+            });
     }
 
     receive(

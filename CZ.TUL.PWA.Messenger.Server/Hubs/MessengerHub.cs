@@ -8,10 +8,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Swashbuckle.AspNetCore.Swagger;
 
 namespace CZ.TUL.PWA.Messenger.Server.Hubs
 {
-    [Authorize]
+    //[Authorize]
     public class MessengerHub : Hub
     {
         private readonly MessengerContext context;
@@ -26,7 +27,7 @@ namespace CZ.TUL.PWA.Messenger.Server.Hubs
         public async Task Send(InputMessageViewModel inputMessage)
         {
             Conversation conversation = await this.context.Conversations
-                                                    .Include(x => x.UserConversations.Select(y => y.User))
+                                                    .Include(x => x.UserConversations)
                                                     .SingleOrDefaultAsync(x => x.ConversationId == inputMessage.ConversationId);
 
             if (conversation == null)
@@ -36,7 +37,7 @@ namespace CZ.TUL.PWA.Messenger.Server.Hubs
                 return;
             }
 
-            User owner = conversation.UserConversations.SingleOrDefault(x => x.UserId == inputMessage.UserId).User;
+            User owner = await this.context.Users.FindAsync(inputMessage.UserId);
             if (owner == null)
             {
                 this.logger.LogWarning("Meesage with no owner. Cannot be broadcasted");
@@ -51,7 +52,8 @@ namespace CZ.TUL.PWA.Messenger.Server.Hubs
                 DateSent = DateTime.Now,
                 Owner = owner
             });
-
+            await this.context.SaveChangesAsync();
+            
             List<string> addressesClientIds = conversation.UserConversations
                 .Where(x => x.UserId != inputMessage.UserId)
                 .Select(x => x.UserId)
