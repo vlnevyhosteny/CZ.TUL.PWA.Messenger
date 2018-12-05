@@ -9,10 +9,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Swashbuckle.AspNetCore.Swagger;
+using CZ.TUL.PWA.Messenger.Server.Extensions;
 
 namespace CZ.TUL.PWA.Messenger.Server.Hubs
 {
-    //[Authorize]
     public class MessengerHub : Hub
     {
         private readonly MessengerContext context;
@@ -24,6 +24,7 @@ namespace CZ.TUL.PWA.Messenger.Server.Hubs
             this.logger = logger;
         }
 
+        [Authorize]
         public async Task Send(InputMessageViewModel inputMessage)
         {
             Conversation conversation = await this.context.Conversations
@@ -45,21 +46,32 @@ namespace CZ.TUL.PWA.Messenger.Server.Hubs
                 return;
             }
 
-            await this.context.AddAsync(new Message()
+            var messageDb = new Message
             {
                 Content = inputMessage.Content,
                 Conversation = conversation,
                 DateSent = DateTime.Now,
                 Owner = owner
-            });
-            await this.context.SaveChangesAsync();
-            
+            };
+
+            try
+            {
+                await this.context.AddAsync(messageDb);
+                await this.context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                this.logger.LogError("Problem with storing message", ex);
+            }
+
             List<string> addressesClientIds = conversation.UserConversations
                 .Where(x => x.UserId != inputMessage.UserId)
                 .Select(x => x.UserId)
                 .ToList();
 
-            await this.Clients.Users(addressesClientIds).SendAsync("broadcastMessage", inputMessage);
+            MessageViewModel message = messageDb.ToViewModel();
+
+            await this.Clients.All.SendAsync("broadcastMessage", message);
         }
     }
 }

@@ -67,7 +67,7 @@ namespace CZ.TUL.PWA.Messenger.Server
 
                                 var path = context.HttpContext.Request.Path;
                                 if (!string.IsNullOrEmpty(accessToken) &&
-                                    path.StartsWithSegments("/chat"))
+                                   (path.StartsWithSegments("/chat") || path.StartsWithSegments("/chat/negotiate")))
                                 {
                                     context.Token = accessToken;
                                 }
@@ -117,12 +117,15 @@ namespace CZ.TUL.PWA.Messenger.Server
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Messenger API V1");
             });
 
+            app.UseWebSockets();
+
+            app.UseAuthentication();
+
             app.UseSignalR(routes =>
             {
                 routes.MapHub<MessengerHub>("/chat");
             });
 
-            app.UseAuthentication();
             app.UseMvc();
         }
     }
