@@ -31,35 +31,35 @@
             </div>
         </nav>
 
-        <div class="col conversation">
-            <div class="row">
+        <div class="conversation">
+            <div class="row brd-btm-1-s-mc no-margin">
                 <div *ngFor="let address of selectedConversation.addressees" class="col">
                     {{ address.userName }}
                 </div>
             </div>
-            <div class="row">
+            <div class="row brd-btm-1-s-mc no-margin">
                 <div class="col">
                     {{ selectedConversation.name }}
                 </div>
             </div>
-            <div class="row messages">
-                <div *ngFor="let message of selectedMessages" class="row">
+            <div class="row messages brd-btm-1-s-mc no-margin">
+                <div *ngFor="let message of selectedMessages" class="row no-margin">
                     <div *ngIf="isCurrentUserOwnerOfMessage(message)" class="col"></div>
-                    <div class="col">
-                        <span>
-                            {{ message.owner.userName }}
+                    <div class="col message" [className]="isCurrentUserOwnerOfMessage(message) ? 'col message my-message': 'col message'">
+                        <span class="owner">
+                            {{ message.owner.userName }}: 
                         </span>
                         {{ message.content }}
                     </div>
                     <div *ngIf="isCurrentUserOwnerOfMessage(message) === false" class="col"></div>
                 </div>
             </div>
-            <div class="row new-message">
+            <div class="row new-message no-margin ">
                 <div class="col">
                     <textarea [(ngModel)]="newMessage" name="newMessageInput"></textarea>
                 </div>
-                <div class="col-1">
-                    <button type="button" class="btn" (click)="send()">Send</button>
+                <div class="col-1 pd-bt-7">
+                    <button type="button" class="btn send" (click)="send()">Send</button>
                 </div>
             </div>
         </div>
