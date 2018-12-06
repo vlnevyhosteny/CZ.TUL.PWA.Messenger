@@ -37,7 +37,7 @@ namespace CZ.TUL.PWA.Messenger.Server.Migrations
 
                     b.Property<bool>("Connected");
 
-                    b.Property<string>("UserAnget");
+                    b.Property<string>("UserAgent");
 
                     b.Property<string>("UserId");
 
