@@ -50,7 +50,6 @@ namespace CZ.TUL.PWA.Messenger.Server.Hubs
             {
                 Content = inputMessage.Content,
                 Conversation = conversation,
-                DateSent = DateTime.Now,
                 Owner = owner
             };
 
@@ -68,9 +67,7 @@ namespace CZ.TUL.PWA.Messenger.Server.Hubs
                 .Where(x => x.UserId != inputMessage.UserId)
                 .Select(x => x.UserId)
                 .ToList();
-
-            this.Clients.Users()
-
+                
             await this.Clients.All.SendAsync("broadcastMessage", messageDb.ToFlattenViewModel());
         }
     }

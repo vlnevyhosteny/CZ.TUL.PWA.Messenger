@@ -74,6 +74,14 @@ namespace CZ.TUL.PWA.Messenger.Server.Model
             builder.Entity<Conversation>()
                    .Property(x => x.ConversationId)
                    .ValueGeneratedOnAdd();
+
+            // This is made for MySQL. TODO: should be generic
+            builder.Entity<Message>()
+                   .Property(x => x.DateSent)
+                   .HasColumnType("TIMESTAMP");
+            builder.Entity<Message>()
+                   .Property(x => x.DateSent)
+                   .HasDefaultValueSql("CURRENT_TIMESTAMP");
         }
 
         private void SpecifyMySqlIndexLengthSpecification(ModelBuilder builder)
