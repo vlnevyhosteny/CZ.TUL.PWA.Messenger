@@ -38,7 +38,7 @@
                     {{ address.userName }}
                 </div>
             </div>
-            <div class="row messages brd-btm-1-s-mc no-margin">
+            <div class="row messages no-margin">
                 <div *ngFor="let message of selectedMessages" class="row no-margin">
                     <div *ngIf="isCurrentUserOwnerOfMessage(message)" class="col"></div>
                     <div class="col message" [className]="isCurrentUserOwnerOfMessage(message) ? 'col message my-message': 'col message'">
@@ -50,7 +50,7 @@
                     <div *ngIf="isCurrentUserOwnerOfMessage(message) === false" class="col"></div>
                 </div>
             </div>
-            <div class="row new-message no-margin ">
+            <div class="fixed-bottom row new-message no-margin">
                 <div class="col">
                     <textarea [(ngModel)]="newMessage" name="newMessageInput"></textarea>
                 </div>
