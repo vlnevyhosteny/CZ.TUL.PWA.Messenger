@@ -1,3 +1,4 @@
+$main-color: #006699;
 
 body {
     font-family: 'Poppins', sans-serif;
@@ -42,12 +43,16 @@ a {
 }
 
 .navbar {
-    padding: 15px 10px;
-    background: #fff;
-    border: none;
+    background: $main-color;
+    border-bottom: solid $main-color 2px;
     border-radius: 0;
     margin-bottom: 40px;
-    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+    color: #fff;
+    font-size: 20px;
+
+    #username {
+        text-transform: uppercase;
+    }
 
     .navbar-btn {
         box-shadow: none;
@@ -65,23 +70,28 @@ a {
 #sidebar {
     min-width: 250px;
     max-width: 250px;
-    background: #7386D5;
-    color: #fff;
+    background: whitesmoke;
+    color: $main-color;
     transition: all 0.3s;
+    border-right: $main-color solid 2px;
 
     &.active {
         margin-left: -250px;
     }
 
     .sidebar-header {
-        padding: 20px;
-        background: #6d7fcc;
+        padding: 10px 0 7px 0;
+        background: $main-color;
+        color: whitesmoke;
+
+        h3 {
+            text-align: center;
+        }
     }
 
     ul {
         &.components {
             padding: 20px 0;
-            border-bottom: 1px solid #47748b;
         }
 
         p {
@@ -94,9 +104,9 @@ a {
                 padding: 10px;
                 font-size: 1.1em;
                 display: block;
+                text-align: center;
 
                 &:hover {
-                    color: #7386D5;
                     background: #fff;
                 }
             }
@@ -143,14 +153,14 @@ ul {
 #sidebarCollapse {
     width: 40px;
     height: 40px;
-    background: #f5f5f5;
+    background-color: whitesmoke;
 
     span {
         width: 80%;
         height: 2px;
         margin: 0 auto;
         display: block;
-        background: #555;
+        background: $main-color;
         transition: all 0.8s cubic-bezier(0.810, -0.330, 0.345, 1.375);
 
         &:first-of-type {
@@ -182,9 +192,12 @@ ul {
 
 #content {
     width: 100%;
-    padding: 20px;
     min-height: 100vh;
     transition: all 0.3s;
+
+    .row {
+        width: 100%;
+    }
 
     .messages {
         background-color: #f5f5f5;
@@ -261,4 +274,16 @@ ul {
         -ms-transform: translateX(50%);
         transform: translateX(50%);
     }
+}
+
+/* ---------------------------------------------------
+    TOOLS
+----------------------------------------------------- */
+
+.mg-l-30 {
+    margin-left: 30px;
+}
+
+.pd-t-7 {
+    padding-top: 7px;
 }
