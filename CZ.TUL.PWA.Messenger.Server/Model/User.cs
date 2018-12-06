@@ -24,5 +24,11 @@ namespace CZ.TUL.PWA.Messenger.Server.Model
             get;
             set;
         }
+
+        public IList<HubConnection> HubConnections 
+        { 
+            get;
+            set;
+        }
     }
 }

@@ -64,11 +64,11 @@ namespace CZ.TUL.PWA.Messenger.Server.Hubs
             }
 
             List<string> addressesClientIds = conversation.UserConversations
-                .Where(x => x.UserId != inputMessage.UserId)
                 .Select(x => x.UserId)
                 .ToList();
                 
-            await this.Clients.All.SendAsync("broadcastMessage", messageDb.ToFlattenViewModel());
+            await this.Clients.Users(addressesClientIds)
+                              .SendAsync("broadcastMessage", messageDb.ToFlattenViewModel());
         }
     }
 }

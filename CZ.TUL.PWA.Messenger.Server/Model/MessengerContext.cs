@@ -40,6 +40,12 @@ namespace CZ.TUL.PWA.Messenger.Server.Model
             set;
         }
 
+        public DbSet<HubConnection> HubConnections
+        { 
+            get;
+            set;
+        }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             this.SpecifyMySqlIndexLengthSpecification(builder);
