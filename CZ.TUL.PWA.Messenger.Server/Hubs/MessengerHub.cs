@@ -69,9 +69,9 @@ namespace CZ.TUL.PWA.Messenger.Server.Hubs
                 .Select(x => x.UserId)
                 .ToList();
 
-            MessageViewModel message = messageDb.ToViewModel();
+            this.Clients.Users()
 
-            await this.Clients.All.SendAsync("broadcastMessage", message);
+            await this.Clients.All.SendAsync("broadcastMessage", messageDb.ToFlattenViewModel());
         }
     }
 }
