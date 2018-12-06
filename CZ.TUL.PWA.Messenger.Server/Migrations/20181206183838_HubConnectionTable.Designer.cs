@@ -3,14 +3,16 @@ using System;
 using CZ.TUL.PWA.Messenger.Server.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CZ.TUL.PWA.Messenger.Server.Migrations
 {
     [DbContext(typeof(MessengerContext))]
-    partial class MessengerContextModelSnapshot : ModelSnapshot
+    [Migration("20181206183838_HubConnectionTable")]
+    partial class HubConnectionTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -37,7 +39,7 @@ namespace CZ.TUL.PWA.Messenger.Server.Migrations
 
                     b.Property<bool>("Connected");
 
-                    b.Property<string>("UserAgent");
+                    b.Property<string>("UserAnget");
 
                     b.Property<string>("UserId");
 
