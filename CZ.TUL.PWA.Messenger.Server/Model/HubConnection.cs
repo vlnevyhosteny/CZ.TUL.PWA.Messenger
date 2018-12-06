@@ -5,7 +5,7 @@ namespace CZ.TUL.PWA.Messenger.Server.Model
     {
         public string HubConnectionId { get; set; }
 
-        public string UserAnget { get; set; }
+        public string UserAgent { get; set; }
 
         public bool Connected { get; set; }
     }
