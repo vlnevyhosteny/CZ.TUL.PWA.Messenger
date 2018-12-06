@@ -114,7 +114,7 @@ a {
         li.active>a,
         a[aria-expanded="true"] {
             color: #fff;
-            background: #6d7fcc;
+            background: $main-color;
         }
     }
 }
