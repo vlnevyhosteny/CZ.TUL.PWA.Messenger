@@ -8,6 +8,7 @@ import { AuthenticationService } from '../_services/authentication.service';
 import { MessagesService } from '../_services/messages.service';
 import { HubConnection } from '@aspnet/signalr';
 import { MessengerHubService } from '../_services/messengerHub.service';
+import { FlattenMessage } from '../_models/flattenMessage';
 
 @Component({templateUrl: 'home.component.html'})
 export class HomeComponent implements OnInit {
@@ -27,7 +28,7 @@ export class HomeComponent implements OnInit {
 
     ngOnInit() {
         this.hubConnection = this.messangerHubService.initializeHubConnection();
-        this.hubConnection.on('broadcastMessage', (message: Message) => {
+        this.hubConnection.on('broadcastMessage', (message: FlattenMessage) => {
             this.messangerHubService.receive(
                 message,
                 this.selectedConversation,
@@ -87,8 +88,6 @@ export class HomeComponent implements OnInit {
             message.owner = this.user;
 
             this.messangerHubService.send(message, this.hubConnection);
-
-            this.selectedMessages.push(message);
 
             this.clearNewMessage();
         }
