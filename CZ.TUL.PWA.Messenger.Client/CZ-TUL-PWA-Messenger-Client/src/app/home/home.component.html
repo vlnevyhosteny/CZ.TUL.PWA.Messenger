@@ -3,7 +3,12 @@
     <nav id="sidebar" [ngClass]="sidebarCollapsed ? 'active' : ''">
         <ul class="list-unstyled components">
             <li *ngFor="let conversation of conversations" (click)="switchConversation(conversation)"
-                [className]="conversation.conversationId === selectedConversation.conversationId && 'active'"><a>{{ conversation.name }}</a></li>
+                [className]="conversation.conversationId === selectedConversation.conversationId && 'active'">
+                    <a>
+                        {{ conversation.name }}
+                        <span *ngIf="conversation.unread" class="badge badge-danger">New</span>
+                    </a>
+            </li>
         </ul>
     </nav>
 
@@ -30,7 +35,7 @@
             </div>
         </nav>
 
-        <div #conversations class="conversation">
+        <div class="conversation">
             <div class="row brd-btm-1-s-mc no-margin">
                 <div *ngFor="let address of selectedConversation.addressees" class="col">
                     {{ address.userName }}

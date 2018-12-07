@@ -16,4 +16,8 @@ export class ConversationService {
         return this.http.get<Array<Conversation>>(this.baseUrl);
     }
 
+    getConversation(conversationId) {
+        return this.http.get<Conversation>(this.baseUrl + '/' + conversationId);
+    }
+
 }

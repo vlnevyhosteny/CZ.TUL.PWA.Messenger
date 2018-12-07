@@ -36,39 +36,4 @@ export class MessengerHubService {
                 Content: message.content
             });
     }
-
-    receive(
-        flattenMessage: FlattenMessage,
-        selectedConversation: Conversation,
-        selectedMessages: Message[],
-        conversations: Conversation[]) {
-
-        if (flattenMessage.conversationId === selectedConversation.conversationId) {
-            const message = this.toMessage(flattenMessage, selectedConversation);
-
-            selectedMessages.push(message);
-        } else {
-            // if (!conversations.some(c => c.conversationId === message.conversation.conversationId)) {
-            //     conversations.push(message.conversation);
-            // }
-
-            // TODO: unread message
-            // const conversation = conversations.filter(c => c.conversationId === message.conversation.conversationId)[0];
-            // conversation
-        }
-    }
-
-    private toMessage(flattenMessage: FlattenMessage, conversation: Conversation): Message {
-        const message = new Message();
-        message.content = flattenMessage.content;
-        message.conversation = conversation;
-        message.dataSent = flattenMessage.dataSent;
-        message.messageId = flattenMessage.messageId;
-        message.owner = new User();
-        message.owner.id = flattenMessage.ownerId;
-        message.owner.name = flattenMessage.name;
-        message.owner.userName = flattenMessage.userName;
-
-        return message;
-    }
 }

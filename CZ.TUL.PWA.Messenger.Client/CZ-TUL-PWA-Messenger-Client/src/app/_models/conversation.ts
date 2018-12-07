@@ -4,4 +4,6 @@ export class Conversation {
     conversationId: number;
     name: string;
     addressees: User[];
+
+    unread: boolean;
 }

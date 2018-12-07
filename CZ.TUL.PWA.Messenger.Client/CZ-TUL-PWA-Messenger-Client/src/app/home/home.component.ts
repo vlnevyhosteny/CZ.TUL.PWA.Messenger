@@ -29,11 +29,7 @@ export class HomeComponent implements OnInit {
     ngOnInit() {
         this.hubConnection = this.messangerHubService.initializeHubConnection();
         this.hubConnection.on('broadcastMessage', (message: FlattenMessage) => {
-            this.messangerHubService.receive(
-                message,
-                this.selectedConversation,
-                this.selectedMessages,
-                this.conversations);
+            this.receive(message);
         });
         this.hubConnection.start();
 
@@ -77,6 +73,8 @@ export class HomeComponent implements OnInit {
     switchConversation(conversation: Conversation) {
         this.selectedConversation = conversation;
 
+        this.selectedConversation.unread = false;
+
         this.getMessages();
     }
 
@@ -95,5 +93,37 @@ export class HomeComponent implements OnInit {
 
     clearNewMessage() {
         this.newMessage = '';
+    }
+
+    // Nothing to be proud of. Should be separated in service.
+    async receive(flattenMessage: FlattenMessage) {
+        if (flattenMessage.conversationId === this.selectedConversation.conversationId) {
+            const message = this.toMessage(flattenMessage, this.selectedConversation);
+
+            this.selectedMessages.push(message);
+        } else {
+            if (!this.conversations.some(c => c.conversationId === flattenMessage.conversationId)) {
+                const newConversation = await this.conversationService.getConversation(flattenMessage.conversationId)
+                    .toPromise();
+                this.conversations.push(newConversation);
+            }
+
+            const conversation = this.conversations.filter(c => c.conversationId === flattenMessage.conversationId)[0];
+            conversation.unread = true;
+        }
+    }
+
+    private toMessage(flattenMessage: FlattenMessage, conversation: Conversation): Message {
+        const message = new Message();
+        message.content = flattenMessage.content;
+        message.conversation = conversation;
+        message.dataSent = flattenMessage.dataSent;
+        message.messageId = flattenMessage.messageId;
+        message.owner = new User();
+        message.owner.id = flattenMessage.ownerId;
+        message.owner.name = flattenMessage.name;
+        message.owner.userName = flattenMessage.userName;
+
+        return message;
     }
 }
