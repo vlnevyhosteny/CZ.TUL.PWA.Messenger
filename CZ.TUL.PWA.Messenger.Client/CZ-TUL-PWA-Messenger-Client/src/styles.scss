@@ -212,9 +212,15 @@ ul {
             margin-bottom: 5px;
             background-color: lightgray;
             border-radius: 20px;
+            padding-top: 7px;
             
             .owner {
                 text-transform: uppercase;
+            }
+
+            .time {
+                font-size: 7pt;
+                margin-bottom: 5px;
             }
         }
 

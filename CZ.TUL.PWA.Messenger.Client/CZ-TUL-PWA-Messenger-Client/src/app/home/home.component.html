@@ -46,6 +46,9 @@
                             {{ message.owner.userName }}: 
                         </span>
                         {{ message.content }}
+                        <p class="time">
+                            {{ message.dateSent| date:'short' }}
+                        </p>
                     </div>
                     <div *ngIf="isCurrentUserOwnerOfMessage(message) === false" class="col"></div>
                 </div>
