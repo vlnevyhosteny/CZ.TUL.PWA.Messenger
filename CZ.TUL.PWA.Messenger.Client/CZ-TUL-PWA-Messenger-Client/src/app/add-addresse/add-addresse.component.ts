@@ -16,14 +16,14 @@ export class AddAddresseComponent implements OnInit, OnDestroy {
   private nativeElement: any;
 
   constructor(private modalService: ModalService, private element: ElementRef) {
-    this.element = element.nativeElement;
+    this.nativeElement = element.nativeElement;
   }
 
   ngOnInit() {
       const modal = this;
 
       this.nativeElement.addEventListener('click', function (e: any) {
-          if (e.target.className === 'jw-modal') {
+          if (e.target.className === 'app-modal') {
               modal.close();
           }
       });
@@ -38,11 +38,11 @@ export class AddAddresseComponent implements OnInit, OnDestroy {
 
   open(): void {
       this.nativeElement.style.display = 'block';
-      document.body.classList.add('jw-modal-open');
+      document.body.classList.add('app-modal-open');
   }
 
   close(): void {
       this.nativeElement.style.display = 'none';
-      document.body.classList.remove('jw-modal-open');
+      document.body.classList.remove('app-modal-open');
   }
 }

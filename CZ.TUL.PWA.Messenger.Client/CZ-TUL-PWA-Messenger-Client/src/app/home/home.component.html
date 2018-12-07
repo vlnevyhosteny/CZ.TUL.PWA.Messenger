@@ -1,10 +1,5 @@
 ﻿<div class="wrapper">
 
-    <app-add-addresse-modal id="add-addressel">
-        <h1>A Custom Modal!</h1>
-        <button (click)="closeModal();">Close</button>
-    </app-add-addresse-modal>
-
     <nav id="sidebar" [ngClass]="sidebarCollapsed ? 'active' : ''">
         <ul class="list-unstyled components">
             <li *ngFor="let conversation of conversations" (click)="switchConversation(conversation)"
@@ -79,3 +74,8 @@
     </div>
 
 </div>
+
+<app-add-addresse-modal id="add-addresse">
+    <h1>A Custom Modal!</h1>
+    <button (click)="closeModal();">Close</button>
+</app-add-addresse-modal>

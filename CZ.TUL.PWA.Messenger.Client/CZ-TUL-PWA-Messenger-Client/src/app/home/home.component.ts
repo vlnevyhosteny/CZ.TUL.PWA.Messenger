@@ -102,7 +102,7 @@ export class HomeComponent implements OnInit {
     }
 
     closeModal() {
-        this.modalService.close('add-addressel');
+        this.modalService.close('add-addresse');
     }
 
     // Nothing to be proud of. Should be separated in service.
