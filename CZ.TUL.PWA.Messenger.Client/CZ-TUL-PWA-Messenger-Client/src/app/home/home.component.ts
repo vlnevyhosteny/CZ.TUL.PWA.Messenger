@@ -95,6 +95,10 @@ export class HomeComponent implements OnInit {
         this.newMessage = '';
     }
 
+    addAddresse() {
+        
+    }
+
     // Nothing to be proud of. Should be separated in service.
     async receive(flattenMessage: FlattenMessage) {
         if (flattenMessage.conversationId === this.selectedConversation.conversationId) {

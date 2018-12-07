@@ -37,8 +37,13 @@
 
         <div class="conversation">
             <div class="row brd-btm-1-s-mc no-margin">
-                <div *ngFor="let address of selectedConversation.addressees" class="col">
-                    {{ address.userName }}
+                <div class="col">
+                    <span *ngFor="let address of selectedConversation.addressees" class="addressees badge badge-primary">
+                        {{ address.userName }}
+                    </span>
+                </div>
+                <div class="col-1 text-right">
+                    <button type="button" class="btn btn-primary btn-sm add-addresse" (click)="addAddresse()">+</button>
                 </div>
             </div>
             <div class="row messages no-margin">
