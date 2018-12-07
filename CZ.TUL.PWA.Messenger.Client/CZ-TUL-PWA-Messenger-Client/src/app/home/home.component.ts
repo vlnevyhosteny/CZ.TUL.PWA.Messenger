@@ -9,6 +9,7 @@ import { MessagesService } from '../_services/messages.service';
 import { HubConnection } from '@aspnet/signalr';
 import { MessengerHubService } from '../_services/messengerHub.service';
 import { FlattenMessage } from '../_models/flattenMessage';
+import { ModalService } from '../_services/modal.service';
 
 @Component({templateUrl: 'home.component.html'})
 export class HomeComponent implements OnInit {
@@ -24,7 +25,8 @@ export class HomeComponent implements OnInit {
         private conversationService: ConversationService,
         private authenticationService: AuthenticationService,
         private messagesService: MessagesService,
-        private messangerHubService: MessengerHubService) {}
+        private messangerHubService: MessengerHubService,
+        private modalService: ModalService) {}
 
     ngOnInit() {
         this.hubConnection = this.messangerHubService.initializeHubConnection();
@@ -96,7 +98,11 @@ export class HomeComponent implements OnInit {
     }
 
     addAddresse() {
-        
+        this.modalService.open('add-addresse');
+    }
+
+    closeModal() {
+        this.modalService.close('add-addressel');
     }
 
     // Nothing to be proud of. Should be separated in service.
