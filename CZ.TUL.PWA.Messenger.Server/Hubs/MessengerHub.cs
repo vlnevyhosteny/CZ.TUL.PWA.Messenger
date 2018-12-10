@@ -53,6 +53,42 @@ namespace CZ.TUL.PWA.Messenger.Server.Hubs
         }
 
         [Authorize]
+        public async Task ConversationUpdate(int conversationId)
+        {
+            Conversation conversation = await this.context.Conversations
+                                                    .Include(x => x.UserConversations)
+                                                    .SingleOrDefaultAsync(x => x.ConversationId == conversationId);
+
+            if (conversation == null)
+            {
+                return;
+            }
+
+            List<string> addressesClientIds = conversation.UserConversations
+                .Select(x => x.UserId)
+                .ToList();
+
+            foreach (var userId in addressesClientIds)
+            {
+                var addresse = this.context.Users
+                                           .Include(x => x.HubConnections)
+                                           .SingleOrDefault(x => x.Id == userId);
+
+                if (addresse != null)
+                {
+                    foreach (var connection in addresse.HubConnections)
+                    {
+                        if (connection.Connected)
+                        {
+                            await this.Clients.Client(connection.HubConnectionId)
+                                              .SendAsync("broadcastConversation", conversation.ToViewModel());
+                        }
+                    }
+                }
+            }
+        }
+
+        [Authorize]
         public async Task Send(InputMessageViewModel inputMessage)
         {
             Conversation conversation = await this.context.Conversations

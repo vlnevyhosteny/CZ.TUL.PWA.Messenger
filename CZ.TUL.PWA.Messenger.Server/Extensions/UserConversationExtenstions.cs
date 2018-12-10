@@ -17,5 +17,17 @@ namespace CZ.TUL.PWA.Messenger.Server.Extensions
                 UserId = viewModel.UserId
             };
         }
+
+        public static UserConversationViewModel ToViewModel(this UserConversation model)
+        {
+            return new UserConversationViewModel
+            {
+                ConversationId = model.ConversationId,
+                IsOwner = model.IsOwner,
+                NotRead = model.NotRead,
+                NotReadCount = model.NotReadCount,
+                UserId = model.UserId
+            };
+        }
     }
 }

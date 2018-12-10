@@ -37,7 +37,7 @@ export class MessengerHubService {
     }
 
     invokeConversationChange(conversation: Conversation, hubConnection: HubConnection) {
-        hubConnection.invoke('ConversationChange',
+        hubConnection.invoke('ConversationUpdate',
         {
             ConversationId: conversation.conversationId
         });
