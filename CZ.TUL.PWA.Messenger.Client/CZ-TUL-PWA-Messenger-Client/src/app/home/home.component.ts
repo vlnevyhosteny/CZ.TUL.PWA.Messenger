@@ -22,6 +22,7 @@ export class HomeComponent implements OnInit {
     newMessage: string;
     hubConnection: HubConnection;
     suggestedAddresses: SelectedUser[] = [];
+    newConversationName: string;
 
     constructor(private userService: UserService,
         private conversationService: ConversationService,
@@ -139,7 +140,19 @@ export class HomeComponent implements OnInit {
             }
 
             this.messangerHubService.invokeConversationChange(this.selectedConversation, this.hubConnection);
+            this.closeAddAddresseModal();
         }
+    }
+
+    async addNewConversation() {
+        await this.conversationService.add(this.newConversationName)
+                                      .subscribe((conversation: Conversation) => {
+                                            this.conversationService.addUser(conversation, this.user, true).toPromise();
+                                            this.conversations.push(conversation);
+                                            this.selectedConversation = conversation;
+                                      });
+
+        this.newConversationName = '';
     }
 
     // Nothing to be proud of. Should be separated in service.

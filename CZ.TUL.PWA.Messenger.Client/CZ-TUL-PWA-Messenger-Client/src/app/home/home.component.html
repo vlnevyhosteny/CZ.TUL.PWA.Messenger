@@ -9,6 +9,9 @@
                         <span *ngIf="conversation.unread" class="badge badge-danger">New</span>
                     </a>
             </li>
+            <li>
+                <input type="text" class="form-control" placeholder="new" [(ngModel)]="newConversationName" (keydown.enter)="addNewConversation()">
+            </li>
         </ul>
     </nav>
 

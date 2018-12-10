@@ -5,6 +5,7 @@ using CZ.TUL.PWA.Messenger.Server.Extensions;
 using CZ.TUL.PWA.Messenger.Server.Model;
 using CZ.TUL.PWA.Messenger.Server.Services;
 using CZ.TUL.PWA.Messenger.Server.ViewModels;
+using CZ.TUL.PWA.Messenger.Server.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -34,11 +35,12 @@ namespace CZ.TUL.PWA.Messenger.Server.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] ConversationViewModel conversationViewModel)
+        public async Task<ConversationViewModel> Post([FromBody] ConversationViewModel conversationViewModel)
         {
             if (!this.ModelState.IsValid)
             {
-                return this.BadRequest(this.ModelState);
+                // TODO
+                //return this.BadRequest(this.ModelState);
             }
 
             var conversation = new Conversation()
@@ -47,8 +49,9 @@ namespace CZ.TUL.PWA.Messenger.Server.Controllers
             };
 
             var result = await this.messengerContext.AddAsync(conversation);
+            await this.messengerContext.SaveChangesAsync();
 
-            return new OkObjectResult(result);
+            return result.Entity.ToViewModel();
         }
 
         [HttpGet]
