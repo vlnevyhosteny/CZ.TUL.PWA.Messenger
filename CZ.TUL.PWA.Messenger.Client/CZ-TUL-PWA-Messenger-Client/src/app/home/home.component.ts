@@ -10,6 +10,7 @@ import { HubConnection } from '@aspnet/signalr';
 import { MessengerHubService } from '../_services/messengerHub.service';
 import { FlattenMessage } from '../_models/flattenMessage';
 import { ModalService } from '../_services/modal.service';
+import { SelectedUser } from '../_models/selectedUser';
 
 @Component({templateUrl: 'home.component.html'})
 export class HomeComponent implements OnInit {
@@ -20,7 +21,7 @@ export class HomeComponent implements OnInit {
     sidebarCollapsed = false;
     newMessage: string;
     hubConnection: HubConnection;
-    suggestedAddresses: User[] = [];
+    suggestedAddresses: SelectedUser[] = [];
 
     constructor(private userService: UserService,
         private conversationService: ConversationService,
@@ -33,6 +34,9 @@ export class HomeComponent implements OnInit {
         this.hubConnection = this.messangerHubService.initializeHubConnection();
         this.hubConnection.on('broadcastMessage', (message: FlattenMessage) => {
             this.receive(message);
+        });
+        this.hubConnection.on('broadcastConversation', (conversation: Conversation) => {
+            this.updateConversations(conversation);
         });
         this.hubConnection.start();
 
@@ -109,9 +113,21 @@ export class HomeComponent implements OnInit {
     onAddresseInputChange(addresseValue: string) {
         if (addresseValue) {
             this.userService.getUserNameContainsLimited(addresseValue, 5, 0)
-                            .subscribe((users: Array<User>) => {
+                            .subscribe((users: Array<SelectedUser>) => {
                                 this.suggestedAddresses = users;
                             });
+        }
+    }
+
+    async addAddressesToSelectedConversation() {
+        const selectedUsers = this.suggestedAddresses.filter(x => x.selected);
+
+        if (selectedUsers.length > 0) {
+            for (const selected of selectedUsers) {
+                await this.conversationService.addUser(this.selectedConversation, selected, false).toPromise();
+            }
+
+            this.messangerHubService.invokeConversationChange(this.selectedConversation, this.hubConnection);
         }
     }
 
@@ -131,6 +147,14 @@ export class HomeComponent implements OnInit {
             const conversation = this.conversations.filter(c => c.conversationId === flattenMessage.conversationId)[0];
             conversation.unread = true;
         }
+    }
+
+    updateConversations(conversation: Conversation) {
+        conversation.unread = true;
+
+        this.conversations = this.conversations.filter(c => c.conversationId !== conversation.conversationId);
+
+        this.conversations.push(conversation);
     }
 
     private toMessage(flattenMessage: FlattenMessage, conversation: Conversation): Message {

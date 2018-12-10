@@ -11,7 +11,6 @@ import { User } from '../_models';
 
 @Injectable({ providedIn: 'root' })
 export class MessengerHubService {
-
     private baseUrl = environment.messenger + '/chat';
 
     constructor(private http: HttpClient,
@@ -35,5 +34,12 @@ export class MessengerHubService {
                 UserId: message.owner.id,
                 Content: message.content
             });
+    }
+
+    invokeConversationChange(conversation: Conversation, hubConnection: HubConnection) {
+        hubConnection.invoke('ConversationChange',
+        {
+            ConversationId: conversation.conversationId
+        });
     }
 }

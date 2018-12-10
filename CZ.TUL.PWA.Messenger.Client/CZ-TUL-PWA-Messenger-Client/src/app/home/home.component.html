@@ -84,11 +84,11 @@
                     (input)="onAddresseInputChange($event.target.value)">
 
             <div class="form-check" *ngFor="let suggested of suggestedAddresses">
-                <input type="checkbox" class="form-check-input" id="{{ suggested.id }}">
+                <input type="checkbox" class="form-check-input" checklist-model="suggested.selected" checklist-value="suggested.id">
                 <label class="form-check-label" for="exampleCheck1">{{ suggested.userName }}</label>
             </div>
 
-            <button type="submit" class="btn btn-primary">Add</button>
+            <button class="btn btn-primary" (click)="addAddressesToSelectedConversation();">Add</button>
             <button class="btn btn-primary" (click)="closeAddAddresseModal();">Close</button>
         </div>
     </form>
