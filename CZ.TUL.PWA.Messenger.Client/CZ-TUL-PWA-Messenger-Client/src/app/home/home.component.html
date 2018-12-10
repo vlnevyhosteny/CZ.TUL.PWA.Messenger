@@ -43,7 +43,7 @@
                     </span>
                 </div>
                 <div class="col-1 text-right">
-                    <button type="button" class="btn btn-primary btn-sm add-addresse" (click)="addAddresse()">+</button>
+                    <button type="button" class="btn btn-primary btn-sm add-addresse" (click)="openAddAddresseModal()">+</button>
                 </div>
             </div>
             <div class="row messages no-margin">
@@ -76,6 +76,6 @@
 </div>
 
 <app-add-addresse-modal id="add-addresse">
-    <h1>A Custom Modal!</h1>
-    <button class="btn btn-primary" (click)="closeModal();">Close</button>
+    <h3>A Custom Modal!</h3>
+    <button class="btn btn-primary" (click)="closeAddAddresseModal();">Close</button>
 </app-add-addresse-modal>

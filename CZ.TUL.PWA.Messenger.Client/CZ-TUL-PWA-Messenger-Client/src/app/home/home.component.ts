@@ -97,11 +97,11 @@ export class HomeComponent implements OnInit {
         this.newMessage = '';
     }
 
-    addAddresse() {
-        this.modalService.open('add-addresse');
+    openAddAddresseModal() {
+        this.modalService.openWithParams('add-addresse', [ this.selectedConversation ]);
     }
 
-    closeModal() {
+    closeAddAddresseModal() {
         this.modalService.close('add-addresse');
     }
 

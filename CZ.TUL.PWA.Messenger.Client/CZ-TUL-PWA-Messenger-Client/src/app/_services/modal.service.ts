@@ -17,6 +17,16 @@ export class ModalService {
         modal.open();
     }
 
+    openWithParams(id: string, params: any[]) {
+        const modal: any = this.modals.filter(x => x.id === id)[0];
+
+        if (modal.params !== undefined) {
+            modal.params = params;
+        }
+
+        modal.open();
+    }
+
     close(id: string) {
         const modal: any = this.modals.filter(x => x.id === id)[0];
         modal.close();

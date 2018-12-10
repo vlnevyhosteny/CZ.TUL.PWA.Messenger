@@ -1,5 +1,6 @@
 import { Component, OnInit, ElementRef, Input, OnDestroy } from '@angular/core';
 import { ModalService } from '../_services/modal.service';
+import { Conversation } from '../_models/conversation';
 
 @Component({
   selector: 'app-add-addresse-modal',
@@ -14,6 +15,9 @@ import { ModalService } from '../_services/modal.service';
 export class AddAddresseComponent implements OnInit, OnDestroy {
   @Input() id: string;
   private nativeElement: any;
+  private conversation: Conversation;
+
+  public params: any[] = [];
 
   constructor(private modalService: ModalService, private element: ElementRef) {
     this.nativeElement = element.nativeElement;
@@ -39,6 +43,13 @@ export class AddAddresseComponent implements OnInit, OnDestroy {
   open(): void {
       this.nativeElement.style.display = 'block';
       document.body.classList.add('app-modal-open');
+
+      if (this.params !== undefined) {
+        const possibleConversations: any[] = this.params.filter(x => x instanceof Conversation);
+        if (possibleConversations) {
+            this.conversation = possibleConversations[0] as Conversation;
+        }
+      }
   }
 
   close(): void {
