@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using CZ.TUL.PWA.Messenger.Server.ViewModels;
+using CZ.TUL.PWA.Messenger.Server.Extensions;
 
 namespace CZ.TUL.PWA.Messenger.Server.Controllers
 {
@@ -115,14 +117,14 @@ namespace CZ.TUL.PWA.Messenger.Server.Controllers
 
         // POST: api/UserConversations
         [HttpPost]
-        public async Task<IActionResult> PostUserConversation([FromBody] UserConversation userConversation)
+        public async Task<IActionResult> PostUserConversation([FromBody] UserConversationViewModel userConversation)
         {
             if (!this.ModelState.IsValid)
             {
                 return this.BadRequest(this.ModelState);
             }
 
-            this.context.UserConversations.Add(userConversation);
+            this.context.UserConversations.Add(userConversation.ToModel());
             try
             {
                 await this.context.SaveChangesAsync();
