@@ -9,18 +9,19 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using CZ.TUL.PWA.Messenger.Server.ViewModels;
 using CZ.TUL.PWA.Messenger.Server.Extensions;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CZ.TUL.PWA.Messenger.Server.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
-    [ApiController]
-    public class UserConversationsController : ControllerBase
+    public class UserConversationsController : Controller
     {
         private readonly MessengerContext context;
         private readonly ITokenService tokenService;
         private readonly ILogger<UserConversationsController> logger;
 
-        public UserConversationsController(MessengerContext context, TokenService tokenService, ILogger<UserConversationsController> logger)
+        public UserConversationsController(MessengerContext context, ITokenService tokenService, ILogger<UserConversationsController> logger)
         {
             this.context = context;
             this.tokenService = tokenService;
@@ -29,13 +30,14 @@ namespace CZ.TUL.PWA.Messenger.Server.Controllers
 
         // GET: api/UserConversations
         [HttpGet]
-        public async Task<IEnumerable<UserConversation>> GetUserConversation([FromQuery] int limit = 100, [FromQuery]int offset = 0)
+        public async Task<IEnumerable<UserConversationViewModel>> GetUserConversation([FromQuery] int limit = 100, [FromQuery]int offset = 0)
         {
             string userId = (await this.tokenService.GetCurrentUser(this.User)).Id;
 
             return await this.context.UserConversations.Where(x => x.UserId == userId)
                 .Skip(offset)
                 .Take(limit)
+                .Select(x => x.ToViewModel())
                 .ToArrayAsync();
         }
 

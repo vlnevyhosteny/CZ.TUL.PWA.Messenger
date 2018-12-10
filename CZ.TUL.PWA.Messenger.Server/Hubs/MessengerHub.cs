@@ -42,22 +42,33 @@ namespace CZ.TUL.PWA.Messenger.Server.Hubs
                 // TODO throw
             }
 
-            user.HubConnections.Add(new HubConnection
+            if (user.HubConnections.Count > 0)
+            {
+                this.context.HubConnections.RemoveRange(user.HubConnections);
+                this.context.SaveChangesAsync();
+            }
+
+            this.context.Add(new HubConnection
             {
                 HubConnectionId = this.Context.ConnectionId,
+                UserId = user.Id,
                 Connected = true
             });
-            this.context.SaveChangesAsync();
+            this.context.SaveChanges();
 
             return base.OnConnectedAsync();
         }
 
         [Authorize]
-        public async Task ConversationUpdate(int conversationId)
+        public async Task ConversationUpdate(string conversationId)
         {
+            if (conversationId == null) return;
+
+            int _conversationId = int.Parse(conversationId);
+
             Conversation conversation = await this.context.Conversations
                                                     .Include(x => x.UserConversations)
-                                                    .SingleOrDefaultAsync(x => x.ConversationId == conversationId);
+                                                    .SingleOrDefaultAsync(x => x.ConversationId == _conversationId);
 
             if (conversation == null)
             {

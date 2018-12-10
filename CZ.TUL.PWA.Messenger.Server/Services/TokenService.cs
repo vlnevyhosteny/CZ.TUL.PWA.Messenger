@@ -47,7 +47,7 @@ namespace CZ.TUL.PWA.Messenger.Server.Services
                 issuer: this.configuration["Auth:Issuer"],
                 audience: this.configuration["Auth:Audience"],
                 claims: claims,
-                expires: DateTime.Now.AddSeconds(int.Parse(this.configuration["Auth:TokenExpiration"])), // Change to minutes
+                expires: DateTime.Now.AddMinutes(int.Parse(this.configuration["Auth:TokenExpiration"])), // Change to minutes
                 signingCredentials: signinCredentials);
 
             return new JwtSecurityTokenHandler().WriteToken(tokenOptions);

@@ -8,5 +8,7 @@ namespace CZ.TUL.PWA.Messenger.Server.Model
         public string UserAgent { get; set; }
 
         public bool Connected { get; set; }
+
+        public string UserId { get; set; }
     }
 }
