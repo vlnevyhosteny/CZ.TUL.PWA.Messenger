@@ -76,6 +76,38 @@ namespace CZ.TUL.PWA.Messenger.Server.Tests.Controllers
         }
 
         [Fact]
+        public async Task GetUserNameContains_ShouldSuccess()
+        {
+            var client = this.factory.CreateClient();
+
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(
+                "Bearer",
+                await AuthenticationUtilities.GetTestUserAccessTokenAsync(client));
+
+            MessengerContext context = this.factory.Server.Host.Services.GetService(typeof(MessengerContext))
+                                               as MessengerContext;
+
+            UserManager<User> userManager = this.factory.Server.Host.Services.GetService(typeof(UserManager<User>))
+                                    as UserManager<User>;
+
+            foreach (var item in this.GenerateUsers(5))
+            {
+                await userManager.CreateAsync(item);
+            }
+
+            var dbUser = await context.Users.Skip(2).FirstAsync();
+
+            var searchString = dbUser.UserName.Substring(0, 2);
+
+            var response = await client.GetAsync($"/api/users/UserNameContains/{searchString}");
+            response.EnsureSuccessStatusCode();
+
+            var users = response.Content.ReadAsAsync(typeof(IEnumerable<UserViewModel>)).Result as IEnumerable<UserViewModel>;
+
+            Assert.True(users.Any(x => x.UserName == dbUser.UserName));
+        }
+
+        [Fact]
         public async Task PutUpdate_ShouldSuccess()
         {
             var client = this.factory.CreateClient();

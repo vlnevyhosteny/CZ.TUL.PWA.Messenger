@@ -67,13 +67,15 @@ namespace CZ.TUL.PWA.Messenger.Server.Controllers
                             .ToListAsync();
 
         [HttpGet("UserNameContains/{contains}")]
-        public async Task<IEnumerable<UserViewModel>> GetUserNameContains([FromQuery] string contains, [FromQuery] int limit = 100, [FromQuery]int offset = 0)
-            => await this.messengerContext.Users
-                            .Where(x => x.UserName.Contains(contains))
-                            .Skip(offset)
-                            .Take(limit)
-                            .Select(x => new UserViewModel { Id = x.Id, UserName = x.UserName, Name = x.Name })
-                            .ToListAsync();
+        public async Task<IEnumerable<UserViewModel>> GetUserNameContains(string contains, [FromQuery] int limit = 100, [FromQuery]int offset = 0)
+        {
+            return await this.messengerContext.Users
+                                       .Where(x => x.UserName.Contains(contains))
+                                       .Skip(offset)
+                                       .Take(limit)
+                                       .Select(x => new UserViewModel { Id = x.Id, UserName = x.UserName, Name = x.Name })
+                                       .ToListAsync();
+        }
 
         [HttpGet("{id}")]
         public async Task<UserViewModel> Get(string id) => await this.messengerContext.Users
