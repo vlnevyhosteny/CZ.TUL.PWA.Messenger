@@ -60,23 +60,20 @@ namespace CZ.TUL.PWA.Messenger.Server.Hubs
         }
 
         [Authorize]
-        public async Task ConversationUpdate(string conversationId)
+        public async Task ConversationUpdate(int conversationId)
         {
-            if (conversationId == null) return;
-
-            int _conversationId = int.Parse(conversationId);
-
-            Conversation conversation = await this.context.Conversations
+            ConversationViewModel conversation = await this.context.Conversations
                                                     .Include(x => x.UserConversations)
-                                                    .SingleOrDefaultAsync(x => x.ConversationId == _conversationId);
+                                                    .Select(x => x.ToViewModel())
+                                                    .SingleOrDefaultAsync(x => x.ConversationId == conversationId);
 
             if (conversation == null)
             {
                 return;
             }
 
-            List<string> addressesClientIds = conversation.UserConversations
-                .Select(x => x.UserId)
+            List<string> addressesClientIds = conversation.Addressees
+                .Select(x => x.Id)
                 .ToList();
 
             foreach (var userId in addressesClientIds)
@@ -92,7 +89,7 @@ namespace CZ.TUL.PWA.Messenger.Server.Hubs
                         if (connection.Connected)
                         {
                             await this.Clients.Client(connection.HubConnectionId)
-                                              .SendAsync("broadcastConversation", conversation.ToViewModel());
+                                              .SendAsync("broadcastConversation", conversation);
                         }
                     }
                 }

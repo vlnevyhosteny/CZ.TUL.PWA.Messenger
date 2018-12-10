@@ -84,7 +84,7 @@
                     (input)="onAddresseInputChange($event.target.value)">
 
             <div class="form-check" *ngFor="let suggested of suggestedAddresses">
-                <input type="checkbox" class="form-check-input" checklist-model="suggested.selected" checklist-value="suggested.id">
+                <input type="checkbox" class="form-check-input" [(checklist)]="suggested.selected" [checklistValue]="true">
                 <label class="form-check-label" for="exampleCheck1">{{ suggested.userName }}</label>
             </div>
 

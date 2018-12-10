@@ -11,8 +11,10 @@ import { HomeComponent } from './home';
 import { LoginComponent } from './login';
 
 import { RouterModule, Routes } from '@angular/router';
-import { RegistrationComponent } from './registration/registration.component';;
-import { AddAddresseComponent } from './add-addresse/add-addresse.component'
+import { RegistrationComponent } from './registration/registration.component';
+import { AddAddresseComponent } from './add-addresse/add-addresse.component';
+
+import { ChecklistModule } from 'angular-checklist';
 
 @NgModule({
     imports: [
@@ -20,15 +22,16 @@ import { AddAddresseComponent } from './add-addresse/add-addresse.component'
         BrowserModule,
         HttpClientModule,
         ReactiveFormsModule,
-        FormsModule
+        FormsModule,
+        ChecklistModule
     ],
     declarations: [
         AppComponent,
         HomeComponent,
         LoginComponent,
-        RegistrationComponent
-,
-        AddAddresseComponent    ],
+        RegistrationComponent,
+        AddAddresseComponent
+    ],
     providers: [
         { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
         { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },

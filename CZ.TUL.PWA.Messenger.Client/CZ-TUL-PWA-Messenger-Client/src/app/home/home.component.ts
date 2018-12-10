@@ -38,6 +38,7 @@ export class HomeComponent implements OnInit {
         this.hubConnection.on('broadcastConversation', (conversation: Conversation) => {
             this.updateConversations(conversation);
         });
+
         this.hubConnection.start();
 
         this.user = this.authenticationService.getCurrentUser();
@@ -114,13 +115,23 @@ export class HomeComponent implements OnInit {
         if (addresseValue) {
             this.userService.getUserNameContainsLimited(addresseValue, 5, 0)
                             .subscribe((users: Array<SelectedUser>) => {
-                                this.suggestedAddresses = users;
+                                this.suggestedAddresses = [];
+
+                                for (const user of users) {
+                                    const selectedUser = new SelectedUser();
+                                    selectedUser.id = user.id;
+                                    selectedUser.name = user.name;
+                                    selectedUser.selected = false;
+                                    selectedUser.userName = user.userName;
+
+                                    this.suggestedAddresses.push(selectedUser);
+                                }
                             });
         }
     }
 
     async addAddressesToSelectedConversation() {
-        const selectedUsers = this.suggestedAddresses.filter(x => x.selected);
+        const selectedUsers = this.suggestedAddresses.filter(x => x.selected !== false);
 
         if (selectedUsers.length > 0) {
             for (const selected of selectedUsers) {

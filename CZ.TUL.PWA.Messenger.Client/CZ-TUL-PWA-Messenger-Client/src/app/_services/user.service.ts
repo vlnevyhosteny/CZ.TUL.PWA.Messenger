@@ -5,6 +5,7 @@ import { User } from '../_models';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { map } from 'rxjs/operators';
+import { SelectedUser } from '../_models/selectedUser';
 
 @Injectable({ providedIn: 'root' })
 export class UserService {
@@ -30,6 +31,7 @@ export class UserService {
                         .set('limit', limit.toString())
                         .set('offset', offset.toString());
 
-        return this.http.get<User[]>(`${this.baseUrl}/Users/UserNameContains/` + contains, { params: params });
+        return this.http.get<User[]>(`${this.baseUrl}/Users/UserNameContains/` + contains,
+            { params: params });
     }
 }
