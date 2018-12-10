@@ -76,6 +76,20 @@
 </div>
 
 <app-add-addresse-modal id="add-addresse">
-    <h3>A Custom Modal!</h3>
-    <button class="btn btn-primary" (click)="closeAddAddresseModal();">Close</button>
+    <h4>Add addresse</h4>
+    <form>
+        <div class="form-group">
+            <label for="exampleInputEmail1">UserName:</label>
+            <input type="newAddresseName" class="form-control" id="newAddresseName" placeholder="username"
+                    (input)="onAddresseInputChange($event.target.value)">
+
+            <div class="form-check" *ngFor="let suggested of suggestedAddresses">
+                <input type="checkbox" class="form-check-input" id="{{ suggested.id }}">
+                <label class="form-check-label" for="exampleCheck1">{{ suggested.userName }}</label>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Add</button>
+            <button class="btn btn-primary" (click)="closeAddAddresseModal();">Close</button>
+        </div>
+    </form>
 </app-add-addresse-modal>

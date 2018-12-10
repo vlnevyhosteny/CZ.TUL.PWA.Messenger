@@ -20,6 +20,7 @@ export class HomeComponent implements OnInit {
     sidebarCollapsed = false;
     newMessage: string;
     hubConnection: HubConnection;
+    suggestedAddresses: User[] = [];
 
     constructor(private userService: UserService,
         private conversationService: ConversationService,
@@ -103,6 +104,15 @@ export class HomeComponent implements OnInit {
 
     closeAddAddresseModal() {
         this.modalService.close('add-addresse');
+    }
+
+    onAddresseInputChange(addresseValue: string) {
+        if (addresseValue) {
+            this.userService.getUserNameContainsLimited(addresseValue, 5, 0)
+                            .subscribe((users: Array<User>) => {
+                                this.suggestedAddresses = users;
+                            });
+        }
     }
 
     // Nothing to be proud of. Should be separated in service.
