@@ -45,7 +45,7 @@ namespace CZ.TUL.PWA.Messenger.Server.Controllers
         public async Task<IEnumerable<MessageViewModel>> GetMessagesOfConversation(
             [FromRoute] int id,
             [FromQuery] int limit = 50,
-            [FromQuery]int offset = 0)
+            [FromQuery] int offset = 0)
         {
             string userId = (await this.tokenService.GetCurrentUser(this.User)).Id;
 
