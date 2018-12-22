@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  cz.tul.pwa.messenger.server:
+    image: ${DOCKER_REGISTRY-}cztulpwamessenger
+    build:
+      context: .
+      dockerfile: CZ.TUL.PWA.Messenger.Server/Dockerfile
