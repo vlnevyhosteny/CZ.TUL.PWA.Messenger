@@ -1,8 +1,21 @@
 version: '3.4'
 
 services:
-  cz.tul.pwa.messenger.server:
-    image: ${DOCKER_REGISTRY-}cztulpwamessenger
+  db:
+    image: mysql:5.7
+    environment:
+      MYSQL_RANDOM_ROOT_PASSWORD: 1
+      MYSQL_DATABASE: messengerdb
+      MYSQL_USER: messengeruser
+      MYSQL_PASSWORD: messengeruserpassw0rd
+    ports:
+      - "3306:3306"
+  server:
+    depends_on:
+        - db
+    image: ${DOCKER_REGISTRY-}server
     build:
       context: .
-      dockerfile: CZ.TUL.PWA.Messenger.Server/Dockerfile
+    ports:
+      - "443"
+
