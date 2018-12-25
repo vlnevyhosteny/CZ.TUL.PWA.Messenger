@@ -64,7 +64,7 @@ namespace CZ.TUL.PWA.Messenger.Server
             {
                 config.SetBasePath(Directory.GetCurrentDirectory())
                     .AddJsonFile("Config/appsettings.json", optional: false, reloadOnChange: true)
-                    .AddJsonFile($"Config/appsettings.{ctx.HostingEnvironment.EnvironmentName}.json", optional: true, reloadOnChange: true)
+                    .AddJsonFile($"Config/appsettings.{ctx.HostingEnvironment.EnvironmentName.ToLower()}.json", optional: true, reloadOnChange: true)
                     .AddJsonFile("Config/secretappsettings.json");
             }
         }
