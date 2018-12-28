@@ -51,7 +51,7 @@ namespace CZ.TUL.PWA.Messenger.Server
                    .UseKestrel(options =>
                    {
                        options.Listen(IPAddress.Loopback, 5000);
-                       options.Listen(IPAddress.Loopback, 5001, listenOptions =>
+                       options.Listen(IPAddress.Any, 5001, listenOptions =>
                        {
                            listenOptions.UseHttps("server.pfx", "password");
                        });
