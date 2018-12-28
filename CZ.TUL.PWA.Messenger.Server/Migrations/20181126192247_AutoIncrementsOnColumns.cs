@@ -13,12 +13,24 @@ namespace CZ.TUL.PWA.Messenger.Server.Migrations
                 name: "FK_UserConversations_Conversations_ConversationId",
                 table: "UserConversations");
 
+            migrationBuilder.DropForeignKey(
+                name: "FK_Messages_Conversations_ConversationId",
+                table: "Messages");
+
             migrationBuilder
                 .Sql("ALTER TABLE `Conversations` CHANGE `ConversationId` `ConversationId` INT(11) NOT NULL AUTO_INCREMENT;");
 
             migrationBuilder.AddForeignKey(
                 name: "FK_UserConversations_Conversations_ConversationId",
                 table: "UserConversations",
+                column: "ConversationId",
+                principalTable: "Conversations",
+                principalColumn: "ConversationId",
+                onDelete: ReferentialAction.Cascade);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Messages_Conversations_ConversationId",
+                table: "Messages",
                 column: "ConversationId",
                 principalTable: "Conversations",
                 principalColumn: "ConversationId",
@@ -34,12 +46,24 @@ namespace CZ.TUL.PWA.Messenger.Server.Migrations
                 name: "FK_UserConversations_Conversations_ConversationId",
                 table: "UserConversations");
 
+            migrationBuilder.DropForeignKey(
+                name: "FK_Messages_Conversations_ConversationId",
+                table: "Messages");
+
             migrationBuilder
                 .Sql("ALTER TABLE `Conversations` CHANGE `ConversationId` `ConversationId` INT(11) NOT NULL;");
 
             migrationBuilder.AddForeignKey(
                 name: "FK_UserConversations_Conversations_ConversationId",
                 table: "UserConversations",
+                column: "ConversationId",
+                principalTable: "Conversations",
+                principalColumn: "ConversationId",
+                onDelete: ReferentialAction.Cascade);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Messages_Conversations_ConversationId",
+                table: "Messages",
                 column: "ConversationId",
                 principalTable: "Conversations",
                 principalColumn: "ConversationId",
