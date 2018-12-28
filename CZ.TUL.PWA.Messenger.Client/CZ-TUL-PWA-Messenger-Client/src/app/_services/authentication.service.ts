@@ -1,9 +1,9 @@
 ﻿import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { map } from 'rxjs/operators';
-import { environment } from '../../../../cz-tul-pwa-messenger-client/src/environments/environment';
 import { ReplaySubject, throwError, Observable } from 'rxjs';
 import { User } from '../_models/user';
+import { environment } from '../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class AuthenticationService {
