@@ -13,4 +13,7 @@ RUN dotnet publish -c Release -o out
 FROM microsoft/dotnet:aspnetcore-runtime
 WORKDIR /app
 COPY --from=build-env /app/out .
+
+EXPOSE 5001
+
 ENTRYPOINT ["dotnet", "CZ.TUL.PWA.Messenger.Server.dll", "--urls", "http://*:5000;https://*:5001"]

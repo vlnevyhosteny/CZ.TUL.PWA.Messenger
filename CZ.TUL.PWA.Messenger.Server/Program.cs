@@ -34,6 +34,8 @@ namespace CZ.TUL.PWA.Messenger.Server
             }
             catch (Exception ex)
             {
+                Console.WriteLine(ex.ToString());
+
                 Log.Fatal(ex, "Host terminated unexpectedly");
 
                 return;
