@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
+    <DockerComposeProjectPath>../docker-compose.dcproj</DockerComposeProjectPath>
   </PropertyGroup>
 
   <ItemGroup>
@@ -26,6 +27,7 @@
     <PackageReference Include="Serilog.AspNetCore" Version="2.1.1" />
     <PackageReference Include="Serilog.Enrichers.AspNetCore" Version="1.0.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="4.0.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Server.Kestrel.Https" Version="2.1.1" />
   </ItemGroup>
 
   <ItemGroup>
@@ -36,6 +38,21 @@
   </ItemGroup>
   <ItemGroup>
     <Content Remove="Properties\secretappsettings.config" />
+    <Content Remove="publish\publish\CZ.TUL.PWA.Messenger.Server.deps.json" />
+    <Content Remove="publish\publish\CZ.TUL.PWA.Messenger.Server.runtimeconfig.json" />
+    <Content Remove="publish\publish\publish\web.config" />
+    <Content Remove="publish\publish\Config\secretappsettings.json" />
+    <Content Remove="publish\publish\Config\appsettings.json" />
+    <Content Remove="publish\publish\Config\secretappsettings_template.json" />
+    <Content Remove="publish\publish\CZ.TUL.PWA.Messenger.Server.deps.json" />
+    <Content Remove="publish\publish\CZ.TUL.PWA.Messenger.Server.runtimeconfig.json" />
+    <Content Remove="publish\publish\Config\appsettings.development.json" />
+    <Content Remove="publish\publish\publish\Config\secretappsettings_template.json" />
+    <Content Remove="publish\publish\publish\Config\appsettings.development.json" />
+    <Content Remove="publish\publish\publish\Config\appsettings.json" />
+    <Content Remove="publish\publish\publish\Config\secretappsettings.json" />
+    <Content Remove="publish\web.config" />
+    <Content Remove="publish\publish\web.config" />
   </ItemGroup>
   <ItemGroup>
     <Content Update="Config\appsettings.development.json">
@@ -44,5 +61,60 @@
     <Content Update="Config\secretappsettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="cert\server.pfx" />
+    <None Remove="cert\.DS_Store" />
+    <None Remove="publish\.DS_Store" />
+    <None Remove="publish\Microsoft.AspNetCore.Http.Connections.dll" />
+    <None Remove="publish\Microsoft.AspNetCore.SignalR.Common.dll" />
+    <None Remove="publish\Microsoft.AspNetCore.SignalR.Core.dll" />
+    <None Remove="publish\Microsoft.AspNetCore.SignalR.Protocols.Json.dll" />
+    <None Remove="publish\Microsoft.AspNetCore.SignalR.dll" />
+    <None Remove="publish\Microsoft.CodeAnalysis.CSharp.Workspaces.dll" />
+    <None Remove="publish\Microsoft.CodeAnalysis.Workspaces.dll" />
+    <None Remove="publish\Microsoft.EntityFrameworkCore.Abstractions.dll" />
+    <None Remove="publish\Microsoft.EntityFrameworkCore.Design.dll" />
+    <None Remove="publish\Microsoft.EntityFrameworkCore.Relational.dll" />
+    <None Remove="publish\Microsoft.EntityFrameworkCore.dll" />
+    <None Remove="publish\Microsoft.VisualStudio.Web.CodeGeneration.Contracts.dll" />
+    <None Remove="publish\Microsoft.VisualStudio.Web.CodeGeneration.Core.dll" />
+    <None Remove="publish\Microsoft.VisualStudio.Web.CodeGeneration.EntityFrameworkCore.dll" />
+    <None Remove="publish\Microsoft.VisualStudio.Web.CodeGeneration.Templating.dll" />
+    <None Remove="publish\Microsoft.VisualStudio.Web.CodeGeneration.Utils.dll" />
+    <None Remove="publish\Microsoft.VisualStudio.Web.CodeGeneration.dll" />
+    <None Remove="publish\Microsoft.VisualStudio.Web.CodeGenerators.Mvc.dll" />
+    <None Remove="publish\MySqlConnector.dll" />
+    <None Remove="publish\NuGet.Frameworks.dll" />
+    <None Remove="publish\Pomelo.EntityFrameworkCore.MySql.dll" />
+    <None Remove="publish\Pomelo.JsonObject.dll" />
+    <None Remove="publish\Remotion.Linq.dll" />
+    <None Remove="publish\Serilog.AspNetCore.dll" />
+    <None Remove="publish\Serilog.Enrichers.AspNetCore.dll" />
+    <None Remove="publish\Serilog.Extensions.Logging.File.dll" />
+    <None Remove="publish\Serilog.Extensions.Logging.dll" />
+    <None Remove="publish\Serilog.Formatting.Compact.dll" />
+    <None Remove="publish\Serilog.Sinks.Async.dll" />
+    <None Remove="publish\Serilog.Sinks.File.dll" />
+    <None Remove="publish\Serilog.Sinks.RollingFile.dll" />
+    <None Remove="publish\Serilog.dll" />
+    <None Remove="publish\Swashbuckle.AspNetCore.Swagger.dll" />
+    <None Remove="publish\Swashbuckle.AspNetCore.SwaggerGen.dll" />
+    <None Remove="publish\Swashbuckle.AspNetCore.SwaggerUI.dll" />
+    <None Remove="publish\Swashbuckle.AspNetCore.dll" />
+    <None Remove="publish\System.Composition.AttributedModel.dll" />
+    <None Remove="publish\System.Composition.Convention.dll" />
+    <None Remove="publish\System.Composition.Hosting.dll" />
+    <None Remove="publish\System.Composition.Runtime.dll" />
+    <None Remove="publish\System.Composition.TypedParts.dll" />
+    <None Remove="publish\System.Diagnostics.DiagnosticSource.dll" />
+    <None Remove="publish\System.Interactive.Async.dll" />
+    <None Remove="publish\System.Threading.Channels.dll" />
+    <None Remove="server.pfx" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="server.pfx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
 </Project>

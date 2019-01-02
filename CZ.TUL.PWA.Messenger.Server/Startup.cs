@@ -14,6 +14,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
 using Swashbuckle.AspNetCore.Swagger;
+using System;
 
 namespace CZ.TUL.PWA.Messenger.Server
 {
@@ -38,8 +39,8 @@ namespace CZ.TUL.PWA.Messenger.Server
 
             services
                 .AddDbContext<MessengerContext>(option => option.UseMySql(this.configuration
-                                                                              .GetConnectionString("MessengerDatabase")));                
-
+                                                                              .GetConnectionString("MessengerDatabase")));
+                
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IConversationService, ConversationService>();
 
@@ -97,6 +98,12 @@ namespace CZ.TUL.PWA.Messenger.Server
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
+            using (var serviceScope = app.ApplicationServices.CreateScope())
+            {
+                var context = serviceScope.ServiceProvider.GetService<MessengerContext>();
+                context.Database.Migrate();
+            }
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

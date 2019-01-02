@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CZ.TUL.PWA.Messenger.Server
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CZ.TUL.PWA.Messenger.Server.Tests", "CZ.TUL.PWA.Messenger.Server.Tests\CZ.TUL.PWA.Messenger.Server.Tests.csproj", "{00E4EF8A-1DC3-477B-8518-8FA7E5B15CF3}"
 EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{CBE9A46A-1B52-48F3-8D05-5E46C51AEB26}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -44,5 +46,17 @@ Global
 		{00E4EF8A-1DC3-477B-8518-8FA7E5B15CF3}.Release|x64.Build.0 = Release|Any CPU
 		{00E4EF8A-1DC3-477B-8518-8FA7E5B15CF3}.Release|x86.ActiveCfg = Release|Any CPU
 		{00E4EF8A-1DC3-477B-8518-8FA7E5B15CF3}.Release|x86.Build.0 = Release|Any CPU
+		{CBE9A46A-1B52-48F3-8D05-5E46C51AEB26}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CBE9A46A-1B52-48F3-8D05-5E46C51AEB26}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CBE9A46A-1B52-48F3-8D05-5E46C51AEB26}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{CBE9A46A-1B52-48F3-8D05-5E46C51AEB26}.Debug|x64.Build.0 = Debug|Any CPU
+		{CBE9A46A-1B52-48F3-8D05-5E46C51AEB26}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{CBE9A46A-1B52-48F3-8D05-5E46C51AEB26}.Debug|x86.Build.0 = Debug|Any CPU
+		{CBE9A46A-1B52-48F3-8D05-5E46C51AEB26}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CBE9A46A-1B52-48F3-8D05-5E46C51AEB26}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CBE9A46A-1B52-48F3-8D05-5E46C51AEB26}.Release|x64.ActiveCfg = Release|Any CPU
+		{CBE9A46A-1B52-48F3-8D05-5E46C51AEB26}.Release|x64.Build.0 = Release|Any CPU
+		{CBE9A46A-1B52-48F3-8D05-5E46C51AEB26}.Release|x86.ActiveCfg = Release|Any CPU
+		{CBE9A46A-1B52-48F3-8D05-5E46C51AEB26}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

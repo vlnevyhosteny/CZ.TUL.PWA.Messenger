@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
@@ -33,6 +34,8 @@ namespace CZ.TUL.PWA.Messenger.Server
             }
             catch (Exception ex)
             {
+                Console.WriteLine(ex.ToString());
+
                 Log.Fatal(ex, "Host terminated unexpectedly");
 
                 return;
@@ -45,6 +48,14 @@ namespace CZ.TUL.PWA.Messenger.Server
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
+                   .UseKestrel(options =>
+                   {
+                       options.Listen(IPAddress.Loopback, 5000);
+                       options.Listen(IPAddress.Any, 5001, listenOptions =>
+                       {
+                           listenOptions.UseHttps("server.pfx", "password");
+                       });
+                   })
                    .ConfigureAppConfiguration(ConfigConfiguration)
                    .UseStartup<Startup>()
                    .UseSerilog();
@@ -55,7 +66,7 @@ namespace CZ.TUL.PWA.Messenger.Server
             {
                 config.SetBasePath(Directory.GetCurrentDirectory())
                     .AddJsonFile("Config/appsettings.json", optional: false, reloadOnChange: true)
-                    .AddJsonFile($"Config/appsettings.{ctx.HostingEnvironment.EnvironmentName}.json", optional: true, reloadOnChange: true)
+                    .AddJsonFile($"Config/appsettings.{ctx.HostingEnvironment.EnvironmentName.ToLower()}.json", optional: true, reloadOnChange: true)
                     .AddJsonFile("Config/secretappsettings.json");
             }
         }
