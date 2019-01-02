@@ -64,7 +64,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Remove="cert\server.pfx" />
-    <None Remove="server.pfx" />
     <None Remove="cert\.DS_Store" />
     <None Remove="publish\.DS_Store" />
     <None Remove="publish\Microsoft.AspNetCore.Http.Connections.dll" />
@@ -111,6 +110,7 @@
     <None Remove="publish\System.Diagnostics.DiagnosticSource.dll" />
     <None Remove="publish\System.Interactive.Async.dll" />
     <None Remove="publish\System.Threading.Channels.dll" />
+    <None Remove="server.pfx" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="server.pfx">
