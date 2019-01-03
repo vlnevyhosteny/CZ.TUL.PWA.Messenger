@@ -1,4 +1,4 @@
 build:
   docker:
-    client: ⁨CZ.TUL.PWA.Messenger.Client⁩/⁨cz-tul-pwa-messenger-client⁩/Dockerfile
+    client: CZ.TUL.PWA.Messenger.Client/CZ-TUL-PWA-Messenger-Client/Dockerfile 
     server: CZ.TUL.PWA.Messenger.Server/Dockerfile
