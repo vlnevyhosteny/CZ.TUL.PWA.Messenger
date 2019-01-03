@@ -110,11 +110,5 @@
     <None Remove="publish\System.Diagnostics.DiagnosticSource.dll" />
     <None Remove="publish\System.Interactive.Async.dll" />
     <None Remove="publish\System.Threading.Channels.dll" />
-    <None Remove="server.pfx" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="server.pfx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
   </ItemGroup>
 </Project>
