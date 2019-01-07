@@ -109,12 +109,12 @@ namespace CZ.TUL.PWA.Messenger.Server
                 app.UseDeveloperExceptionPage();
             }
 
+            // Should be filled from ENV var
             app.UseCors(builder =>
-                builder.WithOrigins("http://localhost:4200")
-                        .AllowAnyOrigin()
-                        .AllowAnyHeader()
+                builder .AllowAnyHeader()
                         .AllowAnyMethod()
-                        .AllowCredentials());
+                        .AllowCredentials()
+                        .WithOrigins("http://localhost:4200", "http://localhost", "http://pwamessenger.westeurope.cloudapp.azure.com"));
 
             loggerFactory.AddSerilog();
 

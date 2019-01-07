@@ -15,7 +15,6 @@ services:
   server:
     depends_on:
         - db
-    image: pwa.server
     build:
       context: CZ.TUL.PWA.Messenger.Server
       dockerfile: Dockerfile
@@ -25,7 +24,6 @@ services:
   client:
     depends_on:
         - server
-    image: pwa.client
     build: 
         context: CZ.TUL.PWA.Messenger.Client/cz-tul-pwa-messenger-client
         dockerfile: Dockerfile
